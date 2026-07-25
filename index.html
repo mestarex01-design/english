@@ -144,6 +144,7 @@
   /* ===== Level (cards) view ===== */
   #level-view{ display:none; }
   #topics-view{ display:none; }
+  #folders-view{ display:none; }
 
   .level-header{
     max-width: 1200px;
@@ -168,6 +169,101 @@
     cursor:pointer;
   }
   .back-btn:hover{ background: var(--accent-soft); border-color: var(--accent); }
+
+  .add-word-btn{
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+    color: #fff;
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 13.5px;
+    padding: 9px 18px;
+    border-radius: 12px;
+    cursor:pointer;
+  }
+  .add-word-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
+
+  .delete-word-btn{
+    margin-top: 6px;
+    background: var(--hard-soft);
+    color: var(--hard);
+    border: 1.2px solid var(--hard);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 10px;
+    cursor:pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .delete-word-btn:hover{ background: var(--hard); color:#fff; }
+
+  .empty-custom{
+    max-width: 480px;
+    margin: 2.5rem auto 0;
+    text-align:center;
+    color: var(--muted);
+    font-size: 15px;
+    line-height:1.9;
+    background: var(--paper);
+    border: 1.5px dashed var(--line);
+    border-radius: var(--radius);
+    padding: 30px 20px;
+  }
+
+  .modal-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background: rgba(43,36,32,0.45);
+    align-items:center;
+    justify-content:center;
+    z-index: 999;
+    padding: 20px;
+  }
+  .modal-overlay.show{ display:flex; }
+  .modal-box{
+    background: var(--paper);
+    border-radius: var(--radius);
+    padding: 26px 24px;
+    max-width: 420px;
+    width:100%;
+    box-shadow: var(--shadow);
+    max-height: 90vh;
+    overflow-y:auto;
+  }
+  .modal-title{
+    font-weight:700;
+    font-size: 19px;
+    margin-bottom: 16px;
+    text-align:center;
+  }
+  .modal-box label{
+    display:block;
+    font-size: 13px;
+    font-weight:600;
+    color: var(--muted);
+    margin: 12px 0 6px;
+  }
+  .modal-box input{
+    width:100%;
+    font-family:'Cairo', sans-serif;
+    font-size: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+    direction: rtl;
+    box-sizing: border-box;
+  }
+  .modal-box input:focus{ outline:none; border-color: var(--accent); }
+  .modal-actions{
+    display:flex;
+    gap:10px;
+    margin-top: 20px;
+  }
+  .modal-actions button{ flex:1; }
 
   .level-title{
     font-weight:700;
@@ -234,7 +330,8 @@
     margin: 2.5rem auto 0;
     padding: 0 1.5rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(230px, 280px));
+    justify-content: center;
     gap: 24px;
   }
 
@@ -1136,10 +1233,18 @@
 <header>
   <span class="eyebrow">📚 تعلّم كلمة كل يوم</span>
   <h1 id="main-title">بطاقات تعلم اللغة الإنجليزية</h1>
-  <p id="main-subtitle">اختر مستوى للبدء في مراجعة الكلمات وحفظها.</p>
+  <p id="main-subtitle">اختر مجلدًا للبدء.</p>
 </header>
 
+<div id="categories-view">
+  <div class="folders-grid" id="categories-grid"></div>
+</div>
+
 <div id="folders-view">
+  <div class="level-header">
+    <button class="back-btn" id="back-to-categories">→ رجوع للرئيسية</button>
+    <div class="level-title" id="folders-level-title"></div>
+  </div>
   <div class="folders-grid" id="folders-grid"></div>
 </div>
 
@@ -1155,6 +1260,7 @@
   <div class="level-header">
     <button class="back-btn" id="back-to-folders">→ رجوع للموضوعات</button>
     <div class="level-title" id="level-title"></div>
+    <button type="button" class="add-word-btn" id="add-word-btn" style="display:none;">+ إضافة كلمة</button>
   </div>
 
   <div class="stats-bar">
@@ -1172,9 +1278,28 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="add-word-overlay">
+  <div class="modal-box">
+    <div class="modal-title">إضافة كلمة جديدة</div>
+
+    <label for="new-word-en">الكلمة بالإنجليزي</label>
+    <input type="text" id="new-word-en" placeholder="مثال: apple">
+
+    <div class="modal-actions">
+      <button type="button" class="back-btn" id="cancel-add-word">إلغاء</button>
+      <button type="button" class="add-word-btn" id="generate-word-btn">توليد الجملة</button>
+    </div>
+  </div>
+</div>
+
 <footer>أبقِ الصفحة محفوظة أو مفتوحة في نفس المتصفح ليتم حفظ مواعيد ظهور البطاقات وتقدمك 🌿</footer>
 
 <script>
+const categories = [
+  { id: "english", title: "تعلم اللغة الانجليزية", icon: "📘", type: "levels" },
+  { id: "custom", title: "كلماتك الخاصة", icon: "✍️", type: "custom" }
+];
+
 const levels = [
   {
     id: "level-a1",
@@ -6629,7 +6754,27 @@ let activeTopic = null;
 let schedule = {};
 let ratedWords = {};
 let wordDifficulty = {};
+let customWordsMode = false;
+const CUSTOM_WORDS_KEY = 'custom-words-list';
 
+function loadCustomWords(){
+  return loadJSON(CUSTOM_WORDS_KEY, []);
+}
+function saveCustomWords(list){
+  saveJSON(CUSTOM_WORDS_KEY, list);
+}
+function buildCustomLevel(){
+  return {
+    id: 'custom-words',
+    title: 'كلماتك الخاصة',
+    icon: '✍️',
+    topics: [{ id: 'custom', title: 'كلماتك الخاصة', icon: '✍️' }],
+    words: loadCustomWords()
+  };
+}
+
+const categoriesGrid = document.getElementById('categories-grid');
+const categoriesView = document.getElementById('categories-view');
 const foldersGrid = document.getElementById('folders-grid');
 const foldersView = document.getElementById('folders-view');
 const topicsView = document.getElementById('topics-view');
@@ -6767,6 +6912,115 @@ function getPrereqChecklist(idx){
   }
   return list;
 }
+
+function renderCategories(){
+  categoriesGrid.innerHTML = '';
+  categories.forEach(cat => {
+    let total, learned, meta;
+
+    if(cat.type === 'custom'){
+      const words = loadCustomWords();
+      total = words.length;
+      learned = total ? countLearned('custom-words') : 0;
+      meta = total
+        ? `${total} كلمة مضافة · تمت مراجعة ${Math.min(learned, total)}/${total}`
+        : 'لسه معملتش أي كلمة، دوس وابدأ 📝';
+    } else {
+      total = levels.reduce((sum, lvl) => sum + lvl.words.length, 0);
+      learned = levels.reduce((sum, lvl) => sum + countLearned(lvl.id), 0);
+      meta = `${levels.length} مستويات · ${total} كلمة · تمت مراجعة ${Math.min(learned, total)}/${total}`;
+    }
+
+    const pct = total ? Math.round((learned / total) * 100) : 0;
+
+    const card = document.createElement('div');
+    card.className = 'folder-card';
+    card.innerHTML = `
+      <div class="folder-icon">${cat.icon}</div>
+      <div class="folder-title">${cat.title}</div>
+      <div class="folder-meta">${meta}</div>
+      <div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
+    `;
+    card.addEventListener('click', () => openCategory(cat.id));
+    categoriesGrid.appendChild(card);
+  });
+}
+
+function openCategory(categoryId){
+  const cat = categories.find(c => c.id === categoryId);
+  if(!cat) return;
+
+  if(cat.type === 'custom'){
+    openCustomWords();
+    return;
+  }
+
+  document.getElementById('folders-level-title').textContent = cat.title;
+  document.getElementById('main-title').textContent = cat.title;
+  document.getElementById('main-subtitle').textContent = 'اختر مستوى للبدء في مراجعة الكلمات وحفظها.';
+
+  categoriesView.style.display = 'none';
+  foldersView.style.display = 'block';
+  topicsView.style.display = 'none';
+  levelView.style.display = 'none';
+
+  renderFolders();
+}
+
+function openCustomWords(){
+  activeLevel = buildCustomLevel();
+  activeTopic = activeLevel.topics[0];
+  customWordsMode = true;
+
+  const keys = folderStorageKeys(activeLevel.id);
+  schedule = loadJSON(keys.schedule, {});
+  ratedWords = loadJSON(keys.rated, {});
+  wordDifficulty = loadJSON(keys.difficulty, {});
+
+  document.getElementById('level-title').textContent = 'كلماتك الخاصة';
+  document.getElementById('main-title').textContent = 'كلماتك الخاصة';
+  document.getElementById('main-subtitle').textContent = 'ضيف كلماتك وذاكرها بنفس طريقة المراجعة والتقييم.';
+
+  categoriesView.style.display = 'none';
+  foldersView.style.display = 'none';
+  topicsView.style.display = 'none';
+  levelView.style.display = 'block';
+
+  document.getElementById('add-word-btn').style.display = 'inline-block';
+
+  renderCustomWordsGrid();
+}
+
+function renderCustomWordsGrid(){
+  refreshCounts();
+  cardsGrid.innerHTML = '';
+
+  if(activeLevel.words.length === 0){
+    cardsGrid.innerHTML = `<div class="empty-custom">لسه ماضفتش أي كلمة 📝<br>دوس على "إضافة كلمة" فوق وابدأ تبني مجموعتك الخاصة.</div>`;
+    levelLockedScreen.style.display = 'none';
+    return;
+  }
+
+  activeLevel.words.forEach((w, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'card-wrap';
+    wrap.dataset.index = i;
+    cardsGrid.appendChild(wrap);
+    renderCard(i);
+  });
+  updateLevelLockState();
+}
+
+function closeCategory(){
+  activeLevel = null;
+  activeTopic = null;
+  foldersView.style.display = 'none';
+  categoriesView.style.display = 'block';
+  document.getElementById('main-title').textContent = 'بطاقات تعلم اللغة الإنجليزية';
+  document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
+  renderCategories();
+}
+document.getElementById('back-to-categories').addEventListener('click', closeCategory);
 
 function renderFolders(){
   foldersGrid.innerHTML = '';
@@ -6927,6 +7181,18 @@ function updateLevelLockState(){
 function closeTopic(){
   activeTopic = null;
   levelView.style.display = 'none';
+  document.getElementById('add-word-btn').style.display = 'none';
+
+  if(customWordsMode){
+    customWordsMode = false;
+    activeLevel = null;
+    categoriesView.style.display = 'block';
+    document.getElementById('main-title').textContent = 'بطاقات تعلم اللغة الإنجليزية';
+    document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
+    renderCategories();
+    return;
+  }
+
   topicsView.style.display = 'block';
   document.getElementById('main-title').textContent = activeLevel ? activeLevel.title : 'بطاقات تعلم اللغة الإنجليزية';
   document.getElementById('main-subtitle').textContent = 'اختر موضوعًا عشان تبدأ تراجع كلماته.';
@@ -6938,12 +7204,181 @@ function closeLevel(){
   activeTopic = null;
   topicsView.style.display = 'none';
   foldersView.style.display = 'block';
-  document.getElementById('main-title').textContent = 'بطاقات تعلم اللغة الإنجليزية';
+  document.getElementById('main-title').textContent = categories[0] ? categories[0].title : 'بطاقات تعلم اللغة الإنجليزية';
   document.getElementById('main-subtitle').textContent = 'اختر مستوى للبدء في مراجعة الكلمات وحفظها.';
   renderFolders();
 }
 document.getElementById('back-to-folders-from-topics').addEventListener('click', closeLevel);
 document.getElementById('back-to-folders').addEventListener('click', closeTopic);
+
+const addWordBtn = document.getElementById('add-word-btn');
+const addWordOverlay = document.getElementById('add-word-overlay');
+const newWordEn = document.getElementById('new-word-en');
+const generateWordBtn = document.getElementById('generate-word-btn');
+
+function openAddWordModal(){
+  newWordEn.value = '';
+  generateWordBtn.disabled = false;
+  generateWordBtn.textContent = 'توليد الجملة';
+  addWordOverlay.classList.add('show');
+  newWordEn.focus();
+}
+function closeAddWordModal(){
+  addWordOverlay.classList.remove('show');
+}
+
+addWordBtn.addEventListener('click', openAddWordModal);
+document.getElementById('cancel-add-word').addEventListener('click', closeAddWordModal);
+addWordOverlay.addEventListener('click', (e) => {
+  if(e.target === addWordOverlay) closeAddWordModal();
+});
+
+// Free, no-key translation endpoint used to auto-fill the Arabic meaning
+// and the Arabic translation of the generated example sentence.
+async function translateEnToAr(text){
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('translate request failed');
+  const data = await res.json();
+  const translated = data && data.responseData && data.responseData.translatedText;
+  if(!translated) throw new Error('no translation returned');
+  return translated;
+}
+
+// A handful of simple, natural sentence shapes to drop the new word into,
+// so every generated card doesn't read the exact same way.
+const SENTENCE_TEMPLATES = [
+  w => `I use the word "${w}" every day.`,
+  w => `Can you explain what "${w}" means?`,
+  w => `This is a simple example with "${w}".`,
+  w => `I learned the word "${w}" today.`,
+  w => `She often talks about "${w}".`,
+  w => `Let's practice the word "${w}" together.`
+];
+
+function buildExampleSentence(word){
+  const template = SENTENCE_TEMPLATES[Math.floor(Math.random() * SENTENCE_TEMPLATES.length)];
+  return template(word);
+}
+
+// Extra common-word → emoji mappings, used as a second pass for words that
+// aren't already covered by the site's own curated vocabulary below.
+const EXTRA_ICON_MAP = {
+  computer:"💻", laptop:"💻", phone:"📱", internet:"🌐", email:"📧",
+  book:"📚", pen:"🖊️", pencil:"✏️", notebook:"📓", bag:"🎒", key:"🔑", door:"🚪",
+  window:"🪟", chair:"🪑", bed:"🛏️", car:"🚗", bus:"🚌", train:"🚆",
+  bicycle:"🚲", bike:"🚲", airplane:"✈️", plane:"✈️", boat:"⛵", ship:"🚢",
+  sun:"☀️", moon:"🌙", star:"⭐", cloud:"☁️", rain:"🌧️", snow:"❄️", wind:"💨",
+  fire:"🔥", water:"💧", tree:"🌳", flower:"🌸", grass:"🌱", mountain:"⛰️",
+  beach:"🏖️", sea:"🌊", sky:"🌌", river:"🏞️", forest:"🌲", desert:"🏜️", island:"🏝️",
+  dog:"🐶", cat:"🐱", bird:"🐦", fish:"🐟", horse:"🐴", cow:"🐮", sheep:"🐑",
+  chicken:"🐔", duck:"🦆", lion:"🦁", tiger:"🐯", elephant:"🐘", monkey:"🐒",
+  rabbit:"🐰", bear:"🐻", mouse:"🐭", snake:"🐍", frog:"🐸", turtle:"🐢", bee:"🐝", butterfly:"🦋",
+  apple:"🍎", banana:"🍌", orange:"🍊", grapes:"🍇", strawberry:"🍓", watermelon:"🍉",
+  lemon:"🍋", pineapple:"🍍", mango:"🥭", peach:"🍑", cherry:"🍒", tomato:"🍅",
+  potato:"🥔", carrot:"🥕", onion:"🧅", corn:"🌽", bread:"🍞", cheese:"🧀", egg:"🥚",
+  milk:"🥛", rice:"🍚", meat:"🥩", cake:"🍰", pizza:"🍕", burger:"🍔",
+  coffee:"☕", tea:"🍵", juice:"🧃",
+  doctor:"🩺", nurse:"👩‍⚕️", engineer:"👷", police:"👮", farmer:"👨‍🌾",
+  cook:"👨‍🍳", chef:"👨‍🍳", driver:"🚕", pilot:"✈️", artist:"🎨", musician:"🎵", singer:"🎤",
+  dancer:"💃", writer:"✍️", student:"🎓",
+  football:"⚽", basketball:"🏀", tennis:"🎾", swimming:"🏊", running:"🏃",
+  music:"🎵", movie:"🎬", game:"🎮", camera:"📷", letter:"✉️", gift:"🎁",
+  money:"💰", clock:"🕐", calendar:"📅", hat:"👒", shoes:"👟", shirt:"👕", dress:"👗", jacket:"🧥",
+  heart:"❤️", smile:"😊", love:"❤️", happy:"😊", sad:"😢", angry:"😠", tired:"😴",
+  sleep:"😴", run:"🏃", walk:"🚶", jump:"🤸", swim:"🏊", fly:"🛫", drive:"🚗",
+  study:"📖", travel:"🧳", work:"💼", play:"🎮"
+};
+
+// Built once, from every word already curated across all six levels, so a
+// new word that matches one already in the app reuses that same sticker.
+let _wordIconIndex = null;
+function getWordIconIndex(){
+  if(_wordIconIndex) return _wordIconIndex;
+  _wordIconIndex = new Map();
+  levels.forEach(level => {
+    level.words.forEach(w => {
+      const key = w.en.trim().toLowerCase();
+      if(!_wordIconIndex.has(key)) _wordIconIndex.set(key, w.icon);
+    });
+  });
+  return _wordIconIndex;
+}
+
+function lookupIcon(word){
+  const norm = word.trim().toLowerCase();
+  if(!norm) return null;
+  const index = getWordIconIndex();
+  if(index.has(norm)) return index.get(norm);
+  if(EXTRA_ICON_MAP[norm]) return EXTRA_ICON_MAP[norm];
+  // Try the singular/plural form, so "cats" still matches "cat".
+  if(norm.endsWith('s')){
+    const singular = norm.slice(0, -1);
+    if(index.has(singular)) return index.get(singular);
+    if(EXTRA_ICON_MAP[singular]) return EXTRA_ICON_MAP[singular];
+  } else {
+    const plural = norm + 's';
+    if(index.has(plural)) return index.get(plural);
+    if(EXTRA_ICON_MAP[plural]) return EXTRA_ICON_MAP[plural];
+  }
+  return null;
+}
+
+function guessIconForWord(word){
+  const direct = lookupIcon(word);
+  if(direct) return direct;
+  // For multi-word entries ("green apple"), fall back to matching any
+  // individual word in the phrase.
+  const parts = word.trim().toLowerCase().split(/\s+/);
+  if(parts.length > 1){
+    for(const part of parts){
+      const found = lookupIcon(part);
+      if(found) return found;
+    }
+  }
+  return '🔤';
+}
+
+generateWordBtn.addEventListener('click', async () => {
+  const en = newWordEn.value.trim();
+  if(!en){
+    alert('من فضلك اكتب الكلمة بالإنجليزي الأول');
+    return;
+  }
+
+  const originalLabel = generateWordBtn.textContent;
+  generateWordBtn.disabled = true;
+  generateWordBtn.textContent = 'جاري التوليد...';
+
+  try{
+    const ar = await translateEnToAr(en);
+    const sentenceEn = buildExampleSentence(en);
+    let sentenceAr = ar;
+    try{
+      sentenceAr = await translateEnToAr(sentenceEn);
+    }catch(e){
+      // If the sentence translation call fails, fall back to just the
+      // word's own translation rather than losing the whole card.
+    }
+
+    const list = loadCustomWords();
+    list.push({
+      icon: guessIconForWord(en),
+      en, ar, topic: 'custom',
+      img: `https://loremflickr.com/400/300/${encodeURIComponent(en.split(' ')[0])}?lock=${Date.now()}`,
+      sentenceEn, sentenceAr
+    });
+    saveCustomWords(list);
+
+    closeAddWordModal();
+    openCustomWords();
+  }catch(err){
+    alert('حصلت مشكلة أثناء التوليد، جرب تاني.');
+  }finally{
+    generateWordBtn.disabled = false;
+    generateWordBtn.textContent = originalLabel;
+  }
+});
 
 function refreshCounts(){
   // Recompute from each word's *current* difficulty label rather than a
@@ -7748,6 +8183,7 @@ function buildFrontBack(i, w){
         <button class="mini-diff-btn medium" data-level="medium" data-index="${i}">متوسط</button>
         <button class="mini-diff-btn hard" data-level="hard" data-index="${i}">صعب</button>
       </div>
+      ${customWordsMode ? `<button type="button" class="delete-word-btn" data-delete-word="${i}">🗑️ حذف الكلمة</button>` : ''}
     </div>
     <div class="face back">
       <img class="back-photo" src="${w.img}" alt="${w.en}" loading="lazy">
@@ -7781,12 +8217,43 @@ function buildFrontBack(i, w){
   `;
 }
 
+function wireDeleteButton(wrap, i){
+  const btn = wrap.querySelector('.delete-word-btn');
+  if(!btn) return;
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    const word = activeLevel.words[i];
+    if(!confirm(`متأكد إنك عايز تحذف الكلمة "${word.en}"؟`)) return;
+
+    const list = loadCustomWords();
+    list.splice(i, 1);
+    saveCustomWords(list);
+
+    // Every word's saved schedule/rated/difficulty is keyed by its index
+    // in the list. Removing a word shifts every later index, so instead
+    // of risking that data pointing at the wrong word now, just clear
+    // this folder's progress and let it rebuild naturally.
+    const keys = folderStorageKeys('custom-words');
+    localStorage.removeItem(keys.schedule);
+    localStorage.removeItem(keys.rated);
+    localStorage.removeItem(keys.difficulty);
+
+    openCustomWords();
+  });
+}
+
 function renderCard(i){
   const w = activeLevel.words[i];
   const wrap = document.querySelector(`#cards-grid .card-wrap[data-index="${i}"]`);
   if(!wrap) return;
   const entry = schedule[i];
   const now = Date.now();
+
+  // Only words in the "own words" folder can be deleted — built-in
+  // level words aren't backed by a deletable list.
+  const deleteBtnHtml = customWordsMode
+    ? `<button type="button" class="delete-word-btn" data-delete-word="${i}">🗑️ حذف الكلمة</button>`
+    : '';
 
   // Sequential unlock disabled by request: every word is available right
   // away, regardless of whether earlier words have been rated yet.
@@ -7801,7 +8268,9 @@ function renderCard(i){
         </div>
       </div>
       <div class="toast"></div>
+      ${deleteBtnHtml}
     `;
+    wireDeleteButton(wrap, i);
     return;
   }
 
@@ -7816,7 +8285,9 @@ function renderCard(i){
         </div>
       </div>
       <div class="toast"></div>
+      ${deleteBtnHtml}
     `;
+    wireDeleteButton(wrap, i);
     return;
   }
 
@@ -7833,6 +8304,7 @@ function renderCard(i){
     </div>
     <div class="toast">تم حفظ تقييمك ✓</div>
   `;
+  wireDeleteButton(wrap, i);
 
   balanceWordRows(wrap);
   fitWordText(wrap.querySelector('.word-en'), 14);
@@ -7980,7 +8452,7 @@ setInterval(() => {
   }
 }, 1000);
 
-renderFolders();
+renderCategories();
 </script>
 
 </body>
