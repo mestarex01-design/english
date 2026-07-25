@@ -8709,9 +8709,38 @@ function stopChatRecording(){
   if(chatRecognizer && chatRecording) chatRecognizer.stop();
 }
 
-micBtn.addEventListener('click', () => {
-  if(chatRecording) stopChatRecording();
-  else startChatRecording();
+let puterSignInPromise = null;
+
+// Puter's sign-in popup must open directly inside a click handler, or
+// browsers silently block it (no error, the request just hangs forever).
+// So we make sure sign-in happens as the very first, synchronous thing
+// that runs when the mic is clicked — before speech recognition starts,
+// and before any awaited step that would break the "user gesture" chain.
+function ensurePuterSignedIn(){
+  if(!window.puter || !window.puter.auth){
+    return Promise.reject(new Error('مكتبة الذكاء الاصطناعي المجانية (Puter) لسه مبتحملتش، جرب تاني بعد لحظة'));
+  }
+  if(puter.auth.isSignedIn()) return Promise.resolve();
+  if(!puterSignInPromise){
+    chatStatusEl.textContent = 'هتظهرلك نافذة تسجيل دخول مجانية من Puter... اسمح بيها ولو محجوبة دوس على أيقونة النوافذ المنبثقة فوق ووافق.';
+    puterSignInPromise = puter.auth.signIn().finally(() => { puterSignInPromise = null; });
+  }
+  return puterSignInPromise;
+}
+
+micBtn.addEventListener('click', async () => {
+  if(chatRecording){ stopChatRecording(); return; }
+
+  // signIn() must be called synchronously in this click handler (before any
+  // await) so the popup isn't treated as an unrequested popup and blocked.
+  try{
+    await ensurePuterSignedIn();
+  } catch(err){
+    chatStatusEl.textContent = 'محتاجين تسجل الدخول لحساب Puter المجاني عشان تقدر تستخدم المحادثة، دوس على الميكروفون تاني وسمح بالنافذة.';
+    return;
+  }
+
+  startChatRecording();
 });
 
 async function handleUserSpeech(text){
