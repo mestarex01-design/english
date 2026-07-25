@@ -1222,6 +1222,123 @@
     padding: 0 1.5rem;
   }
 
+  /* ===== Voice chat with AI ===== */
+  #voice-chat-view{ display:none; }
+
+  .chat-shell{
+    max-width: 720px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.5rem 2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+
+  .chat-messages{
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    min-height: 320px;
+    max-height: 55vh;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .chat-empty{
+    margin: auto;
+    text-align: center;
+    color: var(--muted);
+    font-size: 14.5px;
+    line-height: 1.9;
+    max-width: 380px;
+  }
+
+  .chat-bubble{
+    max-width: 82%;
+    padding: 10px 14px;
+    border-radius: 16px;
+    font-size: 14.5px;
+    line-height: 1.7;
+    direction: ltr;
+    text-align: left;
+  }
+  .chat-bubble-role{
+    font-size: 11px;
+    font-weight: 700;
+    margin-bottom: 3px;
+    direction: rtl;
+    text-align: right;
+    opacity: 0.7;
+  }
+  .chat-bubble.user{
+    align-self: flex-end;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border-bottom-right-radius: 4px;
+  }
+  .chat-bubble.ai{
+    align-self: flex-start;
+    background: var(--bg);
+    color: var(--ink);
+    border: 1.5px solid var(--line);
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-controls{
+    display:flex;
+    flex-direction: column;
+    align-items:center;
+    gap: 10px;
+  }
+
+  .chat-status{
+    color: var(--muted);
+    font-size: 13.5px;
+    text-align:center;
+    min-height: 18px;
+  }
+
+  .mic-btn{
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    border: none;
+    background: var(--accent);
+    color:#fff;
+    font-size: 30px;
+    line-height: 1;
+    cursor:pointer;
+    box-shadow: var(--shadow);
+    transition: transform 0.15s ease, background 0.2s ease;
+  }
+  .mic-btn:hover{ transform: scale(1.05); background: var(--accent-deep); }
+  .mic-btn.recording{
+    background: var(--hard);
+    animation: mic-pulse 1.1s ease-in-out infinite;
+  }
+
+  @keyframes mic-pulse{
+    0%{ box-shadow: 0 0 0 0 rgba(191,90,69,0.45); }
+    70%{ box-shadow: 0 0 0 18px rgba(191,90,69,0); }
+    100%{ box-shadow: 0 0 0 0 rgba(191,90,69,0); }
+  }
+
+  .chat-reset-btn{
+    background: none;
+    border: none;
+    color: var(--muted);
+    font-family:'Cairo', sans-serif;
+    font-weight:600;
+    font-size: 12.5px;
+    cursor:pointer;
+    text-decoration: underline;
+  }
+  .chat-reset-btn:hover{ color: var(--hard); }
+
   @media (max-width: 480px){
     .grid{ grid-template-columns: 1fr; }
     .flip-scene{ height: 400px; }
@@ -1278,6 +1395,22 @@
   </div>
 </div>
 
+<div id="voice-chat-view">
+  <div class="level-header">
+    <button class="back-btn" id="back-to-categories-from-chat">→ رجوع للرئيسية</button>
+    <div class="level-title">🎙️ التحدث الصوتي مع الذكاء الاصطناعي</div>
+  </div>
+
+  <div class="chat-shell">
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chat-controls">
+      <div class="chat-status" id="chat-status">اضغط على الميكروفون وابدأ الكلام بالإنجليزي</div>
+      <button type="button" class="mic-btn" id="mic-btn" title="اضغط وتكلم">🎤</button>
+      <button type="button" class="chat-reset-btn" id="chat-reset-btn">بدء محادثة جديدة</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="add-word-overlay">
   <div class="modal-box">
     <div class="modal-title">إضافة كلمة جديدة</div>
@@ -1294,10 +1427,12 @@
 
 <footer>أبقِ الصفحة محفوظة أو مفتوحة في نفس المتصفح ليتم حفظ مواعيد ظهور البطاقات وتقدمك 🌿</footer>
 
+<script src="https://js.puter.com/v2/"></script>
 <script>
 const categories = [
   { id: "english", title: "تعلم اللغة الانجليزية", icon: "📘", type: "levels" },
-  { id: "custom", title: "كلماتك الخاصة", icon: "✍️", type: "custom" }
+  { id: "custom", title: "كلماتك الخاصة", icon: "✍️", type: "custom" },
+  { id: "voice-chat", title: "التحدث الصوتي مع الذكاء الاصطناعي", icon: "🎙️", type: "voice-chat" }
 ];
 
 const levels = [
@@ -6925,13 +7060,18 @@ function renderCategories(){
       meta = total
         ? `${total} كلمة مضافة · تمت مراجعة ${Math.min(learned, total)}/${total}`
         : 'لسه معملتش أي كلمة، دوس وابدأ 📝';
+    } else if(cat.type === 'voice-chat'){
+      const hist = loadJSON(CHAT_HISTORY_STORAGE, []);
+      meta = hist.length
+        ? `محادثة مستمرة · ${hist.length} رسالة`
+        : 'اتكلم بالإنجليزي مع الذكاء الاصطناعي وهو هيرد عليك بالصوت 🎧';
     } else {
       total = levels.reduce((sum, lvl) => sum + lvl.words.length, 0);
       learned = levels.reduce((sum, lvl) => sum + countLearned(lvl.id), 0);
       meta = `${levels.length} مستويات · ${total} كلمة · تمت مراجعة ${Math.min(learned, total)}/${total}`;
     }
 
-    const pct = total ? Math.round((learned / total) * 100) : 0;
+    const pct = (cat.type !== 'voice-chat' && total) ? Math.round((learned / total) * 100) : null;
 
     const card = document.createElement('div');
     card.className = 'folder-card';
@@ -6939,7 +7079,7 @@ function renderCategories(){
       <div class="folder-icon">${cat.icon}</div>
       <div class="folder-title">${cat.title}</div>
       <div class="folder-meta">${meta}</div>
-      <div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
+      ${pct !== null ? `<div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>` : ''}
     `;
     card.addEventListener('click', () => openCategory(cat.id));
     categoriesGrid.appendChild(card);
@@ -6952,6 +7092,11 @@ function openCategory(categoryId){
 
   if(cat.type === 'custom'){
     openCustomWords();
+    return;
+  }
+
+  if(cat.type === 'voice-chat'){
+    openVoiceChat();
     return;
   }
 
@@ -8451,6 +8596,185 @@ setInterval(() => {
     }
   }
 }, 1000);
+
+// ===== Voice chat with AI (free, via Puter.js — no API key needed) =====
+const CHAT_HISTORY_STORAGE = 'flashcards-voice-chat-history';
+const CHAT_MODEL = 'anthropic/claude-sonnet-5';
+const CHAT_SYSTEM_PROMPT = "You are a friendly, patient English conversation partner helping an Arabic-speaking learner practice spoken English. Keep replies short (1-3 sentences), use simple everyday vocabulary, and gently correct any clear grammar or word-choice mistakes by naturally rephrasing them in your reply. Ask a short follow-up question to keep the conversation going. Reply only in English, with no markdown formatting.";
+
+let voiceChatHistory = loadJSON(CHAT_HISTORY_STORAGE, []);
+let voiceChatBusy = false;
+let chatRecognizer = null;
+let chatRecording = false;
+
+const chatMessagesEl = document.getElementById('chat-messages');
+const chatStatusEl = document.getElementById('chat-status');
+const micBtn = document.getElementById('mic-btn');
+const chatResetBtn = document.getElementById('chat-reset-btn');
+const voiceChatView = document.getElementById('voice-chat-view');
+
+function escapeHtmlChat(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+function openVoiceChat(){
+  document.getElementById('main-title').textContent = 'التحدث الصوتي مع الذكاء الاصطناعي';
+  document.getElementById('main-subtitle').textContent = 'اتكلم بالإنجليزي مع الذكاء الاصطناعي واتمرن على المحادثة.';
+
+  categoriesView.style.display = 'none';
+  foldersView.style.display = 'none';
+  topicsView.style.display = 'none';
+  levelView.style.display = 'none';
+  voiceChatView.style.display = 'block';
+
+  renderChatMessages();
+}
+
+function closeVoiceChat(){
+  stopChatRecording();
+  voiceChatView.style.display = 'none';
+  categoriesView.style.display = 'block';
+  document.getElementById('main-title').textContent = 'بطاقات تعلم اللغة الإنجليزية';
+  document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
+  renderCategories();
+}
+document.getElementById('back-to-categories-from-chat').addEventListener('click', closeVoiceChat);
+
+function renderChatMessages(){
+  if(voiceChatHistory.length === 0){
+    chatMessagesEl.innerHTML = `<div class="chat-empty">اضغط على الميكروفون 🎤 وقول أي جملة بالإنجليزي عشان تبدأ محادثة حقيقية مع الذكاء الاصطناعي، وهيرد عليك بالصوت كمان. أول مرة هيظهرلك بوب-أب بسيط من Puter عشان تسجل حساب مجاني (بيتم مرة واحدة بس).</div>`;
+    return;
+  }
+  chatMessagesEl.innerHTML = voiceChatHistory.map(m => `
+    <div class="chat-bubble ${m.role === 'user' ? 'user' : 'ai'}">
+      <div class="chat-bubble-role">${m.role === 'user' ? 'انت' : 'الذكاء الاصطناعي'}</div>
+      <div class="chat-bubble-text">${escapeHtmlChat(m.content)}</div>
+    </div>
+  `).join('');
+  chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
+}
+
+function saveChatHistory(){
+  saveJSON(CHAT_HISTORY_STORAGE, voiceChatHistory);
+}
+
+chatResetBtn.addEventListener('click', () => {
+  if(voiceChatHistory.length && !confirm('متأكد عايز تبدأ محادثة جديدة؟ هيتم مسح كلام المحادثة الحالية.')) return;
+  voiceChatHistory = [];
+  saveChatHistory();
+  renderChatMessages();
+});
+
+// --- Mic input (browser speech recognition) ---
+const ChatSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+function startChatRecording(){
+  if(!ChatSpeechRecognition){
+    chatStatusEl.textContent = 'المتصفح ده مش بيدعم التعرف على الصوت، جرب Chrome على الكمبيوتر أو الموبايل.';
+    return;
+  }
+  if(voiceChatBusy) return;
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+
+  chatRecognizer = new ChatSpeechRecognition();
+  chatRecognizer.lang = 'en-US';
+  chatRecognizer.interimResults = false;
+  chatRecognizer.maxAlternatives = 1;
+
+  chatRecognizer.onstart = () => {
+    chatRecording = true;
+    micBtn.classList.add('recording');
+    chatStatusEl.textContent = 'بيسمعك دلوقتي... اتكلم';
+  };
+  chatRecognizer.onerror = (e) => {
+    chatRecording = false;
+    micBtn.classList.remove('recording');
+    chatStatusEl.textContent = e.error === 'not-allowed'
+      ? 'محتاجين إذن استخدام الميكروفون من المتصفح'
+      : 'حصل خطأ في التعرف على الصوت، جرب تاني';
+  };
+  chatRecognizer.onend = () => {
+    chatRecording = false;
+    micBtn.classList.remove('recording');
+  };
+  chatRecognizer.onresult = (e) => {
+    const transcript = e.results[0][0].transcript;
+    if(transcript && transcript.trim()) handleUserSpeech(transcript.trim());
+  };
+
+  chatRecognizer.start();
+}
+
+function stopChatRecording(){
+  if(chatRecognizer && chatRecording) chatRecognizer.stop();
+}
+
+micBtn.addEventListener('click', () => {
+  if(chatRecording) stopChatRecording();
+  else startChatRecording();
+});
+
+async function handleUserSpeech(text){
+  if(voiceChatBusy) return;
+  voiceChatBusy = true;
+
+  voiceChatHistory.push({ role: 'user', content: text });
+  saveChatHistory();
+  renderChatMessages();
+  chatStatusEl.textContent = 'الذكاء الاصطناعي بيفكر في الرد...';
+
+  try{
+    const reply = await fetchAiReply();
+    voiceChatHistory.push({ role: 'assistant', content: reply });
+    saveChatHistory();
+    renderChatMessages();
+    chatStatusEl.textContent = 'اضغط على الميكروفون عشان ترد';
+    speakAiReply(reply);
+  } catch(err){
+    chatStatusEl.textContent = 'حصل خطأ: ' + (err && err.message ? err.message : 'مقدرش أوصل للذكاء الاصطناعي، جرب تاني');
+  } finally {
+    voiceChatBusy = false;
+  }
+}
+
+// Extracts the plain text reply regardless of which underlying model/vendor
+// Puter routed the request to — some return message.content as a plain
+// string, others (like Claude) return it as an array of content blocks.
+function extractPuterReplyText(response){
+  if(typeof response === 'string') return response.trim();
+  const content = response && response.message && response.message.content;
+  if(typeof content === 'string') return content.trim();
+  if(Array.isArray(content)){
+    const textBlock = content.find(b => b && b.type === 'text');
+    if(textBlock && textBlock.text) return textBlock.text.trim();
+  }
+  return '...';
+}
+
+async function fetchAiReply(){
+  if(!window.puter || !window.puter.ai || !window.puter.ai.chat){
+    throw new Error('مكتبة الذكاء الاصطناعي المجانية (Puter) لسه مبتحملتش، جرب تاني بعد لحظة');
+  }
+
+  const messages = [
+    { role: 'system', content: CHAT_SYSTEM_PROMPT },
+    ...voiceChatHistory.map(m => ({ role: m.role, content: m.content }))
+  ];
+
+  const response = await puter.ai.chat(messages, { model: CHAT_MODEL, max_tokens: 300 });
+  return extractPuterReplyText(response);
+}
+
+function speakAiReply(text){
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'en-US';
+  utter.rate = speechRate;
+  const voice = getPreferredVoice();
+  if(voice) utter.voice = voice;
+  window.speechSynthesis.speak(utter);
+}
 
 renderCategories();
 </script>
