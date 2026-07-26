@@ -1330,6 +1330,19 @@
     gap: 10px;
   }
 
+  .chat-voice-settings-row{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+  .chat-voice-settings-label{
+    font-size: 12.5px;
+    color: var(--muted);
+    font-weight:700;
+  }
+
   .chat-status{
     color: var(--muted);
     font-size: 13.5px;
@@ -1501,6 +1514,7 @@
         <button type="button" class="chat-lang-btn" id="chat-lang-ar" data-lang="ar-EG">🇪🇬 هتكلم عربي (لفهم الموضوع)</button>
         <button type="button" class="chat-lang-btn" id="chat-lang-en" data-lang="en-US">🇬🇧 Speak English (للتمرين)</button>
       </div>
+      <div class="chat-voice-settings-row" id="chat-voice-settings"></div>
       <div class="chat-status" id="chat-status">اختار هتتكلم بأي لغة، وبعدين دوس على الميكروفون</div>
       <div class="chat-action-row">
         <button type="button" class="mic-btn" id="mic-btn" title="اضغط وتكلم">🎤</button>
@@ -7760,13 +7774,35 @@ if('speechSynthesis' in window){
 const MALE_VOICE_HINTS = ['david','mark','guy','daniel','fred','alex','male','ryan','george','james','tom','matthew','christopher','oliver','arthur'];
 const FEMALE_VOICE_HINTS = ['zira','samantha','susan','victoria','karen','moira','tessa','female','ava','allison','fiona','kate','emma','sara','joanna','salli','amy','emma','olivia','aria'];
 
+// Word-boundary match so a hint like "male" doesn't false-positive on a
+// voice literally named "...Female..." (which contains the substring
+// "male"). This was silently breaking the male voice choice on devices
+// whose only distinctly-named English voice happened to include "Female".
+function voiceNameMatchesHints(name, hints){
+  const lower = name.toLowerCase();
+  return hints.some(h => new RegExp(`\\b${h}\\b`, 'i').test(lower));
+}
+
 function getPreferredVoice(){
   if(!cachedVoices.length) loadVoicesList();
   const enVoices = cachedVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
   if(!enVoices.length) return null;
+
   const hints = voiceGender === 'male' ? MALE_VOICE_HINTS : FEMALE_VOICE_HINTS;
-  const match = enVoices.find(v => hints.some(h => v.name.toLowerCase().includes(h)));
-  return match || null;
+  const otherHints = voiceGender === 'male' ? FEMALE_VOICE_HINTS : MALE_VOICE_HINTS;
+  const match = enVoices.find(v => voiceNameMatchesHints(v.name, hints));
+  if(match) return match;
+
+  // No voice explicitly named for this gender (common on many Android
+  // devices, which often expose just one or two generic English voices
+  // with no gender in the name). Best-effort fallback: if there are at
+  // least 2 English voices, pick one that clearly ISN'T the other gender,
+  // so switching still changes something audible instead of doing nothing.
+  if(enVoices.length > 1){
+    const notOther = enVoices.find(v => !voiceNameMatchesHints(v.name, otherHints));
+    if(notOther) return notOther;
+  }
+  return null;
 }
 
 function buildVoiceGenderControl(){
@@ -7830,13 +7866,25 @@ document.addEventListener('click', (e) => {
   closeAllVoiceGenderMenus();
 });
 
+// Returns the gender-preferred English voice if one exists, otherwise
+// falls back to any available English voice rather than leaving it unset
+// (some mobile TTS engines silently substitute the device's default
+// system voice — which may not even be English — when no voice object
+// is attached to the utterance).
+function resolveEnglishVoice(){
+  const preferred = getPreferredVoice();
+  if(preferred) return preferred;
+  if(!cachedVoices.length) loadVoicesList();
+  return cachedVoices.find(v => v.lang && v.lang.toLowerCase().startsWith('en')) || null;
+}
+
 function speakWord(text){
   if(!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'en-US';
   utter.rate = speechRate;
-  const voice = getPreferredVoice();
+  const voice = resolveEnglishVoice();
   if(voice) utter.voice = voice;
   window.speechSynthesis.speak(utter);
 }
@@ -7844,7 +7892,7 @@ function speakWord(text){
 function speakSequence(word, sentence){
   if(!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
-  const voice = getPreferredVoice();
+  const voice = resolveEnglishVoice();
   const wordUtter = new SpeechSynthesisUtterance(word);
   wordUtter.lang = 'en-US';
   wordUtter.rate = speechRate;
@@ -8803,9 +8851,24 @@ chatResetBtn.addEventListener('click', () => {
 // --- Mic input (browser speech recognition) ---
 const ChatSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+// Mobile browsers (especially iOS Safari) mute any speechSynthesis.speak()
+// call that isn't triggered directly inside a tap — and our real reply is
+// spoken later, after the network round-trip, so it gets silently muted on
+// mobile even though it works fine on desktop. Speaking one empty utterance
+// synchronously inside the tap "unlocks" audio so the later speak() works.
+function primeSpeechOnMobile(){
+  if(!('speechSynthesis' in window)) return;
+  const primer = new SpeechSynthesisUtterance('');
+  primer.volume = 0;
+  window.speechSynthesis.speak(primer);
+}
+
 function startChatRecording(){
   if(!ChatSpeechRecognition){
-    chatStatusEl.textContent = 'المتصفح ده مش بيدعم التعرف على الصوت، جرب Chrome على الكمبيوتر أو الموبايل.';
+    const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    chatStatusEl.textContent = isIOS
+      ? 'سفاري على الآيفون/الآيباد مش بيدعم التعرف على الصوت. استخدم زرار ⌨️ وسيبك من الميكروفون، أو جرب Chrome على أندرويد أو الكمبيوتر.'
+      : 'المتصفح ده مش بيدعم التعرف على الصوت، جرب Chrome على الكمبيوتر أو الموبايل، أو استخدم زرار ⌨️.';
     return;
   }
   if(voiceChatBusy) return;
@@ -8866,8 +8929,10 @@ function ensurePuterSignedIn(){
 micBtn.addEventListener('click', async () => {
   if(chatRecording){ stopChatRecording(); return; }
 
-  // signIn() must be called synchronously in this click handler (before any
-  // await) so the popup isn't treated as an unrequested popup and blocked.
+  // Both of these must run synchronously, before any await, right inside
+  // this click handler — otherwise mobile browsers block the audio/popup
+  // that happens later once the async work (recognition + AI reply) finishes.
+  primeSpeechOnMobile();
   try{
     await ensurePuterSignedIn();
   } catch(err){
@@ -8890,8 +8955,9 @@ async function sendTypedMessage(){
   const text = chatTextInput.value.trim();
   if(!text || voiceChatBusy) return;
 
-  // Same rule as the mic: signIn() must be triggered synchronously from
-  // this click/keydown handler, before any await, or its popup gets blocked.
+  // Same rule as the mic: both of these must run synchronously from this
+  // click/keydown handler, before any await, or they get blocked on mobile.
+  primeSpeechOnMobile();
   try{
     await ensurePuterSignedIn();
   } catch(err){
@@ -8999,6 +9065,8 @@ async function fetchAiReply(){
   return parseChatReplyJson(rawText);
 }
 
+let warnedNoEnglishVoice = false;
+
 function speakAiReply(text, lang){
   if(!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
@@ -9009,11 +9077,33 @@ function speakAiReply(text, lang){
   } else {
     utter.lang = 'en-US';
     utter.rate = speechRate;
-    const voice = getPreferredVoice();
-    if(voice) utter.voice = voice;
+    // Explicitly pick *some* English voice whenever one exists, instead of
+    // leaving utter.voice unset. Some mobile TTS engines ignore utter.lang
+    // when no voice object is attached and silently fall back to whatever
+    // the device's default system voice is (often Arabic on an Arabic-set
+    // phone) — which is what makes English replies sound like they're
+    // being read in Arabic on some phones, even though the text is English.
+    let voice = resolveEnglishVoice();
+    if(voice){
+      utter.voice = voice;
+    } else if(!warnedNoEnglishVoice){
+      warnedNoEnglishVoice = true;
+      chatStatusEl.textContent = 'ملحوظة: الجهاز ده مفيهوش صوت إنجليزي متثبت، فالنطق ممكن يطلع غلط. تقدر تثبّت صوت إنجليزي من إعدادات تحويل النص لكلام في الموبايل.';
+    }
   }
   window.speechSynthesis.speak(utter);
 }
+
+// Reuse the same voice-gender and speed controls used for flashcard
+// pronunciation, so the chat's AI voice follows the same choice/settings.
+// They wire themselves up via the existing delegated click/change
+// listeners, so no extra event handling is needed here.
+document.getElementById('chat-voice-settings').innerHTML = `
+  <span class="chat-voice-settings-label">🗣️ صوت الرد:</span>
+  ${buildVoiceGenderControl()}
+  <span class="chat-voice-settings-label">⏱️ السرعة:</span>
+  ${buildSpeedControl('chat')}
+`;
 
 renderCategories();
 </script>
