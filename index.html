@@ -1010,11 +1010,12 @@
     height:19px;
   }
 
-  /* Voice-gender selection is unreliable on most phones (few or no named
-     male/female voices installed), so we hide the control on mobile
-     rather than show a choice that silently does nothing. */
-  .is-mobile-device .voice-gender-wrap{ display:none !important; }
-  .is-mobile-device .chat-voice-settings-row .chat-voice-settings-label:first-child{ display:none !important; }
+  /* Voice-gender selection used to be hidden on mobile because many phones
+     don't expose named male/female voices. It's shown now — getPreferredVoice()
+     falls back to *some* other-sounding voice when available, and even on
+     devices with just one English voice, showing the control at least lets
+     the choice take effect the moment a better voice becomes available (e.g.
+     after the user installs one from system settings). */
   .voice-gender-btn{
     border:none;
     background: var(--accent-soft);
@@ -1570,12 +1571,9 @@
 
 <script src="https://js.puter.com/v2/"></script>
 <script>
-// Voice-gender selection depends on the device actually having distinct
-// named male/female voices installed — which desktop browsers almost
-// always do, but most mobile phones (especially Android) don't, out of
-// the box. Rather than show a control that silently does nothing on
-// those phones, we detect mobile devices and hide it via CSS (see
-// `.is-mobile-device .voice-gender-wrap`).
+// `.is-mobile-device` is still used for a few unrelated mobile-only style
+// tweaks; it no longer hides the voice-gender control (see getPreferredVoice
+// below for how the gender choice is actually resolved into a real voice).
 const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile|webOS/i.test(navigator.userAgent);
 if(isMobileDevice) document.body.classList.add('is-mobile-device');
 
@@ -7827,13 +7825,23 @@ function getPreferredVoice(){
 
   // No voice explicitly named for this gender (common on many Android
   // devices, which often expose just one or two generic English voices
-  // with no gender in the name). Best-effort fallback: if there are at
-  // least 2 English voices, pick one that clearly ISN'T the other gender,
-  // so switching still changes something audible instead of doing nothing.
+  // with no gender in the name at all). Best-effort fallback: narrow to
+  // voices that at least aren't clearly the OTHER gender by name, then
+  // split male/female deterministically across opposite ends of that list
+  // (first voice for "male", last for "female"). This way, toggling the
+  // switch changes the actual voice heard whenever 2+ candidates exist,
+  // instead of always resolving to the same first voice regardless of
+  // which gender was picked (which is what silently happened before).
   if(enVoices.length > 1){
-    const notOther = enVoices.find(v => !voiceNameMatchesHints(v.name, otherHints));
-    if(notOther) return notOther;
+    const candidates = enVoices.filter(v => !voiceNameMatchesHints(v.name, otherHints));
+    const pool = candidates.length ? candidates : enVoices;
+    if(pool.length > 1){
+      return voiceGender === 'male' ? pool[0] : pool[pool.length - 1];
+    }
+    return pool[0];
   }
+  // Only one English voice exists on this device at all — there is
+  // nothing to switch between, regardless of the gender chosen.
   return null;
 }
 
