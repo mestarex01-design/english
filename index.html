@@ -1004,6 +1004,12 @@
     width:19px;
     height:19px;
   }
+
+  /* Voice-gender selection is unreliable on most phones (few or no named
+     male/female voices installed), so we hide the control on mobile
+     rather than show a choice that silently does nothing. */
+  .is-mobile-device .voice-gender-wrap{ display:none !important; }
+  .is-mobile-device .chat-voice-settings-row .chat-voice-settings-label:first-child{ display:none !important; }
   .voice-gender-btn{
     border:none;
     background: var(--accent-soft);
@@ -1547,6 +1553,15 @@
 
 <script src="https://js.puter.com/v2/"></script>
 <script>
+// Voice-gender selection depends on the device actually having distinct
+// named male/female voices installed — which desktop browsers almost
+// always do, but most mobile phones (especially Android) don't, out of
+// the box. Rather than show a control that silently does nothing on
+// those phones, we detect mobile devices and hide it via CSS (see
+// `.is-mobile-device .voice-gender-wrap`).
+const isMobileDevice = /Android|iPhone|iPad|iPod|Mobile|webOS/i.test(navigator.userAgent);
+if(isMobileDevice) document.body.classList.add('is-mobile-device');
+
 const categories = [
   { id: "english", title: "تعلم اللغة الانجليزية", icon: "📘", type: "levels" },
   { id: "custom", title: "كلماتك الخاصة", icon: "✍️", type: "custom" },
