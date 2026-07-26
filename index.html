@@ -8775,14 +8775,14 @@ const CHAT_MODEL = 'anthropic/claude-sonnet-5';
 const CHAT_SYSTEM_PROMPT = `You are a bilingual (Arabic/English) speaking coach helping an Egyptian Arabic-speaking learner practice spoken English.
 
 Look at the user's latest message and see what language it is written in:
-- If it is in Arabic: the user wants to discuss or understand something about the topic *before* switching to English. Reply ONLY in Arabic — explain clearly and helpfully. If useful, suggest ONE short, useful English phrase or sentence they could say once they switch to speaking English, and put it — word for word, in English — in the "suggested_phrase_en" field below (in addition to mentioning it naturally inside your Arabic reply).
-- If it is in English: the user is practicing spoken English conversation. Reply in English, short (1-3 sentences), simple everyday vocabulary. Gently correct any clear grammar or word-choice mistake by naturally rephrasing it in your reply. Ask a short follow-up question to keep the conversation going. Leave "suggested_phrase_en" empty in this case.
+- If it is in Arabic: the user wants to discuss or understand something about the topic *before* switching to English. Reply ONLY in Arabic — explain clearly and helpfully. If useful, suggest ONE short, useful English phrase or sentence they could say once they switch to speaking English, and put it — word for word, in English — in the "suggested_phrase_en" field below (in addition to mentioning it naturally inside your Arabic reply). Leave "reply_translation_ar" as an empty string in this case (the reply is already Arabic).
+- If it is in English: the user is practicing spoken English conversation. Reply in English, short (1-3 sentences), simple everyday vocabulary. Gently correct any clear grammar or word-choice mistake by naturally rephrasing it in your reply. Ask a short follow-up question to keep the conversation going. Leave "suggested_phrase_en" empty in this case. IMPORTANT: you MUST also fill "reply_translation_ar" with a full, natural Arabic translation of your English reply — this field is required and must never be left empty when you reply in English, no exceptions.
 
 You must respond with STRICT JSON only — no markdown, no code fences, no extra text before or after — matching exactly this shape:
 {
   "reply": "your reply text, in Arabic or English per the rule above",
   "reply_lang": "ar" or "en",
-  "reply_translation_ar": "Arabic translation of the reply — empty string if reply_lang is already ar",
+  "reply_translation_ar": "REQUIRED whenever reply_lang is en: the full Arabic translation of the reply. Empty string only when reply_lang is ar.",
   "user_translation_ar": "Arabic translation of the user's own message — empty string if the user's message was already in Arabic",
   "suggested_phrase_en": "the one English phrase you suggested inside an Arabic reply, written in English exactly as suggested — empty string if reply_lang is en, or if you didn't suggest one"
 }`;
@@ -9135,7 +9135,32 @@ async function fetchAiReply(){
   // on mobile's typically slower/less stable connections.
   const response = await puter.ai.chat(messages, { model: CHAT_MODEL, max_tokens: 700 });
   const rawText = extractPuterReplyText(response);
-  return parseChatReplyJson(rawText);
+  const parsed = parseChatReplyJson(rawText);
+
+  // Safety net: even with an explicit instruction in the system prompt, the
+  // model can occasionally still skip reply_translation_ar. Since an
+  // English reply with no Arabic translation underneath is exactly the bug
+  // being fixed here, we don't just trust the model once — if it's missing,
+  // we fetch it with one small dedicated follow-up call before showing the
+  // reply, so the translation is effectively guaranteed rather than "best effort".
+  if(parsed.reply_lang === 'en' && parsed.reply && !parsed.reply_translation_ar){
+    try{
+      parsed.reply_translation_ar = await fetchArabicTranslation(parsed.reply);
+    } catch(e){ /* if this also fails, we still show the reply without a translation */ }
+  }
+
+  return parsed;
+}
+
+// Small dedicated call used only as a fallback when the main reply came
+// back without its Arabic translation (see fetchAiReply above).
+async function fetchArabicTranslation(englishText){
+  const messages = [
+    { role: 'system', content: 'Translate the given English sentence into natural, everyday Egyptian Arabic. Respond with ONLY the translation text — no quotes, no notes, no English.' },
+    { role: 'user', content: englishText }
+  ];
+  const response = await puter.ai.chat(messages, { model: CHAT_MODEL, max_tokens: 200 });
+  return extractPuterReplyText(response).trim();
 }
 
 let warnedNoEnglishVoice = false;
