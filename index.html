@@ -9083,28 +9083,28 @@ async function fetchAiReply(){
 let warnedNoEnglishVoice = false;
 
 function speakAiReply(text, lang){
+  // Arabic replies are just for understanding the topic — the user reads
+  // those, they don't need them spoken aloud. Only English practice
+  // replies get read out, since that's the whole point of the speaking
+  // practice.
+  if(lang !== 'en') return;
   if(!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
-  if(lang === 'ar'){
-    utter.lang = 'ar-EG';
-    utter.rate = speechRate;
-  } else {
-    utter.lang = 'en-US';
-    utter.rate = speechRate;
-    // Explicitly pick *some* English voice whenever one exists, instead of
-    // leaving utter.voice unset. Some mobile TTS engines ignore utter.lang
-    // when no voice object is attached and silently fall back to whatever
-    // the device's default system voice is (often Arabic on an Arabic-set
-    // phone) — which is what makes English replies sound like they're
-    // being read in Arabic on some phones, even though the text is English.
-    let voice = resolveEnglishVoice();
-    if(voice){
-      utter.voice = voice;
-    } else if(!warnedNoEnglishVoice){
-      warnedNoEnglishVoice = true;
-      chatStatusEl.textContent = 'ملحوظة: الجهاز ده مفيهوش صوت إنجليزي متثبت، فالنطق ممكن يطلع غلط. تقدر تثبّت صوت إنجليزي من إعدادات تحويل النص لكلام في الموبايل.';
-    }
+  utter.lang = 'en-US';
+  utter.rate = speechRate;
+  // Explicitly pick *some* English voice whenever one exists, instead of
+  // leaving utter.voice unset. Some mobile TTS engines ignore utter.lang
+  // when no voice object is attached and silently fall back to whatever
+  // the device's default system voice is (often Arabic on an Arabic-set
+  // phone) — which is what makes English replies sound like they're
+  // being read in Arabic on some phones, even though the text is English.
+  let voice = resolveEnglishVoice();
+  if(voice){
+    utter.voice = voice;
+  } else if(!warnedNoEnglishVoice){
+    warnedNoEnglishVoice = true;
+    chatStatusEl.textContent = 'ملحوظة: الجهاز ده مفيهوش صوت إنجليزي متثبت، فالنطق ممكن يطلع غلط. تقدر تثبّت صوت إنجليزي من إعدادات تحويل النص لكلام في الموبايل.';
   }
   window.speechSynthesis.speak(utter);
 }
