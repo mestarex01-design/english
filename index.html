@@ -8770,12 +8770,14 @@ setInterval(() => {
 
 // ===== Voice chat with AI (free, via Puter.js — no API key needed) =====
 const CHAT_HISTORY_STORAGE = 'flashcards-voice-chat-history';
-// Speech recognition needs one fixed language hint, but it turns out to
-// transcribe both Arabic and code-switched English well enough either
-// way — and the AI reply's language is decided from the transcript text
-// itself (see CHAT_SYSTEM_PROMPT), not from this setting. So there's no
-// need to expose a separate language toggle in the UI.
-const CHAT_RECOGNITION_LANG = 'ar-EG';
+// Browser speech recognition only accepts ONE language per session, and
+// (despite earlier assumptions) it does NOT reliably auto-detect code-switched
+// speech — locking it to Arabic was mangling English speech into garbled
+// Arabic transcripts. Instead of bringing back manual language-toggle
+// buttons, we pick the language automatically each time the mic is pressed,
+// based on which language the conversation is currently in (see
+// getExpectedRecognitionLang below).
+const CHAT_RECOGNITION_LANG_DEFAULT = 'ar-EG'; // used for the very first message, before any AI reply exists
 const CHAT_MODEL = 'anthropic/claude-sonnet-5';
 const CHAT_SYSTEM_PROMPT = `You are a bilingual (Arabic/English) speaking coach helping an Egyptian Arabic-speaking learner practice spoken English.
 
@@ -8796,6 +8798,22 @@ let voiceChatHistory = loadJSON(CHAT_HISTORY_STORAGE, []);
 let voiceChatBusy = false;
 let chatRecognizer = null;
 let chatRecording = false;
+
+// Picks the speech-recognition language for the *next* thing the user is
+// about to say: whatever language the most recent AI reply was in — since
+// an Arabic reply means we're still in the "explain in Arabic" phase, and
+// an English reply means we're in English-practice mode, so the user's next
+// turn is almost always the same language as that last reply. Falls back to
+// Arabic for a brand-new conversation with no replies yet.
+function getExpectedRecognitionLang(){
+  for(let i = voiceChatHistory.length - 1; i >= 0; i--){
+    const m = voiceChatHistory[i];
+    if(m.role === 'assistant' && m.lang){
+      return m.lang === 'en' ? 'en-US' : 'ar-EG';
+    }
+  }
+  return CHAT_RECOGNITION_LANG_DEFAULT;
+}
 
 const chatMessagesEl = document.getElementById('chat-messages');
 const chatStatusEl = document.getElementById('chat-status');
@@ -8910,15 +8928,19 @@ function startChatRecording(){
   if(voiceChatBusy) return;
   if('speechSynthesis' in window) window.speechSynthesis.cancel();
 
+  const expectedLang = getExpectedRecognitionLang();
+
   chatRecognizer = new ChatSpeechRecognition();
-  chatRecognizer.lang = CHAT_RECOGNITION_LANG;
+  chatRecognizer.lang = expectedLang;
   chatRecognizer.interimResults = false;
   chatRecognizer.maxAlternatives = 1;
 
   chatRecognizer.onstart = () => {
     chatRecording = true;
     micBtn.classList.add('recording');
-    chatStatusEl.textContent = 'بيسمعك دلوقتي... اتكلم';
+    chatStatusEl.textContent = expectedLang === 'en-US'
+      ? 'بيسمعك بالإنجليزي دلوقتي... اتكلم'
+      : 'بيسمعك بالعربي دلوقتي... اتكلم';
   };
   chatRecognizer.onerror = (e) => {
     chatRecording = false;
