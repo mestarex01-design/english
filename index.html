@@ -468,6 +468,11 @@
     min-width:19px;
     font-size:10px;
   }
+  .speak-btn.inline{
+    display:inline-flex;
+    vertical-align:middle;
+    margin-inline-start:4px;
+  }
 
   .youglish-btn{
     border:none;
@@ -8817,7 +8822,8 @@ function formatMixedChatText(text){
     if(!part) return '';
     const isEnglishChunk = idx % 2 === 1;
     if(isEnglishChunk && part.trim().length >= 3){
-      return `<span class="chat-en-line">${escapeHtmlChat(part.trim())}</span>`;
+      const clean = part.trim();
+      return `<span class="chat-en-line">${escapeHtmlChat(clean)} <button type="button" class="speak-btn small inline" data-speak="${escapeAttr(clean)}" title="استمع تاني">🔊</button></span>`;
     }
     return escapeHtmlChat(part);
   }).join('');
@@ -8854,7 +8860,7 @@ function renderChatMessages(){
   chatMessagesEl.innerHTML = voiceChatHistory.map(m => `
     <div class="chat-bubble ${m.role === 'user' ? 'user' : 'ai'}">
       <div class="chat-bubble-role">${m.role === 'user' ? 'انت' : 'الذكاء الاصطناعي'}</div>
-      <div class="chat-bubble-text">${m.role === 'assistant' && m.lang === 'ar' ? formatMixedChatText(m.content) : escapeHtmlChat(m.content)}</div>
+      <div class="chat-bubble-text">${m.role === 'assistant' && m.lang === 'ar' ? formatMixedChatText(m.content) : escapeHtmlChat(m.content)}${m.role === 'assistant' && m.lang === 'en' ? ` <button type="button" class="speak-btn small inline" data-speak="${escapeAttr(m.content)}" title="استمع تاني">🔊</button>` : ''}</div>
       ${m.translation ? `<div class="chat-bubble-translation">${escapeHtmlChat(m.translation)}</div>` : ''}
       ${m.suggestedPhrase ? `<button type="button" class="chat-bubble-phrase" data-phrase="${escapeAttr(m.suggestedPhrase)}">🔊 ${escapeHtmlChat(m.suggestedPhrase)}</button>` : ''}
     </div>
