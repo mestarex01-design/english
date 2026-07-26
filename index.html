@@ -1323,6 +1323,15 @@
   }
   .chat-bubble-phrase:hover{ background: var(--accent); color:#fff; }
 
+  .chat-en-line{
+    display: block;
+    direction: ltr;
+    text-align: left;
+    unicode-bidi: isolate;
+    margin: 6px 0;
+    font-weight: 600;
+  }
+
   .chat-controls{
     display:flex;
     flex-direction: column;
@@ -8797,6 +8806,23 @@ function escapeHtmlChat(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+// When an Arabic reply has an English word/phrase embedded in the middle of
+// it, the mixed RTL/LTR text renders visually squished together. This finds
+// runs of Latin-script text (3+ chars, so short acronyms like "AI" are left
+// inline) and wraps each one in a block-level span so it drops to its own
+// line instead of sticking to the Arabic text around it.
+function formatMixedChatText(text){
+  const parts = String(text).split(/([A-Za-z][A-Za-z0-9'".,!?;:()\-\s]{2,}[A-Za-z0-9'".,!?)])/g);
+  return parts.map((part, idx) => {
+    if(!part) return '';
+    const isEnglishChunk = idx % 2 === 1;
+    if(isEnglishChunk && part.trim().length >= 3){
+      return `<span class="chat-en-line">${escapeHtmlChat(part.trim())}</span>`;
+    }
+    return escapeHtmlChat(part);
+  }).join('');
+}
+
 function openVoiceChat(){
   document.getElementById('main-title').textContent = 'التحدث الصوتي مع الذكاء الاصطناعي';
   document.getElementById('main-subtitle').textContent = 'اتكلم عربي الأول عشان تفهم الموضوع، وبعدين بدّل لإنجليزي وتمرن على المحادثة.';
@@ -8828,7 +8854,7 @@ function renderChatMessages(){
   chatMessagesEl.innerHTML = voiceChatHistory.map(m => `
     <div class="chat-bubble ${m.role === 'user' ? 'user' : 'ai'}">
       <div class="chat-bubble-role">${m.role === 'user' ? 'انت' : 'الذكاء الاصطناعي'}</div>
-      <div class="chat-bubble-text">${escapeHtmlChat(m.content)}</div>
+      <div class="chat-bubble-text">${m.role === 'assistant' && m.lang === 'ar' ? formatMixedChatText(m.content) : escapeHtmlChat(m.content)}</div>
       ${m.translation ? `<div class="chat-bubble-translation">${escapeHtmlChat(m.translation)}</div>` : ''}
       ${m.suggestedPhrase ? `<button type="button" class="chat-bubble-phrase" data-phrase="${escapeAttr(m.suggestedPhrase)}">🔊 ${escapeHtmlChat(m.suggestedPhrase)}</button>` : ''}
     </div>
@@ -9000,6 +9026,7 @@ async function handleUserSpeech(text){
     voiceChatHistory.push({
       role: 'assistant',
       content: parsed.reply,
+      lang: parsed.reply_lang,
       translation: parsed.reply_lang === 'en' ? parsed.reply_translation_ar : '',
       suggestedPhrase: parsed.reply_lang === 'ar' ? parsed.suggested_phrase_en : ''
     });
