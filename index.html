@@ -1305,6 +1305,24 @@
     color: var(--muted);
   }
 
+  .chat-bubble-phrase{
+    display:block;
+    margin-top: 8px;
+    padding: 8px 12px;
+    border-radius: 10px;
+    border: 1.5px solid var(--accent);
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 13.5px;
+    direction: ltr;
+    text-align: left;
+    cursor:pointer;
+    width: 100%;
+  }
+  .chat-bubble-phrase:hover{ background: var(--accent); color:#fff; }
+
   .chat-lang-toggle{
     display:flex;
     gap: 8px;
@@ -8771,15 +8789,16 @@ const CHAT_MODEL = 'anthropic/claude-sonnet-5';
 const CHAT_SYSTEM_PROMPT = `You are a bilingual (Arabic/English) speaking coach helping an Egyptian Arabic-speaking learner practice spoken English.
 
 Look at the user's latest message and see what language it is written in:
-- If it is in Arabic: the user wants to discuss or understand something about the topic *before* switching to English. Reply ONLY in Arabic — explain clearly and helpfully. If useful, you may suggest one or two short English phrases they could use once they switch to speaking English.
-- If it is in English: the user is practicing spoken English conversation. Reply in English, short (1-3 sentences), simple everyday vocabulary. Gently correct any clear grammar or word-choice mistake by naturally rephrasing it in your reply. Ask a short follow-up question to keep the conversation going.
+- If it is in Arabic: the user wants to discuss or understand something about the topic *before* switching to English. Reply ONLY in Arabic — explain clearly and helpfully. If useful, suggest ONE short, useful English phrase or sentence they could say once they switch to speaking English, and put it — word for word, in English — in the "suggested_phrase_en" field below (in addition to mentioning it naturally inside your Arabic reply).
+- If it is in English: the user is practicing spoken English conversation. Reply in English, short (1-3 sentences), simple everyday vocabulary. Gently correct any clear grammar or word-choice mistake by naturally rephrasing it in your reply. Ask a short follow-up question to keep the conversation going. Leave "suggested_phrase_en" empty in this case.
 
 You must respond with STRICT JSON only — no markdown, no code fences, no extra text before or after — matching exactly this shape:
 {
   "reply": "your reply text, in Arabic or English per the rule above",
   "reply_lang": "ar" or "en",
   "reply_translation_ar": "Arabic translation of the reply — empty string if reply_lang is already ar",
-  "user_translation_ar": "Arabic translation of the user's own message — empty string if the user's message was already in Arabic"
+  "user_translation_ar": "Arabic translation of the user's own message — empty string if the user's message was already in Arabic",
+  "suggested_phrase_en": "the one English phrase you suggested inside an Arabic reply, written in English exactly as suggested — empty string if reply_lang is en, or if you didn't suggest one"
 }`;
 
 let voiceChatHistory = loadJSON(CHAT_HISTORY_STORAGE, []);
@@ -8847,10 +8866,16 @@ function renderChatMessages(){
       <div class="chat-bubble-role">${m.role === 'user' ? 'انت' : 'الذكاء الاصطناعي'}</div>
       <div class="chat-bubble-text">${escapeHtmlChat(m.content)}</div>
       ${m.translation ? `<div class="chat-bubble-translation">${escapeHtmlChat(m.translation)}</div>` : ''}
+      ${m.suggestedPhrase ? `<button type="button" class="chat-bubble-phrase" data-phrase="${escapeAttr(m.suggestedPhrase)}">🔊 ${escapeHtmlChat(m.suggestedPhrase)}</button>` : ''}
     </div>
   `).join('');
   chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
 }
+
+chatMessagesEl.addEventListener('click', (e) => {
+  const phraseBtn = e.target.closest('.chat-bubble-phrase');
+  if(phraseBtn) speakAiReply(phraseBtn.dataset.phrase, 'en');
+});
 
 function saveChatHistory(){
   saveJSON(CHAT_HISTORY_STORAGE, voiceChatHistory);
@@ -9011,12 +9036,21 @@ async function handleUserSpeech(text){
     voiceChatHistory.push({
       role: 'assistant',
       content: parsed.reply,
-      translation: parsed.reply_lang === 'en' ? parsed.reply_translation_ar : ''
+      translation: parsed.reply_lang === 'en' ? parsed.reply_translation_ar : '',
+      suggestedPhrase: parsed.reply_lang === 'ar' ? parsed.suggested_phrase_en : ''
     });
     saveChatHistory();
     renderChatMessages();
     chatStatusEl.textContent = 'اضغط على الميكروفون عشان ترد';
-    speakAiReply(parsed.reply, parsed.reply_lang);
+
+    // The main Arabic explanation isn't spoken aloud (the user reads that),
+    // but if the AI suggested an English phrase inside it, that phrase IS
+    // read aloud in English — that's the part actually meant for listening.
+    if(parsed.reply_lang === 'en'){
+      speakAiReply(parsed.reply, 'en');
+    } else if(parsed.suggested_phrase_en){
+      speakAiReply(parsed.suggested_phrase_en, 'en');
+    }
   } catch(err){
     chatStatusEl.textContent = 'حصل خطأ: ' + (err && err.message ? err.message : 'مقدرش أوصل للذكاء الاصطناعي، جرب تاني');
   } finally {
@@ -9051,7 +9085,8 @@ function parseChatReplyJson(rawText){
           reply: obj.reply.trim(),
           reply_lang: obj.reply_lang === 'ar' ? 'ar' : 'en',
           reply_translation_ar: typeof obj.reply_translation_ar === 'string' ? obj.reply_translation_ar.trim() : '',
-          user_translation_ar: typeof obj.user_translation_ar === 'string' ? obj.user_translation_ar.trim() : ''
+          user_translation_ar: typeof obj.user_translation_ar === 'string' ? obj.user_translation_ar.trim() : '',
+          suggested_phrase_en: typeof obj.suggested_phrase_en === 'string' ? obj.suggested_phrase_en.trim() : ''
         };
       }
     } catch(e){ /* fall through to the plain-text guess below */ }
@@ -9061,7 +9096,8 @@ function parseChatReplyJson(rawText){
     reply: rawText.trim() || '...',
     reply_lang: looksArabic ? 'ar' : 'en',
     reply_translation_ar: '',
-    user_translation_ar: ''
+    user_translation_ar: '',
+    suggested_phrase_en: ''
   };
 }
 
