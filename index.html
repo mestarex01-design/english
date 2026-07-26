@@ -9064,8 +9064,21 @@ function extractPuterReplyText(response){
 }
 
 // The model is asked to reply with strict JSON, but models occasionally wrap
-// it in a code fence or add stray text — so we pull out the first {...}
-// block and parse that, falling back to a plain-text guess if it still fails.
+// it in a code fence, add stray text, or (especially over flakier mobile
+// connections) return a response that gets cut short before the JSON object
+// closes. We try, in order: (1) strict parse of the first {...} block,
+// (2) pulling out individual "field": "value" pairs by regex even if the
+// overall JSON is malformed/truncated — so a cut-off response still keeps
+// whatever fields (like the translation) had already arrived, and only
+// (3) falls back to guessing from the plain raw text if even that fails.
+function extractJsonStringField(text, field){
+  const re = new RegExp('"' + field + '"\\s*:\\s*"((?:[^"\\\\]|\\\\.)*)"');
+  const m = text.match(re);
+  if(!m) return null;
+  try{ return JSON.parse('"' + m[1] + '"'); }
+  catch(e){ return m[1]; }
+}
+
 function parseChatReplyJson(rawText){
   const match = rawText.match(/\{[\s\S]*\}/);
   if(match){
@@ -9080,8 +9093,21 @@ function parseChatReplyJson(rawText){
           suggested_phrase_en: typeof obj.suggested_phrase_en === 'string' ? obj.suggested_phrase_en.trim() : ''
         };
       }
-    } catch(e){ /* fall through to the plain-text guess below */ }
+    } catch(e){ /* fall through to the partial-field extraction below */ }
   }
+
+  const partialReply = extractJsonStringField(rawText, 'reply');
+  if(partialReply){
+    const partialLang = extractJsonStringField(rawText, 'reply_lang');
+    return {
+      reply: partialReply.trim(),
+      reply_lang: partialLang === 'ar' ? 'ar' : 'en',
+      reply_translation_ar: extractJsonStringField(rawText, 'reply_translation_ar') || '',
+      user_translation_ar: extractJsonStringField(rawText, 'user_translation_ar') || '',
+      suggested_phrase_en: extractJsonStringField(rawText, 'suggested_phrase_en') || ''
+    };
+  }
+
   const looksArabic = /[\u0600-\u06FF]/.test(rawText);
   return {
     reply: rawText.trim() || '...',
@@ -9102,7 +9128,12 @@ async function fetchAiReply(){
     ...voiceChatHistory.map(m => ({ role: m.role, content: m.content }))
   ];
 
-  const response = await puter.ai.chat(messages, { model: CHAT_MODEL, max_tokens: 400 });
+  // Raised from 400: the JSON reply carries the reply text AND its Arabic
+  // translation (plus the other fields), so a tight budget risked cutting
+  // the response off before the translation field was written out — which
+  // showed up as replies with no translation underneath, more noticeable
+  // on mobile's typically slower/less stable connections.
+  const response = await puter.ai.chat(messages, { model: CHAT_MODEL, max_tokens: 700 });
   const rawText = extractPuterReplyText(response);
   return parseChatReplyJson(rawText);
 }
