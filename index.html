@@ -1288,6 +1288,41 @@
     border-bottom-left-radius: 4px;
   }
 
+  .chat-bubble-translation{
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed var(--line);
+    font-size: 13px;
+    line-height: 1.8;
+    direction: rtl;
+    text-align: right;
+    color: var(--muted);
+  }
+
+  .chat-lang-toggle{
+    display:flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    justify-content:center;
+  }
+  .chat-lang-btn{
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    color: var(--ink);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 999px;
+    cursor:pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+  }
+  .chat-lang-btn.active{
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+
   .chat-controls{
     display:flex;
     flex-direction: column;
@@ -1326,6 +1361,64 @@
     70%{ box-shadow: 0 0 0 18px rgba(191,90,69,0); }
     100%{ box-shadow: 0 0 0 0 rgba(191,90,69,0); }
   }
+
+  .chat-action-row{
+    display:flex;
+    align-items:center;
+    gap: 14px;
+  }
+
+  .keyboard-btn{
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font-size: 19px;
+    cursor:pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
+  }
+  .keyboard-btn:hover{ transform: scale(1.05); }
+  .keyboard-btn.active{
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+
+  .chat-input-row{
+    display:none;
+    width: 100%;
+    gap: 8px;
+    align-items:center;
+  }
+  .chat-input-row.show{ display:flex; }
+
+  #chat-text-input{
+    flex:1;
+    padding: 11px 14px;
+    border-radius: 999px;
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--ink);
+    font-family:'Cairo', sans-serif;
+    font-size: 14px;
+  }
+  #chat-text-input:focus{ outline:none; border-color: var(--accent); }
+
+  .chat-send-btn{
+    background: var(--accent);
+    color:#fff;
+    border:none;
+    border-radius: 999px;
+    padding: 11px 20px;
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 13.5px;
+    cursor:pointer;
+    transition: background 0.2s ease;
+    white-space: nowrap;
+  }
+  .chat-send-btn:hover{ background: var(--accent-deep); }
 
   .chat-reset-btn{
     background: none;
@@ -1404,8 +1497,19 @@
   <div class="chat-shell">
     <div class="chat-messages" id="chat-messages"></div>
     <div class="chat-controls">
-      <div class="chat-status" id="chat-status">اضغط على الميكروفون وابدأ الكلام بالإنجليزي</div>
-      <button type="button" class="mic-btn" id="mic-btn" title="اضغط وتكلم">🎤</button>
+      <div class="chat-lang-toggle">
+        <button type="button" class="chat-lang-btn" id="chat-lang-ar" data-lang="ar-EG">🇪🇬 هتكلم عربي (لفهم الموضوع)</button>
+        <button type="button" class="chat-lang-btn" id="chat-lang-en" data-lang="en-US">🇬🇧 Speak English (للتمرين)</button>
+      </div>
+      <div class="chat-status" id="chat-status">اختار هتتكلم بأي لغة، وبعدين دوس على الميكروفون</div>
+      <div class="chat-action-row">
+        <button type="button" class="mic-btn" id="mic-btn" title="اضغط وتكلم">🎤</button>
+        <button type="button" class="keyboard-btn" id="chat-keyboard-btn" title="اكتب بدل ما تتكلم">⌨️</button>
+      </div>
+      <div class="chat-input-row" id="chat-input-row">
+        <input type="text" id="chat-text-input" placeholder="اكتب رسالتك هنا (عربي أو إنجليزي)...">
+        <button type="button" class="chat-send-btn" id="chat-text-send">إرسال</button>
+      </div>
       <button type="button" class="chat-reset-btn" id="chat-reset-btn">بدء محادثة جديدة</button>
     </div>
   </div>
@@ -8599,27 +8703,56 @@ setInterval(() => {
 
 // ===== Voice chat with AI (free, via Puter.js — no API key needed) =====
 const CHAT_HISTORY_STORAGE = 'flashcards-voice-chat-history';
+const CHAT_SPEECH_LANG_STORAGE = 'flashcards-chat-speech-lang';
 const CHAT_MODEL = 'anthropic/claude-sonnet-5';
-const CHAT_SYSTEM_PROMPT = "You are a friendly, patient English conversation partner helping an Arabic-speaking learner practice spoken English. Keep replies short (1-3 sentences), use simple everyday vocabulary, and gently correct any clear grammar or word-choice mistakes by naturally rephrasing them in your reply. Ask a short follow-up question to keep the conversation going. Reply only in English, with no markdown formatting.";
+const CHAT_SYSTEM_PROMPT = `You are a bilingual (Arabic/English) speaking coach helping an Egyptian Arabic-speaking learner practice spoken English.
+
+Look at the user's latest message and see what language it is written in:
+- If it is in Arabic: the user wants to discuss or understand something about the topic *before* switching to English. Reply ONLY in Arabic — explain clearly and helpfully. If useful, you may suggest one or two short English phrases they could use once they switch to speaking English.
+- If it is in English: the user is practicing spoken English conversation. Reply in English, short (1-3 sentences), simple everyday vocabulary. Gently correct any clear grammar or word-choice mistake by naturally rephrasing it in your reply. Ask a short follow-up question to keep the conversation going.
+
+You must respond with STRICT JSON only — no markdown, no code fences, no extra text before or after — matching exactly this shape:
+{
+  "reply": "your reply text, in Arabic or English per the rule above",
+  "reply_lang": "ar" or "en",
+  "reply_translation_ar": "Arabic translation of the reply — empty string if reply_lang is already ar",
+  "user_translation_ar": "Arabic translation of the user's own message — empty string if the user's message was already in Arabic"
+}`;
 
 let voiceChatHistory = loadJSON(CHAT_HISTORY_STORAGE, []);
 let voiceChatBusy = false;
 let chatRecognizer = null;
 let chatRecording = false;
+let chatSpeechLang = localStorage.getItem(CHAT_SPEECH_LANG_STORAGE) || 'ar-EG';
 
 const chatMessagesEl = document.getElementById('chat-messages');
 const chatStatusEl = document.getElementById('chat-status');
 const micBtn = document.getElementById('mic-btn');
 const chatResetBtn = document.getElementById('chat-reset-btn');
 const voiceChatView = document.getElementById('voice-chat-view');
+const chatLangArBtn = document.getElementById('chat-lang-ar');
+const chatLangEnBtn = document.getElementById('chat-lang-en');
+const chatKeyboardBtn = document.getElementById('chat-keyboard-btn');
+const chatInputRow = document.getElementById('chat-input-row');
+const chatTextInput = document.getElementById('chat-text-input');
+const chatTextSend = document.getElementById('chat-text-send');
 
 function escapeHtmlChat(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 
+function setChatSpeechLang(lang){
+  chatSpeechLang = lang;
+  localStorage.setItem(CHAT_SPEECH_LANG_STORAGE, lang);
+  chatLangArBtn.classList.toggle('active', lang === 'ar-EG');
+  chatLangEnBtn.classList.toggle('active', lang === 'en-US');
+}
+chatLangArBtn.addEventListener('click', () => setChatSpeechLang('ar-EG'));
+chatLangEnBtn.addEventListener('click', () => setChatSpeechLang('en-US'));
+
 function openVoiceChat(){
   document.getElementById('main-title').textContent = 'التحدث الصوتي مع الذكاء الاصطناعي';
-  document.getElementById('main-subtitle').textContent = 'اتكلم بالإنجليزي مع الذكاء الاصطناعي واتمرن على المحادثة.';
+  document.getElementById('main-subtitle').textContent = 'اتكلم عربي الأول عشان تفهم الموضوع، وبعدين بدّل لإنجليزي وتمرن على المحادثة.';
 
   categoriesView.style.display = 'none';
   foldersView.style.display = 'none';
@@ -8627,6 +8760,7 @@ function openVoiceChat(){
   levelView.style.display = 'none';
   voiceChatView.style.display = 'block';
 
+  setChatSpeechLang(chatSpeechLang);
   renderChatMessages();
 }
 
@@ -8642,13 +8776,14 @@ document.getElementById('back-to-categories-from-chat').addEventListener('click'
 
 function renderChatMessages(){
   if(voiceChatHistory.length === 0){
-    chatMessagesEl.innerHTML = `<div class="chat-empty">اضغط على الميكروفون 🎤 وقول أي جملة بالإنجليزي عشان تبدأ محادثة حقيقية مع الذكاء الاصطناعي، وهيرد عليك بالصوت كمان. أول مرة هيظهرلك بوب-أب بسيط من Puter عشان تسجل حساب مجاني (بيتم مرة واحدة بس).</div>`;
+    chatMessagesEl.innerHTML = `<div class="chat-empty">دوس على 🇪🇬 واسأل بالعربي عن أي حاجة عايز تفهمها في الموضوع، وبعد ما تفهم دوس على 🇬🇧 وابدأ تتكلم بالإنجليزي — وكل رد هيتترجم تحته بالعربي تلقائيًا.</div>`;
     return;
   }
   chatMessagesEl.innerHTML = voiceChatHistory.map(m => `
     <div class="chat-bubble ${m.role === 'user' ? 'user' : 'ai'}">
       <div class="chat-bubble-role">${m.role === 'user' ? 'انت' : 'الذكاء الاصطناعي'}</div>
       <div class="chat-bubble-text">${escapeHtmlChat(m.content)}</div>
+      ${m.translation ? `<div class="chat-bubble-translation">${escapeHtmlChat(m.translation)}</div>` : ''}
     </div>
   `).join('');
   chatMessagesEl.scrollTop = chatMessagesEl.scrollHeight;
@@ -8677,14 +8812,14 @@ function startChatRecording(){
   if('speechSynthesis' in window) window.speechSynthesis.cancel();
 
   chatRecognizer = new ChatSpeechRecognition();
-  chatRecognizer.lang = 'en-US';
+  chatRecognizer.lang = chatSpeechLang;
   chatRecognizer.interimResults = false;
   chatRecognizer.maxAlternatives = 1;
 
   chatRecognizer.onstart = () => {
     chatRecording = true;
     micBtn.classList.add('recording');
-    chatStatusEl.textContent = 'بيسمعك دلوقتي... اتكلم';
+    chatStatusEl.textContent = chatSpeechLang === 'ar-EG' ? 'بيسمعك دلوقتي بالعربي... اتكلم' : 'Listening in English... speak now';
   };
   chatRecognizer.onerror = (e) => {
     chatRecording = false;
@@ -8743,22 +8878,64 @@ micBtn.addEventListener('click', async () => {
   startChatRecording();
 });
 
+// --- Typed input (alternative to the mic) ---
+chatKeyboardBtn.addEventListener('click', () => {
+  const showing = chatInputRow.classList.contains('show');
+  chatInputRow.classList.toggle('show', !showing);
+  chatKeyboardBtn.classList.toggle('active', !showing);
+  if(!showing) chatTextInput.focus();
+});
+
+async function sendTypedMessage(){
+  const text = chatTextInput.value.trim();
+  if(!text || voiceChatBusy) return;
+
+  // Same rule as the mic: signIn() must be triggered synchronously from
+  // this click/keydown handler, before any await, or its popup gets blocked.
+  try{
+    await ensurePuterSignedIn();
+  } catch(err){
+    chatStatusEl.textContent = 'محتاجين تسجل الدخول لحساب Puter المجاني الأول، دوس إرسال تاني وسمح بالنافذة.';
+    return;
+  }
+
+  chatTextInput.value = '';
+  handleUserSpeech(text);
+}
+chatTextSend.addEventListener('click', sendTypedMessage);
+chatTextInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    sendTypedMessage();
+  }
+});
+
 async function handleUserSpeech(text){
   if(voiceChatBusy) return;
   voiceChatBusy = true;
 
-  voiceChatHistory.push({ role: 'user', content: text });
+  const userMsg = { role: 'user', content: text };
+  voiceChatHistory.push(userMsg);
   saveChatHistory();
   renderChatMessages();
   chatStatusEl.textContent = 'الذكاء الاصطناعي بيفكر في الرد...';
 
   try{
-    const reply = await fetchAiReply();
-    voiceChatHistory.push({ role: 'assistant', content: reply });
+    const parsed = await fetchAiReply();
+
+    // The translation of what the user just said only comes back together
+    // with the reply (one model call), so we attach it retroactively here.
+    if(parsed.user_translation_ar) userMsg.translation = parsed.user_translation_ar;
+
+    voiceChatHistory.push({
+      role: 'assistant',
+      content: parsed.reply,
+      translation: parsed.reply_lang === 'en' ? parsed.reply_translation_ar : ''
+    });
     saveChatHistory();
     renderChatMessages();
     chatStatusEl.textContent = 'اضغط على الميكروفون عشان ترد';
-    speakAiReply(reply);
+    speakAiReply(parsed.reply, parsed.reply_lang);
   } catch(err){
     chatStatusEl.textContent = 'حصل خطأ: ' + (err && err.message ? err.message : 'مقدرش أوصل للذكاء الاصطناعي، جرب تاني');
   } finally {
@@ -8777,7 +8954,34 @@ function extractPuterReplyText(response){
     const textBlock = content.find(b => b && b.type === 'text');
     if(textBlock && textBlock.text) return textBlock.text.trim();
   }
-  return '...';
+  return '';
+}
+
+// The model is asked to reply with strict JSON, but models occasionally wrap
+// it in a code fence or add stray text — so we pull out the first {...}
+// block and parse that, falling back to a plain-text guess if it still fails.
+function parseChatReplyJson(rawText){
+  const match = rawText.match(/\{[\s\S]*\}/);
+  if(match){
+    try{
+      const obj = JSON.parse(match[0]);
+      if(obj && typeof obj.reply === 'string'){
+        return {
+          reply: obj.reply.trim(),
+          reply_lang: obj.reply_lang === 'ar' ? 'ar' : 'en',
+          reply_translation_ar: typeof obj.reply_translation_ar === 'string' ? obj.reply_translation_ar.trim() : '',
+          user_translation_ar: typeof obj.user_translation_ar === 'string' ? obj.user_translation_ar.trim() : ''
+        };
+      }
+    } catch(e){ /* fall through to the plain-text guess below */ }
+  }
+  const looksArabic = /[\u0600-\u06FF]/.test(rawText);
+  return {
+    reply: rawText.trim() || '...',
+    reply_lang: looksArabic ? 'ar' : 'en',
+    reply_translation_ar: '',
+    user_translation_ar: ''
+  };
 }
 
 async function fetchAiReply(){
@@ -8790,18 +8994,24 @@ async function fetchAiReply(){
     ...voiceChatHistory.map(m => ({ role: m.role, content: m.content }))
   ];
 
-  const response = await puter.ai.chat(messages, { model: CHAT_MODEL, max_tokens: 300 });
-  return extractPuterReplyText(response);
+  const response = await puter.ai.chat(messages, { model: CHAT_MODEL, max_tokens: 400 });
+  const rawText = extractPuterReplyText(response);
+  return parseChatReplyJson(rawText);
 }
 
-function speakAiReply(text){
+function speakAiReply(text, lang){
   if(!('speechSynthesis' in window)) return;
   window.speechSynthesis.cancel();
   const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'en-US';
-  utter.rate = speechRate;
-  const voice = getPreferredVoice();
-  if(voice) utter.voice = voice;
+  if(lang === 'ar'){
+    utter.lang = 'ar-EG';
+    utter.rate = speechRate;
+  } else {
+    utter.lang = 'en-US';
+    utter.rate = speechRate;
+    const voice = getPreferredVoice();
+    if(voice) utter.voice = voice;
+  }
   window.speechSynthesis.speak(utter);
 }
 
