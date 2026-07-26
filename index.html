@@ -1362,6 +1362,19 @@
     font-size: 13.5px;
     text-align:center;
     min-height: 18px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    transition: background 0.25s ease, color 0.25s ease;
+  }
+  .chat-status.thinking{
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-weight: 700;
+    animation: chatThinkingPulse 1.1s ease-in-out infinite;
+  }
+  @keyframes chatThinkingPulse{
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.55; }
   }
 
   .mic-btn{
@@ -8817,6 +8830,14 @@ function getExpectedRecognitionLang(){
 
 const chatMessagesEl = document.getElementById('chat-messages');
 const chatStatusEl = document.getElementById('chat-status');
+
+// Centralizes status text updates so the distinctive "thinking" background
+// (see .chat-status.thinking) is always applied/removed together with the
+// text, instead of every call site having to remember to toggle the class.
+function setChatStatus(text, thinking){
+  chatStatusEl.textContent = text;
+  chatStatusEl.classList.toggle('thinking', !!thinking);
+}
 const micBtn = document.getElementById('mic-btn');
 const chatResetBtn = document.getElementById('chat-reset-btn');
 const voiceChatView = document.getElementById('voice-chat-view');
@@ -8920,9 +8941,9 @@ function primeSpeechOnMobile(){
 function startChatRecording(){
   if(!ChatSpeechRecognition){
     const isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
-    chatStatusEl.textContent = isIOS
+    setChatStatus(isIOS
       ? 'سفاري على الآيفون/الآيباد مش بيدعم التعرف على الصوت. استخدم زرار ⌨️ وسيبك من الميكروفون، أو جرب Chrome على أندرويد أو الكمبيوتر.'
-      : 'المتصفح ده مش بيدعم التعرف على الصوت، جرب Chrome على الكمبيوتر أو الموبايل، أو استخدم زرار ⌨️.';
+      : 'المتصفح ده مش بيدعم التعرف على الصوت، جرب Chrome على الكمبيوتر أو الموبايل، أو استخدم زرار ⌨️.', false);
     return;
   }
   if(voiceChatBusy) return;
@@ -8938,16 +8959,16 @@ function startChatRecording(){
   chatRecognizer.onstart = () => {
     chatRecording = true;
     micBtn.classList.add('recording');
-    chatStatusEl.textContent = expectedLang === 'en-US'
+    setChatStatus(expectedLang === 'en-US'
       ? 'بيسمعك بالإنجليزي دلوقتي... اتكلم'
-      : 'بيسمعك بالعربي دلوقتي... اتكلم';
+      : 'بيسمعك بالعربي دلوقتي... اتكلم', false);
   };
   chatRecognizer.onerror = (e) => {
     chatRecording = false;
     micBtn.classList.remove('recording');
-    chatStatusEl.textContent = e.error === 'not-allowed'
+    setChatStatus(e.error === 'not-allowed'
       ? 'محتاجين إذن استخدام الميكروفون من المتصفح'
-      : 'حصل خطأ في التعرف على الصوت، جرب تاني';
+      : 'حصل خطأ في التعرف على الصوت، جرب تاني', false);
   };
   chatRecognizer.onend = () => {
     chatRecording = false;
@@ -8978,7 +8999,7 @@ function ensurePuterSignedIn(){
   }
   if(puter.auth.isSignedIn()) return Promise.resolve();
   if(!puterSignInPromise){
-    chatStatusEl.textContent = 'هتظهرلك نافذة تسجيل دخول مجانية من Puter... اسمح بيها ولو محجوبة دوس على أيقونة النوافذ المنبثقة فوق ووافق.';
+    setChatStatus('هتظهرلك نافذة تسجيل دخول مجانية من Puter... اسمح بيها ولو محجوبة دوس على أيقونة النوافذ المنبثقة فوق ووافق.', false);
     puterSignInPromise = puter.auth.signIn().finally(() => { puterSignInPromise = null; });
   }
   return puterSignInPromise;
@@ -8994,7 +9015,7 @@ micBtn.addEventListener('click', async () => {
   try{
     await ensurePuterSignedIn();
   } catch(err){
-    chatStatusEl.textContent = 'محتاجين تسجل الدخول لحساب Puter المجاني عشان تقدر تستخدم المحادثة، دوس على الميكروفون تاني وسمح بالنافذة.';
+    setChatStatus('محتاجين تسجل الدخول لحساب Puter المجاني عشان تقدر تستخدم المحادثة، دوس على الميكروفون تاني وسمح بالنافذة.', false);
     return;
   }
 
@@ -9019,7 +9040,7 @@ async function sendTypedMessage(){
   try{
     await ensurePuterSignedIn();
   } catch(err){
-    chatStatusEl.textContent = 'محتاجين تسجل الدخول لحساب Puter المجاني الأول، دوس إرسال تاني وسمح بالنافذة.';
+    setChatStatus('محتاجين تسجل الدخول لحساب Puter المجاني الأول، دوس إرسال تاني وسمح بالنافذة.', false);
     return;
   }
 
@@ -9042,7 +9063,7 @@ async function handleUserSpeech(text){
   voiceChatHistory.push(userMsg);
   saveChatHistory();
   renderChatMessages();
-  chatStatusEl.textContent = 'الذكاء الاصطناعي بيفكر في الرد...';
+  setChatStatus('الذكاء الاصطناعي بيفكر في الرد...', true);
 
   try{
     const parsed = await fetchAiReply();
@@ -9060,7 +9081,7 @@ async function handleUserSpeech(text){
     });
     saveChatHistory();
     renderChatMessages();
-    chatStatusEl.textContent = 'اضغط على الميكروفون عشان ترد';
+    setChatStatus('اضغط على الميكروفون عشان ترد', false);
 
     // The main Arabic explanation isn't spoken aloud (the user reads that),
     // but if the AI suggested an English phrase inside it, that phrase IS
@@ -9071,7 +9092,7 @@ async function handleUserSpeech(text){
       speakAiReply(parsed.suggested_phrase_en, 'en');
     }
   } catch(err){
-    chatStatusEl.textContent = 'حصل خطأ: ' + (err && err.message ? err.message : 'مقدرش أوصل للذكاء الاصطناعي، جرب تاني');
+    setChatStatus('حصل خطأ: ' + (err && err.message ? err.message : 'مقدرش أوصل للذكاء الاصطناعي، جرب تاني'), false);
   } finally {
     voiceChatBusy = false;
   }
@@ -9215,7 +9236,7 @@ function speakAiReply(text, lang){
     utter.voice = voice;
   } else if(!warnedNoEnglishVoice){
     warnedNoEnglishVoice = true;
-    chatStatusEl.textContent = 'ملحوظة: الجهاز ده مفيهوش صوت إنجليزي متثبت، فالنطق ممكن يطلع غلط. تقدر تثبّت صوت إنجليزي من إعدادات تحويل النص لكلام في الموبايل.';
+    setChatStatus('ملحوظة: الجهاز ده مفيهوش صوت إنجليزي متثبت، فالنطق ممكن يطلع غلط. تقدر تثبّت صوت إنجليزي من إعدادات تحويل النص لكلام في الموبايل.', false);
   }
   window.speechSynthesis.speak(utter);
 }
