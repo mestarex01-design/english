@@ -1323,30 +1323,6 @@
   }
   .chat-bubble-phrase:hover{ background: var(--accent); color:#fff; }
 
-  .chat-lang-toggle{
-    display:flex;
-    gap: 8px;
-    flex-wrap: wrap;
-    justify-content:center;
-  }
-  .chat-lang-btn{
-    background: var(--paper);
-    border: 1.5px solid var(--line);
-    color: var(--ink);
-    font-family:'Cairo', sans-serif;
-    font-weight:700;
-    font-size: 13px;
-    padding: 8px 14px;
-    border-radius: 999px;
-    cursor:pointer;
-    transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
-  }
-  .chat-lang-btn.active{
-    background: var(--accent);
-    border-color: var(--accent);
-    color: #fff;
-  }
-
   .chat-controls{
     display:flex;
     flex-direction: column;
@@ -1534,12 +1510,8 @@
   <div class="chat-shell">
     <div class="chat-messages" id="chat-messages"></div>
     <div class="chat-controls">
-      <div class="chat-lang-toggle">
-        <button type="button" class="chat-lang-btn" id="chat-lang-ar" data-lang="ar-EG">🇪🇬 هتكلم عربي (لفهم الموضوع)</button>
-        <button type="button" class="chat-lang-btn" id="chat-lang-en" data-lang="en-US">🇬🇧 Speak English (للتمرين)</button>
-      </div>
       <div class="chat-voice-settings-row" id="chat-voice-settings"></div>
-      <div class="chat-status" id="chat-status">اختار هتتكلم بأي لغة، وبعدين دوس على الميكروفون</div>
+      <div class="chat-status" id="chat-status">دوس على الميكروفون وابدأ الكلام، عربي أو إنجليزي</div>
       <div class="chat-action-row">
         <button type="button" class="mic-btn" id="mic-btn" title="اضغط وتكلم">🎤</button>
         <button type="button" class="keyboard-btn" id="chat-keyboard-btn" title="اكتب بدل ما تتكلم">⌨️</button>
@@ -8784,7 +8756,12 @@ setInterval(() => {
 
 // ===== Voice chat with AI (free, via Puter.js — no API key needed) =====
 const CHAT_HISTORY_STORAGE = 'flashcards-voice-chat-history';
-const CHAT_SPEECH_LANG_STORAGE = 'flashcards-chat-speech-lang';
+// Speech recognition needs one fixed language hint, but it turns out to
+// transcribe both Arabic and code-switched English well enough either
+// way — and the AI reply's language is decided from the transcript text
+// itself (see CHAT_SYSTEM_PROMPT), not from this setting. So there's no
+// need to expose a separate language toggle in the UI.
+const CHAT_RECOGNITION_LANG = 'ar-EG';
 const CHAT_MODEL = 'anthropic/claude-sonnet-5';
 const CHAT_SYSTEM_PROMPT = `You are a bilingual (Arabic/English) speaking coach helping an Egyptian Arabic-speaking learner practice spoken English.
 
@@ -8805,15 +8782,12 @@ let voiceChatHistory = loadJSON(CHAT_HISTORY_STORAGE, []);
 let voiceChatBusy = false;
 let chatRecognizer = null;
 let chatRecording = false;
-let chatSpeechLang = localStorage.getItem(CHAT_SPEECH_LANG_STORAGE) || 'ar-EG';
 
 const chatMessagesEl = document.getElementById('chat-messages');
 const chatStatusEl = document.getElementById('chat-status');
 const micBtn = document.getElementById('mic-btn');
 const chatResetBtn = document.getElementById('chat-reset-btn');
 const voiceChatView = document.getElementById('voice-chat-view');
-const chatLangArBtn = document.getElementById('chat-lang-ar');
-const chatLangEnBtn = document.getElementById('chat-lang-en');
 const chatKeyboardBtn = document.getElementById('chat-keyboard-btn');
 const chatInputRow = document.getElementById('chat-input-row');
 const chatTextInput = document.getElementById('chat-text-input');
@@ -8822,15 +8796,6 @@ const chatTextSend = document.getElementById('chat-text-send');
 function escapeHtmlChat(s){
   return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
-
-function setChatSpeechLang(lang){
-  chatSpeechLang = lang;
-  localStorage.setItem(CHAT_SPEECH_LANG_STORAGE, lang);
-  chatLangArBtn.classList.toggle('active', lang === 'ar-EG');
-  chatLangEnBtn.classList.toggle('active', lang === 'en-US');
-}
-chatLangArBtn.addEventListener('click', () => setChatSpeechLang('ar-EG'));
-chatLangEnBtn.addEventListener('click', () => setChatSpeechLang('en-US'));
 
 function openVoiceChat(){
   document.getElementById('main-title').textContent = 'التحدث الصوتي مع الذكاء الاصطناعي';
@@ -8842,7 +8807,6 @@ function openVoiceChat(){
   levelView.style.display = 'none';
   voiceChatView.style.display = 'block';
 
-  setChatSpeechLang(chatSpeechLang);
   renderChatMessages();
 }
 
@@ -8915,14 +8879,14 @@ function startChatRecording(){
   if('speechSynthesis' in window) window.speechSynthesis.cancel();
 
   chatRecognizer = new ChatSpeechRecognition();
-  chatRecognizer.lang = chatSpeechLang;
+  chatRecognizer.lang = CHAT_RECOGNITION_LANG;
   chatRecognizer.interimResults = false;
   chatRecognizer.maxAlternatives = 1;
 
   chatRecognizer.onstart = () => {
     chatRecording = true;
     micBtn.classList.add('recording');
-    chatStatusEl.textContent = chatSpeechLang === 'ar-EG' ? 'بيسمعك دلوقتي بالعربي... اتكلم' : 'Listening in English... speak now';
+    chatStatusEl.textContent = 'بيسمعك دلوقتي... اتكلم';
   };
   chatRecognizer.onerror = (e) => {
     chatRecording = false;
