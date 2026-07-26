@@ -86,6 +86,7 @@
   }
 
   .folder-card{
+    position: relative;
     background: var(--paper);
     border: 1.5px solid var(--line);
     border-radius: var(--radius);
@@ -198,6 +199,28 @@
   }
   .delete-word-btn:hover{ background: var(--hard); color:#fff; }
 
+  .word-actions-row{
+    display:flex;
+    gap: 8px;
+    margin-top: 6px;
+  }
+  .word-actions-row .delete-word-btn,
+  .word-actions-row .edit-word-btn{ margin-top:0; }
+
+  .edit-word-btn{
+    background: var(--medium-soft);
+    color: var(--medium);
+    border: 1.2px solid var(--medium);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 12px;
+    padding: 7px 16px;
+    border-radius: 10px;
+    cursor:pointer;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .edit-word-btn:hover{ background: var(--medium); color:#fff; }
+
   .empty-custom{
     max-width: 480px;
     margin: 2.5rem auto 0;
@@ -258,12 +281,279 @@
     box-sizing: border-box;
   }
   .modal-box input:focus{ outline:none; border-color: var(--accent); }
+
+  .edit-word-sentence-label-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    margin: 12px 0 6px;
+  }
+  .edit-word-sentence-label-row label{ margin:0; }
+  .sentence-change-btn{
+    border:none;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-family:'Cairo', sans-serif;
+    font-size: 11.5px;
+    font-weight:700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    cursor:pointer;
+    white-space:nowrap;
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .sentence-change-btn:hover{ background: var(--accent); color:#fff; }
+  .sentence-change-btn:disabled{ opacity:0.6; cursor:default; }
+
+  .sentence-options-list{
+    display:flex;
+    flex-direction:column;
+    gap:6px;
+    margin-top: 8px;
+  }
+  .sentence-option-item{
+    display:block;
+    width:100%;
+    text-align:right;
+    direction: ltr;
+    font-family:'Cairo', sans-serif;
+    font-size: 13px;
+    font-style: italic;
+    line-height:1.5;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border: 1.5px solid var(--line);
+    border-inline-start: 4px solid var(--accent);
+    border-radius: 10px;
+    padding: 8px 10px;
+    cursor:pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+  }
+  .sentence-option-item:hover{ background: var(--accent); color:#fff; border-color: var(--accent); }
+  .sentence-option-status{
+    font-size: 12.5px;
+    color: var(--muted);
+    text-align:center;
+    padding: 6px 0;
+  }
+
   .modal-actions{
     display:flex;
     gap:10px;
     margin-top: 20px;
   }
   .modal-actions button{ flex:1; }
+
+  .modal-box.wide{ max-width: 560px; }
+  .image-picker-hint{
+    color: var(--muted);
+    font-size: 13px;
+    text-align:center;
+    margin-bottom: 12px;
+    line-height:1.7;
+  }
+  .image-picker-grid{
+    display:grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .image-picker-option{
+    position:relative;
+    border-radius: 12px;
+    overflow:hidden;
+    border: 2px solid var(--line);
+    cursor:pointer;
+    aspect-ratio: 4 / 3;
+    background: var(--bg);
+    padding: 0;
+  }
+  .image-picker-option img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    display:block;
+  }
+  .image-picker-option:hover{ border-color: var(--accent); }
+  .image-picker-refresh-btn{
+    width:100%;
+    margin-top: 16px;
+  }
+
+  .image-picker-menu{
+    display:flex;
+    flex-direction:column;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .image-picker-menu-btn{
+    display:flex;
+    align-items:center;
+    gap: 10px;
+    width:100%;
+    padding: 14px 16px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--bg);
+    font-size: 15px;
+    font-weight: 600;
+    cursor:pointer;
+    text-align:right;
+  }
+  .image-picker-menu-btn:hover{ border-color: var(--accent); }
+  .image-picker-menu-icon{ font-size: 20px; }
+
+  .image-picker-upload-label{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding: 28px 16px;
+    border-radius: 12px;
+    border: 2px dashed var(--line);
+    cursor:pointer;
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .image-picker-upload-label:hover{ border-color: var(--accent); color: var(--fg); }
+  .image-picker-upload-preview img{
+    width:100%;
+    max-height: 220px;
+    object-fit:contain;
+    border-radius: 12px;
+    display:block;
+  }
+
+  .image-picker-search-row{
+    display:flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .image-picker-search-row input{
+    flex:1;
+    padding: 10px 12px;
+    border-radius: 10px;
+    border: 2px solid var(--line);
+    font-size: 14px;
+  }
+  .image-picker-search-row .add-word-btn{
+    white-space:nowrap;
+  }
+  .image-picker-search-status{
+    text-align:center;
+    color: var(--muted);
+    font-size: 13px;
+    padding: 10px;
+  }
+
+  .image-picker-ai-preview{
+    min-height: 60px;
+  }
+  .image-picker-ai-preview img{
+    width:100%;
+    max-height: 260px;
+    object-fit:contain;
+    border-radius: 12px;
+    display:block;
+    margin-top: 4px;
+  }
+
+  .icon-picker-grid{
+    display:grid;
+    grid-template-columns: repeat(6, 1fr);
+    gap: 8px;
+  }
+  .icon-picker-option{
+    aspect-ratio: 1;
+    font-size: 26px;
+    border-radius: 12px;
+    border: 2px solid var(--line);
+    background: var(--bg);
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:0;
+  }
+  .icon-picker-option:hover{ border-color: var(--accent); background: var(--accent-soft); }
+  .icon-picker-custom-row{
+    display:flex;
+    gap:8px;
+    margin-bottom: 16px;
+  }
+  .icon-picker-custom-row input{
+    flex:1;
+    font-family:'Cairo', sans-serif;
+    font-size: 20px;
+    text-align:center;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1.5px solid var(--line);
+    background: var(--bg);
+    color: var(--ink);
+  }
+  .icon-picker-custom-row input:focus{ outline:none; border-color: var(--accent); }
+  .icon-picker-custom-row button{ flex:0 0 auto; padding: 8px 16px; }
+  .icon-picker-empty{
+    text-align:center;
+    color: var(--muted, #888);
+    font-size: 14px;
+    padding: 20px 10px;
+  }
+  .icon-picker-copy-row{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:8px;
+    background: var(--accent-soft);
+    border-radius: 10px;
+    padding: 8px 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+  }
+  .icon-picker-copy-btn{
+    flex:0 0 auto;
+    padding: 6px 12px;
+    border-radius: 8px;
+    border: 1.5px solid var(--accent);
+    background: var(--bg);
+    color: var(--ink);
+    cursor:pointer;
+    font-family:'Cairo', sans-serif;
+    font-size: 13px;
+  }
+  .icon-picker-copy-btn:hover{ background: var(--accent); color:#fff; }
+  .icon-picker-spin{
+    display:inline-block;
+    animation: icon-picker-spin-anim 0.8s linear infinite;
+  }
+  @keyframes icon-picker-spin-anim{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
+  }
+
+  .photo-wrap{ position: relative; }
+  .edit-photo-btn{
+    position:absolute;
+    bottom: 10px;
+    left: 10px;
+    z-index: 5;
+    width: 24px;
+    height: 24px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border: 1.5px solid var(--paper);
+    font-size: 12px;
+    border-radius: 50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .edit-photo-btn:hover{ background: var(--accent); color:#fff; }
 
   .level-title{
     font-weight:700;
@@ -369,7 +659,64 @@
   .flip-scene{
     perspective: 1400px;
     height: 400px;
+    position: relative;
   }
+
+  /* Small fixed corner button, sitting outside the flipping card itself
+     (a sibling of .flip-card, not inside either face) so it stays put in
+     the same spot and works the same way no matter which side of the
+     card is currently showing, instead of needing to be duplicated on
+     both faces. */
+  /* Fixed in the viewport (not the page), so it stays put and reachable
+     while scrolling through a long grid of topics/levels — same round
+     look as the per-card corner arrow, but anchored to the screen instead
+     of a card. Hidden by default; JS shows/hides + rewires it depending
+     on which list view (levels or topics) is currently open. */
+  .floating-back-arrow{
+    display: none;
+    position: fixed;
+    top: calc(16px + env(safe-area-inset-top, 0px));
+    left: 16px;
+    z-index: 999;
+    width: 40px;
+    height: 40px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-size: 18px;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.15);
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .floating-back-arrow:hover{ background: var(--accent); color: #fff; }
+  .floating-back-arrow:active{ transform: scale(0.92); }
+
+  .card-back-corner-btn{
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    z-index: 20;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 50%;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    font-size: 16px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .card-back-corner-btn:hover{ background: var(--accent); color: #fff; }
+  .card-back-corner-btn:active{ transform: scale(0.92); }
 
   .flip-card{
     position:relative;
@@ -409,6 +756,33 @@
     font-size: 44px;
     line-height:1;
   }
+
+  .icon-wrap{
+    position: relative;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .edit-icon-btn{
+    position:absolute;
+    bottom: -4px;
+    left: -10px;
+    z-index: 5;
+    width: 24px;
+    height: 24px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border: 1.5px solid var(--paper);
+    font-size: 12px;
+    border-radius: 50%;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: background 0.2s ease, color 0.2s ease;
+  }
+  .edit-icon-btn:hover{ background: var(--accent); color:#fff; }
 
   .word-en{
     font-family:'Fraunces', serif;
@@ -1010,12 +1384,30 @@
     height:19px;
   }
 
-  /* Voice-gender selection used to be hidden on mobile because many phones
-     don't expose named male/female voices. It's shown now — getPreferredVoice()
-     falls back to *some* other-sounding voice when available, and even on
-     devices with just one English voice, showing the control at least lets
-     the choice take effect the moment a better voice becomes available (e.g.
-     after the user installs one from system settings). */
+  /* On mobile, flashcard pronunciation used to just use the phone's own
+     default voice with no gender choice, because most phones only expose
+     one generic English voice (or two with no clear gender in the name).
+     But some phones genuinely DO have two distinctly-named English voices
+     installed locally (a real male + female pair). In that case showing
+     the picker is worthwhile: the user can toggle between two different
+     real voices, entirely offline, with no Puter cloud call needed. So the
+     picker stays hidden by default and is only revealed once
+     `mobile-dual-voice-available` is added to <body> (see
+     updateMobileDualVoiceState) confirming the device truly has both. */
+  .is-mobile-device .voice-gender-wrap-card{ display:none !important; }
+  .is-mobile-device.mobile-dual-voice-available .voice-gender-wrap-card{ display:block !important; }
+
+  /* The chat's picker (.voice-gender-wrap-chat) is a separate case: it
+     stays visible on desktop always, since desktops almost always have
+     real named male/female voices installed and never need Puter for
+     this at all. On mobile it's hidden until the user has actually signed
+     in to Puter at least once (which happens the first time they send a
+     message) — showing it earlier would tempt a tap that does nothing
+     yet, since it's the mic (not this button) that opens the sign-in tab.
+     Once `chat-voice-unlocked` is added to <body> (see
+     updateChatVoiceUnlockState), it appears and stays visible from then on. */
+  .is-mobile-device .voice-gender-wrap-chat{ display:none; }
+  .is-mobile-device.chat-voice-unlocked .voice-gender-wrap-chat{ display:block; }
   .voice-gender-btn{
     border:none;
     background: var(--accent-soft);
@@ -1069,8 +1461,56 @@
   }
   .voice-gender-option:hover{ background: var(--accent-soft); }
   .voice-gender-option.active{ background: var(--accent); color:#fff; }
+  .voice-gender-diagnose{
+    border:none;
+    border-top: 1px solid rgba(0,0,0,0.08);
+    margin-top: 2px;
+    background: transparent;
+    color: var(--ink-soft, #777);
+    font-family:'Cairo', sans-serif;
+    font-size:10px;
+    font-weight:600;
+    padding:6px 10px 4px;
+    cursor:pointer;
+    white-space:nowrap;
+    text-align:right;
+  }
+  .voice-gender-diagnose:hover{ color: var(--accent-deep); }
   .example .en > span.sentence-text{
     text-align: center;
+  }
+  .sentence-source-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin: 2px 0 6px;
+  }
+  .sentence-regenerate-btn{
+    border:none;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    width:19px;
+    height:19px;
+    min-width:19px;
+    border-radius:50%;
+    font-size:10px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    transition: background 0.2s ease, transform 0.15s ease;
+  }
+  .sentence-regenerate-btn:hover{ background: var(--accent); color:#fff; }
+  .sentence-regenerate-btn:active{ transform: scale(0.92); }
+  .sentence-regenerate-btn.spinning{
+    animation: sentence-regen-spin 0.7s linear infinite;
+    pointer-events:none;
+    opacity:0.7;
+  }
+  @keyframes sentence-regen-spin{
+    from{ transform: rotate(0deg); }
+    to{ transform: rotate(360deg); }
   }
   .sentence-word-highlight{
     background: #FFE066;
@@ -1083,12 +1523,14 @@
   }
 
   .sentence-word-highlight-ar{
-    background: #7FAED4;
+    background: linear-gradient(135deg, #4C8FD1, #6FB3E0);
     color: #fff;
     font-style: normal;
-    font-weight: 700;
-    border-radius: 4px;
-    padding: 0 4px;
+    font-weight: 800;
+    border-radius: 5px;
+    padding: 1px 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.18);
+    display: inline-block;
   }
 
   .example .ar{
@@ -1136,23 +1578,24 @@
 
   /* Mini rating row shown on the FRONT face, right under the two
      "عرض الترجمة" buttons — lets the user rate a word without flipping
-     to the back. Same colors as .difficulty-row, scaled down and
-     stretched to the card's own inner width/edges. */
+     to the back. Same colors as .difficulty-row, scaled down. Sized to
+     its own content (not stretched edge-to-edge) so the group sits
+     visually centered under the pill buttons above it, instead of
+     spanning the full card width and looking off-center by comparison. */
   .mini-diff-row{
-    display:flex;
-    gap: 4px;
-    width: 100%;
+    display:inline-flex;
+    gap: 6px;
   }
 
   .mini-diff-btn{
-    flex:1;
+    flex: 0 0 auto;
     border: 1.2px solid var(--line);
     background: var(--paper);
     font-family:'Cairo', sans-serif;
     font-weight:700;
     font-size: 9px;
-    padding: 3px 3px;
-    border-radius: 7px;
+    padding: 4px 8px;
+    border-radius: 12px;
     cursor: pointer;
     color: var(--ink);
     transition: all 0.2s ease;
@@ -1487,6 +1930,8 @@
   <p id="main-subtitle">اختر مجلدًا للبدء.</p>
 </header>
 
+<button type="button" id="floating-back-arrow" class="floating-back-arrow" title="رجوع">←</button>
+
 <div id="categories-view">
   <div class="folders-grid" id="categories-grid"></div>
 </div>
@@ -1560,12 +2005,137 @@
     <label for="new-word-en">الكلمة بالإنجليزي</label>
     <input type="text" id="new-word-en" placeholder="مثال: apple">
 
+    <div id="add-word-manual-sentence-group" style="display:none;">
+      <label for="add-word-manual-sentence">مفيش جملة جاهزة لهذه الكلمة في القاموس. اكتب جملة بسيطة بنفسك بالإنجليزي، وبعدين دوس "احفظ الجملة دي"</label>
+      <input type="text" id="add-word-manual-sentence" placeholder="مثال: I eat an apple every day.">
+    </div>
+
     <div class="modal-actions">
       <button type="button" class="back-btn" id="cancel-add-word">إلغاء</button>
       <button type="button" class="add-word-btn" id="generate-word-btn">توليد الجملة</button>
     </div>
   </div>
 </div>
+
+<div class="modal-overlay" id="edit-word-overlay">
+  <div class="modal-box">
+    <div class="modal-title">تعديل الكلمة</div>
+
+    <label for="edit-word-en">الكلمة بالإنجليزي</label>
+    <input type="text" id="edit-word-en" placeholder="مثال: apple">
+
+    <div class="edit-word-sentence-label-row">
+      <label for="edit-word-sentence-en">الجملة بالإنجليزي</label>
+      <button type="button" class="sentence-change-btn" id="edit-word-sentence-change-btn" title="اقترح 3 جمل تانية للكلمة">🔄 تغيير</button>
+    </div>
+    <input type="text" id="edit-word-sentence-en" placeholder="مثال: I use the word every day.">
+    <div class="sentence-options-list" id="edit-word-sentence-options" style="display:none;"></div>
+
+    <label for="edit-word-ar">ترجمة الكلمة</label>
+    <input type="text" id="edit-word-ar" placeholder="مثال: تفاحة">
+
+    <label for="edit-word-sentence-ar">ترجمة الجملة</label>
+    <input type="text" id="edit-word-sentence-ar" placeholder="ترجمة الجملة بالعربي">
+
+    <div class="modal-actions">
+      <button type="button" class="back-btn" id="cancel-edit-word">إلغاء</button>
+      <button type="button" class="add-word-btn" id="save-edit-word-btn">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="image-picker-overlay">
+  <div class="modal-box wide">
+    <div class="modal-title">اختر صورة تانية للكلمة</div>
+
+    <!-- Step 1: main menu -->
+    <div class="image-picker-step" id="image-picker-step-menu">
+      <div class="image-picker-hint">اختار طريقة إضافة الصورة.</div>
+      <div class="image-picker-menu">
+        <button type="button" class="image-picker-menu-btn" id="image-picker-menu-device">
+          <span class="image-picker-menu-icon">📁</span> صورة من الجهاز
+        </button>
+        <button type="button" class="image-picker-menu-btn" id="image-picker-menu-search">
+          <span class="image-picker-menu-icon">🌐</span> بحث في الإنترنت
+        </button>
+        <button type="button" class="image-picker-menu-btn" id="image-picker-menu-ai">
+          <span class="image-picker-menu-icon">🎨</span> توليد بالذكاء الاصطناعي
+        </button>
+      </div>
+      <div class="modal-actions">
+        <button type="button" class="back-btn" id="cancel-image-picker" style="flex:1;">إلغاء</button>
+      </div>
+    </div>
+
+    <!-- Step 2: device upload -->
+    <div class="image-picker-step" id="image-picker-step-device" style="display:none;">
+      <div class="image-picker-hint">اختار صورة من جهازك.</div>
+      <label class="image-picker-upload-label" for="image-picker-device-input">
+        📁 دوس هنا واختار صورة
+      </label>
+      <input type="file" accept="image/*" id="image-picker-device-input" style="display:none;">
+      <div class="image-picker-upload-preview" id="image-picker-upload-preview"></div>
+      <div class="modal-actions">
+        <button type="button" class="back-btn" id="image-picker-device-back" style="flex:1;">رجوع</button>
+      </div>
+    </div>
+
+    <!-- Step 3: web search -->
+    <div class="image-picker-step" id="image-picker-step-search" style="display:none;">
+      <div class="image-picker-hint">اكتب اسم الكلمة (يفضل بالإنجليزي) ودوس بحث.</div>
+      <div class="image-picker-search-row">
+        <input type="text" id="image-picker-search-input" placeholder="مثلاً: chair">
+        <button type="button" class="add-word-btn" id="image-picker-search-btn">🔍 بحث</button>
+      </div>
+      <div class="image-picker-grid" id="image-picker-search-grid"></div>
+      <div class="modal-actions">
+        <button type="button" class="back-btn" id="image-picker-search-back" style="flex:1;">رجوع</button>
+      </div>
+    </div>
+
+    <!-- Step 4: AI generate -->
+    <div class="image-picker-step" id="image-picker-step-ai" style="display:none;">
+      <div class="image-picker-hint">اكتب وصف الصورة اللي عايزها (يفضل بالإنجليزي) ودوس توليد.</div>
+      <div class="image-picker-search-row">
+        <input type="text" id="image-picker-ai-input" placeholder="مثلاً: a wooden chair">
+        <button type="button" class="add-word-btn" id="image-picker-ai-btn">🎨 توليد</button>
+      </div>
+      <div class="image-picker-ai-preview" id="image-picker-ai-preview"></div>
+      <div class="modal-actions">
+        <button type="button" class="back-btn" id="image-picker-ai-back" style="flex:1;">رجوع</button>
+        <button type="button" class="add-word-btn" id="image-picker-ai-use-btn" style="flex:1;display:none;">✅ استخدم الصورة دي</button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal-overlay" id="icon-picker-overlay">
+  <div class="modal-box wide">
+    <div class="modal-title">اختر ملصق للكلمة</div>
+    <div class="image-picker-hint">اكتب أي إيموجي بنفسك، أو دور على ملصق بالاسم (البحث بيغطي قاموس كبير، ولو محتاج الموقع نت هيدوّرلك في مصدر أوسع كمان)، أو دوس على أي ملصق من اللي تحت.</div>
+    <div class="icon-picker-copy-row">
+      <span>الكلمة الإنجليزية: <strong id="icon-picker-word-en"></strong></span>
+      <button type="button" class="icon-picker-copy-btn" id="icon-picker-copy-en">📋 نسخ الكلمة</button>
+    </div>
+    <div class="icon-picker-custom-row">
+      <input type="text" id="icon-picker-custom-input" placeholder="🔤 اكتب إيموجي هنا">
+      <button type="button" class="add-word-btn" id="icon-picker-custom-apply">استخدم</button>
+    </div>
+    <div class="icon-picker-custom-row">
+      <input type="text" id="icon-picker-search-input" placeholder="🔍 دور على ملصق بالاسم (مثلاً: شنطة أو bag)">
+      <button type="button" class="add-word-btn" id="icon-picker-search-btn">🔍 بحث</button>
+    </div>
+    <div class="icon-picker-grid" id="icon-picker-grid"></div>
+    <div class="icon-picker-empty" id="icon-picker-empty" style="display:none;">
+      غير متوفر ملصق لهذه الكلمة.
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="back-btn" id="cancel-icon-picker" style="flex:1;">إلغاء</button>
+    </div>
+  </div>
+</div>
+
 
 <footer>أبقِ الصفحة محفوظة أو مفتوحة في نفس المتصفح ليتم حفظ مواعيد ظهور البطاقات وتقدمك 🌿</footer>
 
@@ -7014,6 +7584,32 @@ levels.forEach(lvl => {
   (lvl.words || []).forEach(w => { if(!w.topic) w.topic = "other"; });
 });
 
+// --- Persisted overrides for icon/photo edits on built-in level words ---
+// Built-in level words live in the hard-coded `levels` array, not in
+// localStorage like custom words, so edits to their icon/photo are kept
+// separately here (keyed by "<levelId>-<index>") and re-applied on every
+// load instead of touching the array's own data.
+const WORD_OVERRIDES_KEY = 'word-overrides-v1';
+function loadWordOverrides(){
+  return JSON.parse(localStorage.getItem(WORD_OVERRIDES_KEY) || '{}');
+}
+function saveWordOverrides(map){
+  try{ localStorage.setItem(WORD_OVERRIDES_KEY, JSON.stringify(map)); }
+  catch(e){ /* storage unavailable, edit stays in memory only for this session */ }
+}
+function applyWordOverrides(){
+  const overrides = loadWordOverrides();
+  levels.forEach(lvl => {
+    (lvl.words || []).forEach((w, i) => {
+      const ov = overrides[`${lvl.id}-${i}`];
+      if(!ov) return;
+      if(ov.icon) w.icon = ov.icon;
+      if(ov.img) w.img = ov.img;
+    });
+  });
+}
+applyWordOverrides();
+
 const DURATIONS = {
   easy: 3 * 24 * 60 * 60 * 1000,
   medium: 1 * 24 * 60 * 60 * 1000,
@@ -7039,6 +7635,27 @@ let ratedWords = {};
 let wordDifficulty = {};
 let customWordsMode = false;
 const CUSTOM_WORDS_KEY = 'custom-words-list';
+
+// Saves an icon/img edit for word index `i` in the currently open level.
+// Custom words keep writing straight into their own localStorage list (as
+// before); built-in level words go into the overrides map above instead,
+// since their source data isn't user-owned storage.
+function persistWordFieldEdit(i, field, value){
+  if(customWordsMode){
+    const list = loadCustomWords();
+    if(!list[i]) return;
+    list[i] = { ...list[i], [field]: value };
+    saveCustomWords(list);
+    activeLevel.words = list;
+  } else {
+    if(!activeLevel || !activeLevel.words[i]) return;
+    activeLevel.words[i][field] = value;
+    const overrides = loadWordOverrides();
+    const key = `${activeLevel.id}-${i}`;
+    overrides[key] = { ...(overrides[key] || {}), [field]: value };
+    saveWordOverrides(overrides);
+  }
+}
 
 function loadCustomWords(){
   return loadJSON(CUSTOM_WORDS_KEY, []);
@@ -7066,6 +7683,32 @@ const levelView = document.getElementById('level-view');
 const cardsGrid = document.getElementById('cards-grid');
 const levelLockedScreen = document.getElementById('level-locked-screen');
 const llockCountdown = document.getElementById('llock-countdown');
+
+// Keeps the fixed floating arrow in sync with whichever list view (levels
+// or topics) is currently showing, instead of hard-coding it into every
+// navigation function: a MutationObserver just watches the two views'
+// `style` attribute (which is how the app already shows/hides them) and
+// re-evaluates whenever either one changes, so it can't drift out of
+// sync no matter which function triggered the switch.
+const floatingBackArrow = document.getElementById('floating-back-arrow');
+function syncFloatingBackArrow(){
+  if(!floatingBackArrow) return;
+  if(foldersView.style.display === 'block'){
+    floatingBackArrow.style.display = 'flex';
+    floatingBackArrow.onclick = closeCategory;
+  } else if(topicsView.style.display === 'block'){
+    floatingBackArrow.style.display = 'flex';
+    floatingBackArrow.onclick = closeLevel;
+  } else {
+    floatingBackArrow.style.display = 'none';
+    floatingBackArrow.onclick = null;
+  }
+}
+if(floatingBackArrow){
+  new MutationObserver(syncFloatingBackArrow).observe(foldersView, { attributes: true, attributeFilter: ['style'] });
+  new MutationObserver(syncFloatingBackArrow).observe(topicsView, { attributes: true, attributeFilter: ['style'] });
+  syncFloatingBackArrow();
+}
 
 function folderStorageKeys(levelId){
   return {
@@ -7347,12 +7990,21 @@ function renderFolders(){
       `;
     } else {
       card.innerHTML = `
+        <button type="button" class="card-back-corner-btn" title="رجوع للرئيسية">←</button>
         <div class="folder-icon">${level.icon}</div>
         <div class="folder-title">${level.title}</div>
         <div class="folder-meta">${total} كلمة · تمت مراجعة ${Math.min(learned, total)}/${total}</div>
         <div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
       `;
       card.addEventListener('click', () => openLevel(level.id));
+
+      const cornerBtn = card.querySelector('.card-back-corner-btn');
+      if(cornerBtn){
+        cornerBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          closeCategory();
+        });
+      }
     }
 
     foldersGrid.appendChild(card);
@@ -7399,12 +8051,22 @@ function renderTopics(){
     const card = document.createElement('div');
     card.className = 'folder-card';
     card.innerHTML = `
+      <button type="button" class="card-back-corner-btn" title="رجوع للمستويات">←</button>
       <div class="folder-icon">${topic.icon || '📂'}</div>
       <div class="folder-title">${topic.title}</div>
       <div class="folder-meta">${total} كلمة · تمت مراجعة ${Math.min(learned, total)}/${total}</div>
       <div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
     `;
     card.addEventListener('click', () => openTopic(topic.id));
+
+    const cornerBtn = card.querySelector('.card-back-corner-btn');
+    if(cornerBtn){
+      cornerBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        closeLevel();
+      });
+    }
+
     topicsGrid.appendChild(card);
   });
 }
@@ -7508,9 +8170,13 @@ const addWordBtn = document.getElementById('add-word-btn');
 const addWordOverlay = document.getElementById('add-word-overlay');
 const newWordEn = document.getElementById('new-word-en');
 const generateWordBtn = document.getElementById('generate-word-btn');
+const addWordManualSentenceGroup = document.getElementById('add-word-manual-sentence-group');
+const addWordManualSentenceInput = document.getElementById('add-word-manual-sentence');
 
 function openAddWordModal(){
   newWordEn.value = '';
+  addWordManualSentenceGroup.style.display = 'none';
+  addWordManualSentenceInput.value = '';
   generateWordBtn.disabled = false;
   generateWordBtn.textContent = 'توليد الجملة';
   addWordOverlay.classList.add('show');
@@ -7518,6 +8184,8 @@ function openAddWordModal(){
 }
 function closeAddWordModal(){
   addWordOverlay.classList.remove('show');
+  addWordManualSentenceGroup.style.display = 'none';
+  addWordManualSentenceInput.value = '';
 }
 
 addWordBtn.addEventListener('click', openAddWordModal);
@@ -7526,32 +8194,319 @@ addWordOverlay.addEventListener('click', (e) => {
   if(e.target === addWordOverlay) closeAddWordModal();
 });
 
-// Free, no-key translation endpoint used to auto-fill the Arabic meaning
+// Free, no-key translation endpoints used to auto-fill the Arabic meaning
 // and the Arabic translation of the generated example sentence.
-async function translateEnToAr(text){
-  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`;
-  const res = await fetch(url);
-  if(!res.ok) throw new Error('translate request failed');
-  const data = await res.json();
-  const translated = data && data.responseData && data.responseData.translatedText;
-  if(!translated) throw new Error('no translation returned');
-  return translated;
+//
+// Google's engine is tried first — it's a full neural MT model, so it
+// handles whole sentences (not just single words) far more naturally than
+// MyMemory's translation-memory approach, which tends to translate longer
+// sentences too literally or oddly. MyMemory is kept as the fallback for
+// if Google's endpoint (unofficial, so no uptime guarantee) is ever
+// unavailable. MyMemory itself has a well-known failure mode worth guarding
+// against too: once its free daily quota is used up (a shared, IP-based
+// limit — easy to hit), it still answers with HTTP 200 and a normal-looking
+// JSON body, except "translatedText" is an English warning string like
+// "MYMEMORY WARNING: YOU USED ALL AVAILABLE FREE TRANSLATIONS FOR TODAY..."
+// instead of an actual translation. The old code only checked that some
+// text came back, so that warning (or, in other failure cases, the English
+// source text echoed back unchanged) got treated as a real Arabic
+// translation and saved straight onto the word card. isLikelyArabic() plus
+// the known-warning check below catch that for both providers.
+function isLikelyArabic(text){
+  return /[\u0600-\u06FF]/.test(text);
 }
 
-// A handful of simple, natural sentence shapes to drop the new word into,
-// so every generated card doesn't read the exact same way.
+function looksLikeMyMemoryWarning(text){
+  const t = text.toUpperCase();
+  return t.includes('MYMEMORY WARNING') || t.includes('INVALID LANGUAGE PAIR') || t.includes('IS AN INVALID TARGET LANGUAGE');
+}
+
+async function translateViaMyMemory(text){
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|ar`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('MyMemory request failed');
+  const data = await res.json();
+  const translated = data && data.responseData && data.responseData.translatedText;
+  if(!translated) throw new Error('MyMemory returned no translation');
+  if(looksLikeMyMemoryWarning(translated)) throw new Error('MyMemory quota/error message, not a real translation');
+  if(!isLikelyArabic(translated)) throw new Error('MyMemory result has no Arabic text');
+  return translated.trim();
+}
+
+async function translateViaGoogle(text){
+  const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=t&q=${encodeURIComponent(text)}`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('Google translate request failed');
+  const data = await res.json();
+  // Response shape: [[["<translated chunk>","<source chunk>",...], ...], ...]
+  const translated = Array.isArray(data) && Array.isArray(data[0])
+    ? data[0].map(chunk => chunk && chunk[0] ? chunk[0] : '').join('')
+    : '';
+  if(!translated.trim()) throw new Error('Google translate returned no translation');
+  if(!isLikelyArabic(translated)) throw new Error('Google translate result has no Arabic text');
+  return translated.trim();
+}
+
+async function translateEnToAr(text){
+  try{
+    return await translateViaGoogle(text);
+  } catch(e){
+    console.warn('[translate] Google failed, trying MyMemory fallback:', e && e.message ? e.message : e);
+    return await translateViaMyMemory(text);
+  }
+}
+
+// A single English word often has more than one Arabic sense depending on
+// context (e.g. "back" could be "ضهر" or "يرجع"/"راجع"). This fetches
+// Google's bilingual-dictionary data for the word — a handful of candidate
+// Arabic senses across its different meanings/parts of speech — so that,
+// once we know the full translation of a *specific* sentence using the
+// word, we can check which of these candidates actually appears in it and
+// use that as the word's own meaning instead of a generic, possibly
+// out-of-context one. Best-effort: returns an empty list (never throws) if
+// the dictionary data isn't available for this word.
+async function fetchGoogleWordSenses(word){
+  try{
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=en&tl=ar&dt=bd&dt=t&q=${encodeURIComponent(word)}`;
+    const res = await fetch(url);
+    if(!res.ok) return [];
+    const data = await res.json();
+    const candidates = [];
+    const collect = (node) => {
+      if(typeof node === 'string'){
+        if(isLikelyArabic(node)) candidates.push(node.trim());
+      } else if(Array.isArray(node)){
+        node.forEach(collect);
+      }
+    };
+    if(Array.isArray(data) && data[1]) collect(data[1]);
+    return [...new Set(candidates)];
+  } catch(e){
+    return [];
+  }
+}
+
+// Sentence generation: try the free dictionary API first, since a real
+// example sentence (written by humans, for that exact word) reads far more
+// naturally than a fixed template. dictionaryapi.dev often returns several
+// example sentences across a word's different meanings — of those, we pick
+// the one whose OTHER words are closest in difficulty to the target word
+// itself (using word length as a rough difficulty proxy), so the sentence
+// doesn't introduce much harder or much easier vocabulary than the word
+// being learned. Only if the dictionary has no entry at all, or none of its
+// definitions include an example sentence, do we fall back to our own
+// 100-template cycle below — so generation still always succeeds even for
+// words the dictionary doesn't know.
+const DICTIONARY_API_URL = 'https://api.dictionaryapi.dev/api/v2/entries/en/';
+
+// Fetches every example sentence dictionaryapi.dev has across all of a
+// word's meanings/definitions. Returns an empty array (never throws) if the
+// word isn't found, the request fails, or none of its definitions include
+// an example — callers just treat an empty array as "no dictionary example".
+async function fetchDictionaryExamples(word){
+  const clean = word.trim().toLowerCase();
+  if(!clean) return [];
+  try{
+    const res = await fetch(DICTIONARY_API_URL + encodeURIComponent(clean));
+    if(!res.ok) return [];
+    const data = await res.json();
+    const examples = [];
+    if(Array.isArray(data)){
+      data.forEach(entry => {
+        (entry.meanings || []).forEach(meaning => {
+          (meaning.definitions || []).forEach(def => {
+            if(def && typeof def.example === 'string' && def.example.trim()){
+              examples.push(def.example.trim());
+            }
+          });
+        });
+      });
+    }
+    return examples;
+  }catch(e){
+    return [];
+  }
+}
+
+// Rough "difficulty" proxy for a single word: its letter count. Not
+// linguistically precise, but good enough to compare relative difficulty
+// between the target word and the words around it in a candidate sentence.
+function wordDifficultyLevel(word){
+  return word.replace(/[^a-zA-Z]/g, '').length;
+}
+
+// Scores a candidate example sentence for how well its vocabulary matches
+// the target word's own difficulty level — lower is better. We compare the
+// target word's letter count against the AVERAGE letter count of the
+// sentence's other words, and add a small penalty for very long sentences
+// (harder to read regardless of individual word difficulty).
+function sentenceLevelMatchScore(sentence, word){
+  const targetLevel = wordDifficultyLevel(word);
+  const tokens = sentence
+    .split(/\s+/)
+    .map(t => t.replace(/[^a-zA-Z']/g, ''))
+    .filter(Boolean);
+  if(!tokens.length) return Infinity;
+  const avgLevel = tokens.reduce((sum, t) => sum + t.length, 0) / tokens.length;
+  const levelMismatch = Math.abs(avgLevel - targetLevel);
+  const lengthPenalty = Math.max(0, tokens.length - 12) * 0.5;
+  return levelMismatch + lengthPenalty;
+}
+
+// Out of every example the dictionary returned, picks the one whose other
+// words best match the target word's difficulty level. Returns null if the
+// list is empty (or none actually contain the target word) so the caller
+// can fall back to a template.
+function pickEasiestDictionaryExample(examples, word){
+  if(!examples || !examples.length) return null;
+  let best = null;
+  let bestScore = Infinity;
+  examples.forEach(example => {
+    if(!sentenceContainsWord(example, word)) return;
+    const score = sentenceLevelMatchScore(example, word);
+    if(score < bestScore){
+      bestScore = score;
+      best = example;
+    }
+  });
+  return best;
+}
+
 const SENTENCE_TEMPLATES = [
   w => `I use the word "${w}" every day.`,
   w => `Can you explain what "${w}" means?`,
   w => `This is a simple example with "${w}".`,
   w => `I learned the word "${w}" today.`,
   w => `She often talks about "${w}".`,
-  w => `Let's practice the word "${w}" together.`
+  w => `Let's practice the word "${w}" together.`,
+  w => `Do you know how to use "${w}" in a sentence?`,
+  w => `My teacher explained the word "${w}" clearly.`,
+  w => `I wrote "${w}" in my notebook.`,
+  w => `He asked me what "${w}" means.`,
+  w => `We reviewed the word "${w}" in class.`,
+  w => `I heard the word "${w}" in a movie.`,
+  w => `Try to remember the word "${w}".`,
+  w => `I found "${w}" in the dictionary.`,
+  w => `She smiled when she heard "${w}".`,
+  w => `I want to learn more words like "${w}".`,
+  w => `This word, "${w}", is new to me.`,
+  w => `I repeated the word "${w}" three times.`,
+  w => `My friend taught me the word "${w}".`,
+  w => `I saw "${w}" written on the board.`,
+  w => `Everyone in class knows the word "${w}" now.`,
+  w => `I underlined the word "${w}" in my book.`,
+  w => `He pronounced "${w}" perfectly.`,
+  w => `I still remember the word "${w}" from yesterday.`,
+  w => `Let's spell the word "${w}" together.`,
+  w => `I noticed the word "${w}" in the article.`,
+  w => `She circled the word "${w}" on the test.`,
+  w => `I practice saying "${w}" out loud.`,
+  w => `My sister asked about the word "${w}".`,
+  w => `I added "${w}" to my vocabulary list.`,
+  w => `The teacher wrote "${w}" on the whiteboard.`,
+  w => `I quizzed myself on the word "${w}".`,
+  w => `He used "${w}" correctly in his essay.`,
+  w => `I keep forgetting the word "${w}".`,
+  w => `Let's review the meaning of "${w}".`,
+  w => `I saw a flashcard with the word "${w}".`,
+  w => `She explained "${w}" to the new student.`,
+  w => `I practiced the word "${w}" this morning.`,
+  w => `We discussed the word "${w}" in our lesson.`,
+  w => `I like learning new words like "${w}".`,
+  w => `He looked up "${w}" online.`,
+  w => `I studied the word "${w}" before the exam.`,
+  w => `My classmate mentioned the word "${w}".`,
+  w => `I remember the word "${w}" clearly now.`,
+  w => `Let's talk about the word "${w}".`,
+  w => `I saw "${w}" highlighted in yellow.`,
+  w => `She wrote a sentence using "${w}".`,
+  w => `I practiced "${w}" with my study group.`,
+  w => `He explained the origin of "${w}".`,
+  w => `I collected new words including "${w}".`,
+  w => `We learned the word "${w}" last week.`,
+  w => `I used "${w}" in a conversation today.`,
+  w => `She taught the class the word "${w}".`,
+  w => `I need to memorize the word "${w}".`,
+  w => `Let's make a sentence with "${w}".`,
+  w => `I heard "${w}" mentioned in the news.`,
+  w => `He wrote "${w}" on a sticky note.`,
+  w => `I practice new vocabulary like "${w}" daily.`,
+  w => `She asked how to spell "${w}".`,
+  w => `I found "${w}" in my reading homework.`,
+  w => `We reviewed flashcards, including "${w}".`,
+  w => `I said the word "${w}" slowly.`,
+  w => `My teacher gave "${w}" as today's word.`,
+  w => `I saw "${w}" in a crossword puzzle.`,
+  w => `He challenged me to use "${w}" correctly.`,
+  w => `I keep a list of words like "${w}".`,
+  w => `She repeated "${w}" until she remembered it.`,
+  w => `I practiced pronunciation of "${w}".`,
+  w => `We studied "${w}" together after school.`,
+  w => `I marked "${w}" as a new word to learn.`,
+  w => `He asked for an example with "${w}".`,
+  w => `I reviewed "${w}" before going to sleep.`,
+  w => `She wrote "${w}" ten times to memorize it.`,
+  w => `I added "${w}" to my flashcard deck.`,
+  w => `We compared "${w}" with a similar word.`,
+  w => `I practiced using "${w}" in different sentences.`,
+  w => `He looked confused about the word "${w}".`,
+  w => `I finally understood the word "${w}".`,
+  w => `She quizzed me on the word "${w}".`,
+  w => `I wrote down the meaning of "${w}".`,
+  w => `We practiced "${w}" during our lesson.`,
+  w => `I saw "${w}" underlined in my textbook.`,
+  w => `He asked me to define "${w}".`,
+  w => `I studied the word "${w}" carefully.`,
+  w => `She used "${w}" in her speech.`,
+  w => `I reviewed my notes on "${w}".`,
+  w => `We talked about the word "${w}" today.`,
+  w => `I tried to use "${w}" naturally.`,
+  w => `He mentioned "${w}" during the discussion.`,
+  w => `I practiced spelling "${w}" out loud.`,
+  w => `She explained the meaning of "${w}" simply.`,
+  w => `I noted "${w}" as a useful word.`,
+  w => `We focused on the word "${w}" this week.`,
+  w => `I asked my teacher about "${w}".`,
+  w => `He gave an example using "${w}".`,
+  w => `I reviewed the word "${w}" with a friend.`,
+  w => `She wrote "${w}" in her journal.`,
+  w => `I practiced the word "${w}" for the quiz.`,
+  w => `We learned to use "${w}" correctly.`,
+  w => `I am proud that I learned "${w}".`
 ];
 
-function buildExampleSentence(word){
-  const template = SENTENCE_TEMPLATES[Math.floor(Math.random() * SENTENCE_TEMPLATES.length)];
-  return template(word);
+const SENTENCE_TEMPLATE_COUNTER_KEY = 'sentence-template-counter';
+
+// Returns the next template in the cycle each time it's called (word #1
+// gets template #1, word #2 gets template #2, ..., word #101 wraps back
+// to template #1), persisting the counter in localStorage so the
+// sequence keeps advancing across page reloads and future visits.
+function nextSentenceTemplate(){
+  const count = loadJSON(SENTENCE_TEMPLATE_COUNTER_KEY, 0);
+  saveJSON(SENTENCE_TEMPLATE_COUNTER_KEY, count + 1);
+  return SENTENCE_TEMPLATES[count % SENTENCE_TEMPLATES.length];
+}
+
+// Words added before the sentenceSource field existed have no way to know
+// whether their saved sentence came from the dictionary or a template —
+// so as a fallback, check whether the saved sentence exactly matches what
+// ANY of the 100 templates would produce for this word. If it does, treat
+// it as a template sentence (and show the badge/regenerate button) even
+// though sentenceSource was never recorded.
+function sentenceLooksLikeTemplate(w){
+  if(w && w.sentenceSource) return w.sentenceSource === 'template';
+  if(!w || !w.sentenceEn || !w.en) return false;
+  return SENTENCE_TEMPLATES.some(t => t(w.en) === w.sentenceEn);
+}
+
+async function buildExampleSentence(word){
+  const examples = await fetchDictionaryExamples(word);
+  const dictionaryPick = pickEasiestDictionaryExample(examples, word);
+  if(dictionaryPick) return { text: dictionaryPick, source: 'dictionary' };
+  // No dictionary entry, or none of its definitions had an example sentence
+  // — fall back to our own template cycle so generation still succeeds.
+  const template = nextSentenceTemplate();
+  return { text: template(word), source: 'template' };
 }
 
 // Extra common-word → emoji mappings, used as a second pass for words that
@@ -7632,6 +8587,153 @@ function guessIconForWord(word){
   return '🔤';
 }
 
+// Auto-picks a sticker for a newly generated word, reusing the exact same
+// sources as the manual "edit sticker" picker (openIconPicker/runIconPickerSearch
+// above) instead of the narrower exact-match-only guessIconForWord, so
+// "generate" finds a real matching sticker far more often instead of
+// landing on a fallback:
+//   1) guessIconForWord — exact/singular-plural match against our own
+//      curated word list + EXTRA_ICON_MAP (fast, no network).
+//   2) searchIconCandidates — the same broad local dictionary
+//      (ICON_SEARCH_DICTIONARY + curated words) the picker's live-typing
+//      filter uses, matched as a substring so close variants still hit.
+//   3) searchEmojiCdn — the same wider Emojibase CDN dataset the picker's
+//      "🔍 بحث" button uses, for anything the local sources don't cover.
+//   4) pickFallbackIconForNewWord — only if none of the above found
+//      anything at all: cycles through our own palette instead of the
+//      generic 🔤 placeholder (see function above for details).
+async function pickIconForNewWord(word){
+  const exact = guessIconForWord(word);
+  if(exact !== '🔤') return exact;
+
+  const local = searchIconCandidates(word);
+  if(local && local.length) return local[0];
+
+  try{
+    const wider = await searchEmojiCdn(word);
+    if(wider.length) return wider[0];
+  }catch(e){
+    // Offline or CDN unreachable — fall through to our own palette instead.
+  }
+  return pickFallbackIconForNewWord();
+}
+
+// Builds a natural-language prompt for the AI image generator from the
+// word and its example sentence — the sentence gives real context (e.g.
+// "book" the noun vs. "to book a flight") instead of just the bare word.
+function buildImageGenPrompt(en, sentenceEn){
+  const base = (sentenceEn || '').trim();
+  return base
+    ? `simple, clear illustration of "${en.trim()}" — depicting: ${base}`
+    : `simple, clear illustration of "${en.trim()}"`;
+}
+
+// Waits for an image URL to actually finish loading before it's accepted.
+// Pollinations occasionally fails, serves a broken image, or — worse —
+// just hangs with no response at all, so this races the load against a
+// timeout and turns either outcome into a normal thrown error. The caller
+// (generateWordImageUrl below) catches that and switches to our own local
+// fallback illustration instead of leaving the "add word" flow stuck.
+const IMAGE_LOAD_TIMEOUT_MS = 20000;
+function preloadImage(url){
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    const timer = setTimeout(() => {
+      if(settled) return;
+      settled = true;
+      reject(new Error('image took too long to load: ' + url));
+    }, IMAGE_LOAD_TIMEOUT_MS);
+
+    const img = new Image();
+    img.onload = () => {
+      if(settled) return;
+      settled = true;
+      clearTimeout(timer);
+      resolve(url);
+    };
+    img.onerror = () => {
+      if(settled) return;
+      settled = true;
+      clearTimeout(timer);
+      reject(new Error('image failed to load: ' + url));
+    };
+    img.src = url;
+  });
+}
+
+// A small set of soft, pleasant two-color gradients for the locally-drawn
+// fallback illustration below, so cards don't all look identical.
+const FALLBACK_IMAGE_PALETTES = [
+  ['#FDE68A', '#FCA5A5'],
+  ['#A7F3D0', '#93C5FD'],
+  ['#FBCFE8', '#C4B5FD'],
+  ['#FDBA74', '#FCA5A5'],
+  ['#BAE6FD', '#A5B4FC'],
+  ['#FEF08A', '#BEF264'],
+  ['#FCA5A5', '#FDE68A'],
+  ['#C7D2FE', '#F9A8D4'],
+];
+
+// Simple deterministic string hash, used to pick a stable palette per word
+// (same word always looks the same) without needing any network call.
+function hashStringToIndex(str, mod){
+  let hash = 0;
+  for(let i = 0; i < str.length; i++){
+    hash = (hash * 31 + str.charCodeAt(i)) >>> 0;
+  }
+  return hash % mod;
+}
+
+// Draws a simple, guaranteed-to-work illustration entirely on our own (no
+// network, no AI) — a soft gradient card with the word's own sticker/icon
+// shown large in the middle and the English word underneath. Used only as
+// a fallback when Pollinations fails or times out, so a word never ends up
+// with a broken or missing image.
+function buildFallbackWordImage(en, icon){
+  const clean = (en || '').trim();
+  const paletteIdx = hashStringToIndex(clean.toLowerCase(), FALLBACK_IMAGE_PALETTES.length);
+  const [c1, c2] = FALLBACK_IMAGE_PALETTES[paletteIdx];
+  const glyph = (icon && icon !== '🔤') ? icon : '🔤';
+  const label = clean.length > 22 ? clean.slice(0, 22) + '…' : clean;
+  const svg = `
+    <svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
+      <defs>
+        <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="${c1}"/>
+          <stop offset="100%" stop-color="${c2}"/>
+        </linearGradient>
+      </defs>
+      <rect width="600" height="450" fill="url(#bg)"/>
+      <circle cx="300" cy="185" r="115" fill="rgba(255,255,255,0.55)"/>
+      <text x="300" y="230" font-size="140" text-anchor="middle" dominant-baseline="middle">${escapeAttr(glyph)}</text>
+      <text x="300" y="380" font-size="46" font-weight="700" font-family="Cairo, 'Segoe UI', sans-serif" fill="#2b2b2b" text-anchor="middle">${escapeAttr(label)}</text>
+    </svg>
+  `.trim();
+  return 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
+}
+
+// Generates the card's photo via Pollinations — the exact same free AI
+// image site already used by the manual "🎨 توليد بالذكاء الاصطناعي"
+// button in the image editor (buildPollinationsUrl, defined further
+// below). If Pollinations fails OR just hangs (see the timeout in
+// preloadImage above), this no longer throws and leaves the "add word"
+// flow stuck — instead it falls back to our own locally-drawn
+// illustration (buildFallbackWordImage), which can never fail since it
+// doesn't touch the network at all. `icon` is optional and, when given
+// (the app now picks the sticker before generating the image), is reused
+// as the fallback illustration's big centered glyph.
+async function generateWordImageUrl(en, sentenceEn, icon){
+  const prompt = buildImageGenPrompt(en, sentenceEn);
+  const url = buildPollinationsUrl(prompt);
+  try{
+    await preloadImage(url);
+    return url;
+  }catch(e){
+    console.warn('[image] Pollinations failed/timed out for "' + en + '", drawing a local fallback instead:', e && e.message ? e.message : e);
+    return buildFallbackWordImage(en, icon);
+  }
+}
+
 generateWordBtn.addEventListener('click', async () => {
   const en = newWordEn.value.trim();
   if(!en){
@@ -7639,13 +8741,42 @@ generateWordBtn.addEventListener('click', async () => {
     return;
   }
 
+  // If the manual-sentence box is already showing and filled in (meaning
+  // a previous click already found no dictionary sentence for this word),
+  // use what the user typed instead of hitting the dictionary again.
+  const manualSentence = addWordManualSentenceGroup.style.display !== 'none'
+    ? addWordManualSentenceInput.value.trim()
+    : '';
+
   const originalLabel = generateWordBtn.textContent;
   generateWordBtn.disabled = true;
   generateWordBtn.textContent = 'جاري التوليد...';
 
   try{
     const ar = await translateEnToAr(en);
-    const sentenceEn = buildExampleSentence(en);
+
+    let sentenceEn = manualSentence;
+    let sentenceSource = manualSentence ? 'manual' : '';
+    if(!sentenceEn){
+      generateWordBtn.textContent = 'جاري توليد الجملة...';
+      try{
+        const result = await buildExampleSentence(en);
+        sentenceEn = result.text;
+        sentenceSource = result.source;
+      }catch(e){
+        // No dictionary entry/example for this word (common for rare or
+        // specialized words) — instead of blocking the whole "add word"
+        // action, let the user type their own simple sentence and try
+        // again, rather than losing the word entirely.
+        console.warn('[sentence] no dictionary sentence for "' + en + '", asking for a manual one:', e && e.message ? e.message : e);
+        addWordManualSentenceGroup.style.display = '';
+        addWordManualSentenceInput.focus();
+        generateWordBtn.disabled = false;
+        generateWordBtn.textContent = 'احفظ الجملة دي';
+        return;
+      }
+    }
+
     let sentenceAr = ar;
     try{
       sentenceAr = await translateEnToAr(sentenceEn);
@@ -7654,23 +8785,997 @@ generateWordBtn.addEventListener('click', async () => {
       // word's own translation rather than losing the whole card.
     }
 
+    generateWordBtn.textContent = 'جاري اختيار الملصق...';
+    const icon = await pickIconForNewWord(en);
+
+    generateWordBtn.textContent = 'جاري توليد الصورة...';
+    const img = await generateWordImageUrl(en, sentenceEn, icon);
+
     const list = loadCustomWords();
-    list.push({
-      icon: guessIconForWord(en),
+    list.unshift({
+      icon,
       en, ar, topic: 'custom',
-      img: `https://loremflickr.com/400/300/${encodeURIComponent(en.split(' ')[0])}?lock=${Date.now()}`,
-      sentenceEn, sentenceAr
+      img,
+      sentenceEn, sentenceAr, sentenceSource
     });
     saveCustomWords(list);
+
+    // Every word's saved schedule/rated/difficulty is keyed by its index in
+    // the list. Adding the new word at the FRONT shifts every existing
+    // word's index by one, so (same as deleting a word) clear this
+    // folder's progress and let it rebuild naturally rather than risking
+    // it pointing at the wrong word now.
+    const progressKeys = folderStorageKeys('custom-words');
+    localStorage.removeItem(progressKeys.schedule);
+    localStorage.removeItem(progressKeys.rated);
+    localStorage.removeItem(progressKeys.difficulty);
 
     closeAddWordModal();
     openCustomWords();
   }catch(err){
     alert('حصلت مشكلة أثناء التوليد، جرب تاني.');
-  }finally{
     generateWordBtn.disabled = false;
     generateWordBtn.textContent = originalLabel;
   }
+});
+
+
+// --- Edit an existing custom word ---
+// One shared form covers all four editable parts of a card (the English
+// word, the example sentence, the word's translation, the sentence's
+// translation). Which parts actually get saved depends on what changed:
+//  - If the English word itself was changed, the whole card is too tied
+//    to that word to just patch fields, so we regenerate everything from
+//    scratch (icon, image, sentence, both translations) exactly like
+//    "add word" does, then save — any edits typed into the other fields
+//    in this case are discarded, since they'd be for the old word.
+//  - Otherwise (word left as-is), every other field is saved exactly as
+//    typed, with no auto-translation or regeneration at all.
+let editWordIndex = null;
+const editWordOverlay = document.getElementById('edit-word-overlay');
+const editWordEnInput = document.getElementById('edit-word-en');
+const editWordSentenceEnInput = document.getElementById('edit-word-sentence-en');
+const editWordArInput = document.getElementById('edit-word-ar');
+const editWordSentenceArInput = document.getElementById('edit-word-sentence-ar');
+const saveEditWordBtn = document.getElementById('save-edit-word-btn');
+const editWordSentenceChangeBtn = document.getElementById('edit-word-sentence-change-btn');
+const editWordSentenceOptionsList = document.getElementById('edit-word-sentence-options');
+
+// Set only when the person picks one of the 3 suggested sentences from the
+// "🔄 تغيير" button below (not when they type into the field by hand), so
+// the save handler knows whether to tag the result as 'dictionary' or
+// 'template' instead of just 'manual'. Cleared whenever the modal opens/
+// closes or the person types in the field themselves.
+let editWordSentenceSourceOverride = null;
+
+function openEditWordModal(i){
+  const w = activeLevel.words[i];
+  if(!w) return;
+  editWordIndex = i;
+  editWordEnInput.value = w.en || '';
+  editWordSentenceEnInput.value = w.sentenceEn || '';
+  editWordArInput.value = w.ar || '';
+  editWordSentenceArInput.value = w.sentenceAr || '';
+  editWordSentenceSourceOverride = null;
+  editWordSentenceOptionsList.style.display = 'none';
+  editWordSentenceOptionsList.innerHTML = '';
+  editWordSentenceChangeBtn.disabled = false;
+  editWordSentenceChangeBtn.textContent = '🔄 تغيير';
+  saveEditWordBtn.disabled = false;
+  saveEditWordBtn.textContent = 'حفظ';
+  editWordOverlay.classList.add('show');
+  editWordEnInput.focus();
+}
+function closeEditWordModal(){
+  editWordOverlay.classList.remove('show');
+  editWordIndex = null;
+  editWordSentenceSourceOverride = null;
+  editWordSentenceOptionsList.style.display = 'none';
+  editWordSentenceOptionsList.innerHTML = '';
+}
+
+// Typing in the sentence field by hand always means "manual" from here on,
+// even if a suggestion was picked earlier in this same modal session.
+editWordSentenceEnInput.addEventListener('input', () => {
+  editWordSentenceSourceOverride = null;
+});
+
+// Builds up to 3 candidate sentences for the word currently typed in the
+// "الكلمة بالإنجليزي" field: the dictionary's best examples first (closest
+// in difficulty to the word, same scoring as automatic generation), then
+// our own templates filling any remaining slots — so the person always
+// gets 3 real options to choose from, regardless of whether the word's
+// current sentence came from the dictionary or a template.
+// True only if the sentence contains the exact word as a whole word
+// (same \bword\b test highlightWordInSentence uses later to mark it on the
+// card) — dictionaryapi.dev's examples come from a word's definitions, but
+// occasionally an example is tied to a related/inflected form and doesn't
+// actually contain the exact headword, which would leave the card with a
+// sentence the word never visibly appears in.
+function sentenceContainsWord(sentence, word){
+  const safeWord = word.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  if(!safeWord) return false;
+  return new RegExp(`\\b(${safeWord})\\b`, 'i').test(sentence);
+}
+
+async function buildSentenceSuggestions(word, excludeText){
+  const excludeNorm = (excludeText || '').trim().toLowerCase();
+  const examples = (await fetchDictionaryExamples(word))
+    .filter(text => sentenceContainsWord(text, word))
+    .filter(text => text.trim().toLowerCase() !== excludeNorm);
+  const scored = examples
+    .map(text => ({ text, score: sentenceLevelMatchScore(text, word) }))
+    .sort((a, b) => a.score - b.score);
+
+  const suggestions = [];
+  const seenNorm = new Set(excludeNorm ? [excludeNorm] : []);
+  scored.forEach(({ text }) => {
+    const norm = text.trim().toLowerCase();
+    if(suggestions.length >= 3 || seenNorm.has(norm)) return;
+    seenNorm.add(norm);
+    suggestions.push({ text, source: 'dictionary' });
+  });
+
+  while(suggestions.length < 3){
+    const text = nextSentenceTemplate()(word);
+    const norm = text.trim().toLowerCase();
+    if(seenNorm.has(norm)) continue;
+    seenNorm.add(norm);
+    suggestions.push({ text, source: 'template' });
+  }
+
+  return suggestions;
+}
+
+function renderSentenceOptions(suggestions, word){
+  editWordSentenceOptionsList.innerHTML = suggestions.map((s, idx) => `
+    <button type="button" class="sentence-option-item" data-option-index="${idx}">"${escapeAttr(s.text)}"</button>
+  `).join('');
+  editWordSentenceOptionsList.style.display = 'flex';
+
+  editWordSentenceOptionsList.querySelectorAll('.sentence-option-item').forEach((btn, idx) => {
+    btn.addEventListener('click', async () => {
+      const picked = suggestions[idx];
+      editWordSentenceEnInput.value = picked.text;
+      editWordSentenceSourceOverride = picked.source;
+      editWordSentenceOptionsList.style.display = 'none';
+      editWordSentenceOptionsList.innerHTML = '';
+
+      // Best-effort Arabic translation of the picked sentence — if it
+      // fails, just leave whatever Arabic sentence was already there.
+      try{
+        const sentenceAr = await translateEnToAr(picked.text);
+        editWordSentenceArInput.value = sentenceAr;
+
+        // The word can have more than one Arabic sense depending on
+        // context, so once we know how THIS sentence was translated, check
+        // whether one of the word's known senses actually shows up inside
+        // it, and if so use that as the word's own meaning too — instead
+        // of leaving whatever generic meaning was there before, which may
+        // no longer match the sense this new sentence uses.
+        try{
+          const senses = await fetchGoogleWordSenses(word);
+          const matchedSense = senses.find(s => sentenceAr.includes(s));
+          if(matchedSense) editWordArInput.value = matchedSense;
+        } catch(e){
+          // Keep the existing word meaning.
+        }
+      }catch(e){
+        // Keep the existing Arabic sentence rather than losing it.
+      }
+    });
+  });
+}
+
+editWordSentenceChangeBtn.addEventListener('click', async () => {
+  const word = editWordEnInput.value.trim();
+  if(!word){
+    alert('من فضلك اكتب الكلمة بالإنجليزي الأول.');
+    return;
+  }
+
+  editWordSentenceChangeBtn.disabled = true;
+  editWordSentenceChangeBtn.textContent = 'بيدور...';
+  editWordSentenceOptionsList.style.display = 'block';
+  editWordSentenceOptionsList.innerHTML = '<div class="sentence-option-status">بيدور على جمل تانية للكلمة...</div>';
+
+  try{
+    const suggestions = await buildSentenceSuggestions(word, editWordSentenceEnInput.value.trim());
+    renderSentenceOptions(suggestions, word);
+  }catch(e){
+    editWordSentenceOptionsList.innerHTML = '<div class="sentence-option-status">حصلت مشكلة أثناء البحث، جرب تاني.</div>';
+  }finally{
+    editWordSentenceChangeBtn.disabled = false;
+    editWordSentenceChangeBtn.textContent = '🔄 تغيير';
+  }
+});
+
+document.getElementById('cancel-edit-word').addEventListener('click', closeEditWordModal);
+editWordOverlay.addEventListener('click', (e) => {
+  if(e.target === editWordOverlay) closeEditWordModal();
+});
+
+saveEditWordBtn.addEventListener('click', async () => {
+  const i = editWordIndex;
+  if(i === null) return;
+
+  const list = loadCustomWords();
+  const original = list[i];
+  if(!original){
+    alert('الكلمة دي مش موجودة في القائمة، ممكن اتحذفت من مكان تاني.');
+    closeEditWordModal();
+    return;
+  }
+
+  const newEn = editWordEnInput.value.trim();
+  if(!newEn){
+    alert('من فضلك اكتب الكلمة بالإنجليزي.');
+    return;
+  }
+  const newSentenceEn = editWordSentenceEnInput.value.trim();
+  const newAr = editWordArInput.value.trim();
+  const newSentenceAr = editWordSentenceArInput.value.trim();
+  const wordChanged = newEn.toLowerCase() !== (original.en || '').trim().toLowerCase();
+
+  const originalLabel = saveEditWordBtn.textContent;
+  saveEditWordBtn.disabled = true;
+
+  try{
+    let updated;
+    if(wordChanged){
+      saveEditWordBtn.textContent = 'جاري التوليد...';
+      const ar = await translateEnToAr(newEn);
+      saveEditWordBtn.textContent = 'جاري توليد الجملة...';
+
+      let sentenceEn = '';
+      let sentenceSource = '';
+      try{
+        const result = await buildExampleSentence(newEn);
+        sentenceEn = result.text;
+        sentenceSource = result.source;
+      }catch(e){
+        // No dictionary entry/example for the new word. If the user
+        // already has something typed in the "الجملة بالإنجليزي" field,
+        // use that instead of failing outright; otherwise ask them to
+        // type one there and press "حفظ" again, rather than losing the
+        // word change entirely.
+        console.warn('[sentence] no dictionary sentence for "' + newEn + '":', e && e.message ? e.message : e);
+        if(newSentenceEn){
+          sentenceEn = newSentenceEn;
+          sentenceSource = 'manual';
+        } else {
+          alert('مفيش جملة جاهزة لهذه الكلمة في القاموس. اكتب جملة بسيطة بنفسك في خانة "الجملة بالإنجليزي" وبعدين دوس "حفظ" تاني.');
+          saveEditWordBtn.disabled = false;
+          saveEditWordBtn.textContent = originalLabel;
+          return;
+        }
+      }
+
+      let sentenceAr = ar;
+      try{
+        sentenceAr = await translateEnToAr(sentenceEn);
+      }catch(e){
+        // Same fallback as "add word": keep the word's own translation
+        // rather than losing the whole card over a failed second call.
+      }
+      saveEditWordBtn.textContent = 'جاري اختيار الملصق...';
+      const icon = await pickIconForNewWord(newEn);
+      saveEditWordBtn.textContent = 'جاري توليد الصورة...';
+      const img = await generateWordImageUrl(newEn, sentenceEn, icon);
+      updated = {
+        icon,
+        en: newEn, ar, topic: original.topic || 'custom',
+        img,
+        sentenceEn, sentenceAr, sentenceSource
+      };
+    } else {
+      const sentenceEdited = newSentenceEn !== (original.sentenceEn || '');
+      const sentenceSource = editWordSentenceSourceOverride
+        ? editWordSentenceSourceOverride
+        : (sentenceEdited ? 'manual' : original.sentenceSource);
+      updated = {
+        ...original,
+        en: newEn,
+        sentenceEn: newSentenceEn,
+        ar: newAr,
+        sentenceAr: newSentenceAr,
+        sentenceSource
+      };
+    }
+
+    list[i] = updated;
+    saveCustomWords(list);
+    activeLevel.words = list;
+
+    closeEditWordModal();
+    renderCard(i);
+  }catch(err){
+    alert('حصلت مشكلة أثناء الحفظ، جرب تاني.');
+  }finally{
+    saveEditWordBtn.disabled = false;
+    saveEditWordBtn.textContent = originalLabel;
+  }
+});
+
+// --- Image picker: pick a different picture for a custom word ---
+// Three real ways to get a picture, picked from a main menu:
+//   1) Device  — upload a photo straight from the person's own device.
+//   2) Search  — real web image search (Openverse: free, no API key,
+//      CORS-enabled, returns actual photos tagged/described to match the
+//      query — unlike LoremFlickr's loosely-tagged random photo pool).
+//   3) AI      — generate an image from a text prompt via Pollinations
+//      (free, no sign-in; the URL itself IS the image, so no fetch/CORS
+//      dance is needed — just point an <img> at it).
+const imagePickerOverlay = document.getElementById('image-picker-overlay');
+const imagePickerStepMenu = document.getElementById('image-picker-step-menu');
+const imagePickerStepDevice = document.getElementById('image-picker-step-device');
+const imagePickerStepSearch = document.getElementById('image-picker-step-search');
+const imagePickerStepAi = document.getElementById('image-picker-step-ai');
+const imagePickerSteps = {
+  menu: imagePickerStepMenu,
+  device: imagePickerStepDevice,
+  search: imagePickerStepSearch,
+  ai: imagePickerStepAi
+};
+
+const imagePickerMenuDeviceBtn = document.getElementById('image-picker-menu-device');
+const imagePickerMenuSearchBtn = document.getElementById('image-picker-menu-search');
+const imagePickerMenuAiBtn = document.getElementById('image-picker-menu-ai');
+
+const imagePickerDeviceInput = document.getElementById('image-picker-device-input');
+const imagePickerUploadPreview = document.getElementById('image-picker-upload-preview');
+const imagePickerDeviceBackBtn = document.getElementById('image-picker-device-back');
+
+const imagePickerSearchInput = document.getElementById('image-picker-search-input');
+const imagePickerSearchBtn = document.getElementById('image-picker-search-btn');
+const imagePickerSearchGrid = document.getElementById('image-picker-search-grid');
+const imagePickerSearchBackBtn = document.getElementById('image-picker-search-back');
+
+const imagePickerAiInput = document.getElementById('image-picker-ai-input');
+const imagePickerAiBtn = document.getElementById('image-picker-ai-btn');
+const imagePickerAiPreview = document.getElementById('image-picker-ai-preview');
+const imagePickerAiBackBtn = document.getElementById('image-picker-ai-back');
+const imagePickerAiUseBtn = document.getElementById('image-picker-ai-use-btn');
+
+let imagePickerWordIndex = null;
+let imagePickerSearchRequestId = 0;
+let imagePickerAiUrl = null;
+
+function showImagePickerStep(name){
+  Object.keys(imagePickerSteps).forEach(key => {
+    imagePickerSteps[key].style.display = (key === name) ? '' : 'none';
+  });
+}
+
+function openImagePicker(i){
+  const w = activeLevel.words[i];
+  if(!w) return;
+  imagePickerWordIndex = i;
+
+  // Reset every step back to a clean state each time the modal opens.
+  imagePickerDeviceInput.value = '';
+  imagePickerUploadPreview.innerHTML = '';
+  imagePickerSearchInput.value = w.en || '';
+  imagePickerSearchGrid.innerHTML = '';
+  imagePickerAiInput.value = w.en || '';
+  imagePickerAiPreview.innerHTML = '';
+  imagePickerAiUseBtn.style.display = 'none';
+  imagePickerAiUrl = null;
+
+  showImagePickerStep('menu');
+  imagePickerOverlay.classList.add('show');
+}
+
+function closeImagePicker(){
+  imagePickerOverlay.classList.remove('show');
+  imagePickerWordIndex = null;
+}
+
+function finishImagePicker(url){
+  const i = imagePickerWordIndex;
+  if(i === null) return;
+  persistWordFieldEdit(i, 'img', url);
+  closeImagePicker();
+  renderCard(i);
+}
+
+// --- Menu navigation ---
+imagePickerMenuDeviceBtn.addEventListener('click', () => showImagePickerStep('device'));
+imagePickerMenuSearchBtn.addEventListener('click', () => {
+  showImagePickerStep('search');
+  if(imagePickerSearchInput.value.trim() && !imagePickerSearchGrid.innerHTML){
+    runImagePickerSearch();
+  }
+});
+imagePickerMenuAiBtn.addEventListener('click', () => showImagePickerStep('ai'));
+
+imagePickerDeviceBackBtn.addEventListener('click', () => showImagePickerStep('menu'));
+imagePickerSearchBackBtn.addEventListener('click', () => showImagePickerStep('menu'));
+imagePickerAiBackBtn.addEventListener('click', () => showImagePickerStep('menu'));
+
+document.getElementById('cancel-image-picker').addEventListener('click', closeImagePicker);
+imagePickerOverlay.addEventListener('click', (e) => {
+  if(e.target === imagePickerOverlay) closeImagePicker();
+});
+
+// --- Step: device upload ---
+imagePickerDeviceInput.addEventListener('change', () => {
+  const file = imagePickerDeviceInput.files && imagePickerDeviceInput.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    const dataUrl = reader.result;
+    imagePickerUploadPreview.innerHTML = `<img src="${escapeAttr(dataUrl)}" alt="">`;
+    // Uploading a specific file is already an explicit, unambiguous
+    // choice — save it immediately rather than adding a redundant
+    // "confirm" click.
+    finishImagePicker(dataUrl);
+  };
+  reader.readAsDataURL(file);
+});
+
+// --- Step: real web image search (Openverse) ---
+async function searchWebImages(query){
+  const url = `https://api.openverse.org/v1/images/?q=${encodeURIComponent(query)}&page_size=6&mature=false`;
+  const res = await fetch(url);
+  if(!res.ok) throw new Error('openverse request failed');
+  const data = await res.json();
+  return (data.results || [])
+    .map(r => r.thumbnail || r.url)
+    .filter(Boolean)
+    .slice(0, 3);
+}
+
+async function runImagePickerSearch(){
+  const query = imagePickerSearchInput.value.trim();
+  if(!query){
+    imagePickerSearchGrid.innerHTML = '<div class="image-picker-search-status">اكتب كلمة الأول عشان تدور بيها.</div>';
+    return;
+  }
+
+  const requestId = ++imagePickerSearchRequestId;
+  imagePickerSearchBtn.disabled = true;
+  imagePickerSearchBtn.innerHTML = '<span class="icon-picker-spin">↻</span> بيدوّر...';
+  imagePickerSearchGrid.innerHTML = '<div class="image-picker-search-status">بيدوّر على صور...</div>';
+
+  try{
+    const urls = await searchWebImages(query);
+    if(requestId !== imagePickerSearchRequestId) return; // query changed meanwhile
+    if(!urls.length){
+      imagePickerSearchGrid.innerHTML = '<div class="image-picker-search-status">غير متوفر صور لهذه الكلمة، جرب كلمة تانية.</div>';
+      return;
+    }
+    imagePickerSearchGrid.innerHTML = urls.map(url => `
+      <button type="button" class="image-picker-option" data-img-url="${escapeAttr(url)}">
+        <img src="${escapeAttr(url)}" alt="${escapeAttr(query)}" loading="lazy">
+      </button>
+    `).join('');
+  }catch(e){
+    if(requestId !== imagePickerSearchRequestId) return;
+    imagePickerSearchGrid.innerHTML = '<div class="image-picker-search-status">حصلت مشكلة في الاتصال بالإنترنت، جرب تاني.</div>';
+  }finally{
+    if(requestId === imagePickerSearchRequestId){
+      imagePickerSearchBtn.disabled = false;
+      imagePickerSearchBtn.textContent = '🔍 بحث';
+    }
+  }
+}
+
+imagePickerSearchBtn.addEventListener('click', runImagePickerSearch);
+imagePickerSearchInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    runImagePickerSearch();
+  }
+});
+
+imagePickerSearchGrid.addEventListener('click', (e) => {
+  const option = e.target.closest('.image-picker-option');
+  if(!option) return;
+  finishImagePicker(option.dataset.imgUrl);
+});
+
+// --- Step: AI image generation (Pollinations — free, no sign-in) ---
+function buildPollinationsUrl(prompt){
+  // A random seed forces a fresh generation each time instead of
+  // Pollinations serving back a cached image for the same prompt text.
+  const seed = Math.floor(Math.random() * 1e9);
+  return `https://image.pollinations.ai/prompt/${encodeURIComponent(prompt)}?width=400&height=300&seed=${seed}&nologo=true`;
+}
+
+imagePickerAiBtn.addEventListener('click', () => {
+  const prompt = imagePickerAiInput.value.trim();
+  if(!prompt){
+    imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">اكتب وصف الصورة الأول.</div>';
+    return;
+  }
+
+  imagePickerAiBtn.disabled = true;
+  imagePickerAiBtn.innerHTML = '<span class="icon-picker-spin">↻</span> بيولّد...';
+  imagePickerAiUseBtn.style.display = 'none';
+  imagePickerAiUrl = null;
+  imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">بيولّد الصورة، ممكن تاخد شوية ثواني...</div>';
+
+  const url = buildPollinationsUrl(prompt);
+  let settled = false;
+  const timeoutTimer = setTimeout(() => {
+    if(settled) return;
+    settled = true;
+    imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">التوليد ماخدش وقت طويل جدًا، جرب تاني.</div>';
+    imagePickerAiBtn.disabled = false;
+    imagePickerAiBtn.textContent = '🎨 توليد';
+  }, IMAGE_LOAD_TIMEOUT_MS);
+  const img = new Image();
+  img.onload = () => {
+    if(settled) return;
+    settled = true;
+    clearTimeout(timeoutTimer);
+    imagePickerAiUrl = url;
+    imagePickerAiPreview.innerHTML = `<img src="${escapeAttr(url)}" alt="${escapeAttr(prompt)}">`;
+    imagePickerAiUseBtn.style.display = '';
+    imagePickerAiBtn.disabled = false;
+    imagePickerAiBtn.textContent = '🎨 توليد';
+  };
+  img.onerror = () => {
+    if(settled) return;
+    settled = true;
+    clearTimeout(timeoutTimer);
+    imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">حصلت مشكلة في التوليد، جرب تاني.</div>';
+    imagePickerAiBtn.disabled = false;
+    imagePickerAiBtn.textContent = '🎨 توليد';
+  };
+  img.src = url;
+});
+
+imagePickerAiInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    imagePickerAiBtn.click();
+  }
+});
+
+imagePickerAiUseBtn.addEventListener('click', () => {
+  if(!imagePickerAiUrl) return;
+  finishImagePicker(imagePickerAiUrl);
+});
+
+// --- Icon picker: pick a different sticker (emoji) for a custom word ---
+// Candidates come from two places: (1) real matches — the word's own
+// guessed icon plus any icon matches for individual words in its example
+// sentence, pulled from the same curated maps the app already uses, and
+// (2) a broad general-purpose emoji palette so there's always a full grid
+// to choose from even when nothing matched. A free-text input covers
+// anything not in the list — any emoji typed there is used as-is, which
+// is the most accurate option since the person is picking it directly.
+const ICON_PICKER_GENERAL_PALETTE = [
+  '📌','✨','⭐','🌟','💡','🎯','🔑','🧩','📦','🎁','📷','🎨','🎵','🎬','📚',
+  '✏️','📝','🔖','🗂️','📅','🕐','⚙️','🧠','👀','✋','👍','❤️','😊','🔥','💧',
+  '🌱','🌍','☀️','🌙','⚽','🎮','💼','🏆','🔔','💬','🚀','🎓','🧳','🔵','🟢',
+  '🟡','🔺','⬜','🔤'
+];
+
+// Same palette, minus the generic 🔤 placeholder itself — used as the pool
+// for pickFallbackIconForNewWord below, since the whole point of that
+// function is to avoid ever landing on the placeholder.
+const FALLBACK_ICON_POOL = ICON_PICKER_GENERAL_PALETTE.filter(icon => icon !== '🔤');
+const CUSTOM_ICON_FALLBACK_COUNTER_KEY = 'custom-icon-fallback-counter';
+
+// Called only when no real matching sticker was found anywhere (exact
+// match, local dictionary, or the wider CDN search). Instead of showing
+// the generic 🔤 placeholder, cycle through our own curated palette,
+// skipping any sticker already used by an existing custom word so
+// consecutive "no match" words get visibly different stickers from each
+// other — and once every sticker in the palette is already in use by some
+// custom word, it just starts looping through the palette again from the
+// beginning (persisted in localStorage so the sequence keeps advancing
+// across visits, the same way the sentence-template cycle does).
+function pickFallbackIconForNewWord(){
+  const usedIcons = new Set(loadCustomWords().map(w => w.icon).filter(Boolean));
+  const start = loadJSON(CUSTOM_ICON_FALLBACK_COUNTER_KEY, 0) % FALLBACK_ICON_POOL.length;
+
+  for(let step = 0; step < FALLBACK_ICON_POOL.length; step++){
+    const idx = (start + step) % FALLBACK_ICON_POOL.length;
+    const candidate = FALLBACK_ICON_POOL[idx];
+    if(!usedIcons.has(candidate)){
+      saveJSON(CUSTOM_ICON_FALLBACK_COUNTER_KEY, idx + 1);
+      return candidate;
+    }
+  }
+
+  // Every sticker in the pool is already used by some custom word — keep
+  // cycling through the pool in order from here, accepting repeats,
+  // rather than falling back to the generic placeholder.
+  const icon = FALLBACK_ICON_POOL[start];
+  saveJSON(CUSTOM_ICON_FALLBACK_COUNTER_KEY, start + 1);
+  return icon;
+}
+
+function buildIconCandidates(en, sentenceEn){
+  const seen = new Set();
+  const out = [];
+  const add = (icon) => {
+    if(!icon || seen.has(icon)) return;
+    seen.add(icon);
+    out.push(icon);
+  };
+
+  add(guessIconForWord(en));
+  (sentenceEn || '')
+    .toLowerCase()
+    .replace(/["".,!?]/g, '')
+    .split(/\s+/)
+    .forEach(w => { if(w) add(lookupIcon(w)); });
+
+  ICON_PICKER_GENERAL_PALETTE.forEach(add);
+  return out;
+}
+
+// --- Broad icon dictionary: each entry is [icon, "en1,en2", "ar1,ar2"] so
+// searching by name covers far more ground than only the ~950 words
+// already curated in the app's levels. This is intentionally wide
+// (people, animals, food, nature, home, school, transport, sports,
+// tech, feelings, shapes/colors...) so a typed word is likely to hit
+// something even if it never appeared in any flashcard before.
+const ICON_SEARCH_DICTIONARY = [
+  ['👦','boy','ولد,صبي'], ['👧','girl','بنت,فتاة'], ['👨','man','رجل'], ['👩','woman','امرأة,ست'],
+  ['👶','baby','طفل رضيع,بيبي'], ['🧒','child,kid','طفل'], ['👴','grandfather,old man','جد,جدو'],
+  ['👵','grandmother,old woman','جدة,تيتة'], ['👪','family','عائلة,أسرة'], ['🧑‍🤝‍🧑','friends','أصدقاء'],
+  ['🫂','friend,hug','صديق,صاحب,عناق'], ['🧑‍🏫','teacher','معلم,مدرس'], ['🧑‍🎓','student','طالب'],
+  ['🩺','doctor','دكتور,طبيب'], ['👩‍⚕️','nurse','ممرضة'], ['👮','police','شرطي,بوليس'],
+  ['👨‍🌾','farmer','مزارع,فلاح'], ['👨‍🍳','chef,cook','طباخ,شيف'], ['🚕','driver,taxi','سائق,تاكسي'],
+  ['👨‍✈️','pilot','طيار'], ['🎨','artist,painting','فنان,رسم'], ['🎤','singer,microphone','مغني,مايك'],
+  ['💃','dancer,dancing','راقصة,رقص'], ['✍️','writer,writing','كاتب,كتابة'], ['👷','engineer,builder','مهندس,عامل بناء'],
+  ['⚖️','lawyer,justice','محامي,عدالة'], ['💂','soldier','جندي,عسكري'], ['👑','king,queen,crown','ملك,ملكة,تاج'],
+  ['👀','eye,eyes','عين,عيون'], ['👂','ear','أذن'], ['👃','nose','أنف'], ['👄','mouth,lips','فم,شفايف'],
+  ['✋','hand','يد'], ['🦶','foot','قدم'], ['🦵','leg','رجل'], ['💪','arm,strong','ذراع,قوي'],
+  ['🧠','brain,mind','مخ,عقل'], ['❤️','heart,love','قلب,حب'], ['🦷','tooth,teeth','سن,أسنان'],
+  ['💇','hair','شعر'], ['😊','happy,smile','سعيد,مبسوط'], ['😢','sad,cry','حزين,بكاء'],
+  ['😠','angry','غضبان,زعلان'], ['😲','surprised','متفاجئ,مندهش'], ['😨','scared,afraid','خايف,مرعوب'],
+  ['😂','laugh,funny','ضحك,مضحك'], ['😴','tired,sleepy','تعبان,نعسان'], ['🤒','sick,ill','مريض,تعبان'],
+  ['🐶','dog,puppy','كلب'], ['🐱','cat,kitten','قطة,قطه'], ['🐦','bird','عصفور,طير'],
+  ['🐟','fish','سمك'], ['🦁','lion','أسد'], ['🐯','tiger','نمر'], ['🐘','elephant','فيل'],
+  ['🐒','monkey','قرد'], ['🐰','rabbit','أرنب'], ['🐻','bear','دب'], ['🐭','mouse','فأر'],
+  ['🐍','snake','ثعبان,حية'], ['🐸','frog','ضفدع'], ['🐢','turtle','سلحفاة'], ['🐝','bee','نحلة'],
+  ['🦋','butterfly','فراشة'], ['🐴','horse','حصان'], ['🐮','cow','بقرة'], ['🐑','sheep','خروف,غنمة'],
+  ['🐔','chicken,hen','دجاجة,فرخة'], ['🦆','duck','بطة'], ['🐐','goat','ماعز,عنزة'], ['🐫','camel','جمل'],
+  ['🐋','whale','حوت'], ['🦈','shark','قرش'], ['🐬','dolphin','دولفين'], ['🦉','owl','بومة'],
+  ['🦅','eagle','نسر'], ['🕷️','spider','عنكبوت'], ['🐜','ant','نملة'], ['🐌','snail','حلزون'],
+  ['🦀','crab','سلطعون,كابوريا'], ['🐙','octopus','أخطبوط'], ['🐧','penguin','بطريق'],
+  ['🦘','kangaroo','كنغر'], ['🦒','giraffe','زرافة'], ['🦓','zebra','حمار وحشي'], ['🦊','fox','ثعلب'],
+  ['🐺','wolf','ذئب'], ['🦌','deer','غزال,أيل'], ['🐿️','squirrel','سنجاب'], ['🦔','hedgehog','قنفذ'],
+  ['🦇','bat','خفاش'], ['🦚','peacock','طاووس'], ['🦜','parrot','ببغاء'], ['🐞','ladybug','دعسوقة'],
+  ['🦟','mosquito','ناموسة,بعوضة'],
+  ['🍎','apple','تفاح'], ['🍌','banana','موز'], ['🍊','orange','برتقال'], ['🍇','grapes','عنب'],
+  ['🍓','strawberry','فراولة'], ['🍉','watermelon','بطيخ'], ['🍋','lemon','ليمون'],
+  ['🍍','pineapple','أناناس'], ['🥭','mango','مانجو'], ['🍑','peach,cherry','خوخ,كرز'],
+  ['🍅','tomato','طماطم'], ['🥔','potato','بطاطس'], ['🥕','carrot','جزر'], ['🧅','onion','بصل'],
+  ['🌽','corn','ذرة'], ['🍞','bread','عيش,خبز'], ['🧀','cheese','جبنة'], ['🥚','egg','بيضة'],
+  ['🥛','milk','لبن'], ['🍚','rice','رز,أرز'], ['🥩','meat','لحمة'], ['🍰','cake','كيك,تورتة'],
+  ['🍕','pizza','بيتزا'], ['🍔','burger','برجر'], ['☕','coffee','قهوة'], ['🍵','tea','شاي'],
+  ['🧃','juice','عصير'], ['💧','water','مية,ماء'], ['🍬','sugar,candy','سكر,حلوى'], ['🧂','salt','ملح'],
+  ['🍯','honey','عسل'], ['🍫','chocolate','شوكولاتة'], ['🍦','ice cream','آيس كريم,بوظة'],
+  ['🍲','soup','شوربة'], ['🥗','salad','سلطة'], ['🥪','sandwich','ساندوتش'],
+  ['☀️','sun','شمس'], ['🌙','moon','قمر'], ['⭐','star','نجمة'], ['☁️','cloud','سحابة,غيمة'],
+  ['🌧️','rain','مطر'], ['❄️','snow','ثلج'], ['💨','wind','هوا,رياح'], ['🔥','fire','نار'],
+  ['🌳','tree','شجرة'], ['🌸','flower','وردة,زهرة'], ['🌱','grass,plant','عشب,نبات'],
+  ['⛰️','mountain','جبل'], ['🏖️','beach','شاطئ,بلاج'], ['🌊','sea,wave','بحر,موجة'],
+  ['🏞️','river','نهر'], ['🌲','forest','غابة'], ['🏜️','desert','صحراء'], ['🏝️','island','جزيرة'],
+  ['🌈','rainbow','قوس قزح'], ['⚡','lightning','برق,صاعقة'], ['🌋','volcano','بركان'],
+  ['🏔️','waterfall,rock','جبل جليدي,صخرة'], ['🏠','house,home','بيت,منزل'], ['🚪','door','باب'],
+  ['🪟','window','شباك,نافذة'], ['🪑','chair','كرسي'], ['🛏️','bed','سرير'], ['💡','lamp,light,idea','لمبة,فكرة'],
+  ['🕐','clock,time','ساعة,وقت'], ['🪞','mirror','مرآة'], ['🔑','key','مفتاح'], ['📱','phone','تليفون,موبايل'],
+  ['💻','computer,laptop','كمبيوتر,لابتوب'], ['📺','television,tv','تليفزيون'], ['📚','book,library','كتاب,مكتبة'],
+  ['🖊️','pen','قلم حبر'], ['✏️','pencil','قلم رصاص'], ['📓','notebook','دفتر'], ['🎒','bag,backpack','شنطة,حقيبة'],
+  ['☂️','umbrella','شمسية,مظلة'], ['👓','glasses','نظارة'], ['⌚','watch','ساعة يد'], ['👛','wallet','محفظة'],
+  ['📷','camera','كاميرا'], ['✂️','scissors','مقص'], ['🧹','broom','مقشة,مكنسة'], ['🧼','soap','صابون'],
+  ['🧴','towel,bottle','فوطة,زجاجة'], ['🪥','toothbrush','فرشة أسنان'], ['🕯️','candle','شمعة'],
+  ['📦','box','صندوق'], ['🧺','basket','سلة'], ['🥤','cup','كوباية'], ['🍽️','plate','طبق'],
+  ['🥄','spoon','معلقة'], ['🍴','fork,knife','شوكة,سكينة'], ['🍳','pot,pan','حلة,طاسة'],
+  ['🏫','school','مدرسة'], ['📏','ruler','مسطرة'], ['🧽','eraser','استيكة'], ['📝','exam,homework','امتحان,واجب'],
+  ['🖨️','printer','طابعة'], ['👒','hat','قبعة'], ['👟','shoes','جزمة,حذاء'], ['👕','shirt','تيشيرت,قميص'],
+  ['👗','dress','فستان'], ['🧥','jacket,coat','جاكيت,معطف'], ['👖','pants,trousers','بنطلون'],
+  ['🧦','socks','شراب'], ['🧤','gloves','جوانتي'], ['🧣','scarf','شال,كوفية'], ['🎀','belt,tie,bow','حزام,ربطة عنق'],
+  ['🩳','skirt','جيبة'], ['🧶','sweater','بلوفر,كنزة'], ['🚗','car','عربية,سيارة'], ['🚌','bus','أتوبيس'],
+  ['🚆','train','قطر'], ['🚲','bicycle,bike','عجلة,دراجة'], ['✈️','airplane,plane','طيارة'],
+  ['⛵','boat','مركب'], ['🚢','ship','سفينة'], ['🏍️','motorcycle','موتوسيكل'], ['🚚','truck','شحن,لوري'],
+  ['🚇','subway,metro','مترو'], ['🚁','helicopter','هليكوبتر'], ['🚀','rocket','صاروخ'],
+  ['⚽','football,soccer','كورة,كرة قدم'], ['🏀','basketball','كرة سلة'], ['🎾','tennis','تنس'],
+  ['🏊','swimming','سباحة'], ['🏃','running','جري'], ['🚴','cycling','ركوب دراجة'], ['🥊','boxing','ملاكمة'],
+  ['🏐','volleyball','كرة طائرة'], ['⛳','golf','جولف'], ['⛷️','skiing','تزلج'], ['♟️','chess','شطرنج'],
+  ['🎣','fishing','صيد سمك'], ['⛺','camping','تخييم'], ['🎮','game,gaming','لعبة,ألعاب'],
+  ['🏥','hospital','مستشفى'], ['🕌','mosque','مسجد'], ['⛪','church','كنيسة'], ['🏪','market,shop','سوق,محل'],
+  ['🍴','restaurant','مطعم'], ['🏨','hotel','فندق'], ['🏦','bank','بنك'], ['🌳','park','حديقة'],
+  ['🦁','zoo','حديقة حيوان'], ['🏛️','museum','متحف'], ['🛫','airport','مطار'], ['🚉','station','محطة'],
+  ['🏭','factory','مصنع'], ['🚜','farm','مزرعة'], ['🏢','office','مكتب'], ['🏰','castle','قلعة'],
+  ['🌉','bridge','كوبري,جسر'], ['🗼','tower','برج'], ['📶','internet','إنترنت'], ['📧','email','إيميل'],
+  ['🤖','robot','روبوت'], ['🔋','battery','بطارية'], ['🔌','charger','شاحن'], ['🎧','headphones','سماعة'],
+  ['🔊','speaker,sound','سماعة صوت,صوت'], ['🎙️','microphone','ميكروفون'], ['📅','calendar','تقويم,روزنامة'],
+  ['🌅','morning','صباح'], ['🌃','night','ليل'], ['📆','day,week,month,year','يوم,أسبوع,شهر,سنة'],
+  ['💰','money','فلوس,نقود'], ['🪙','coin','عملة معدنية'], ['🛒','cart,shopping','عربة تسوق,تسوق'],
+  ['🎁','gift','هدية'], ['🏷️','price,ticket','سعر,تذكرة'], ['🎸','guitar','جيتار'], ['🎹','piano','بيانو'],
+  ['🥁','drum','طبلة'], ['🎻','violin','كمان'], ['🖌️','brush,paint','فرشة رسم,رسم'], ['🎬','movie','فيلم'],
+  ['🎭','theatre','مسرح'], ['🔴','red,circle','أحمر,دائرة'], ['🔵','blue','أزرق'], ['🟢','green','أخضر'],
+  ['🟡','yellow','أصفر'], ['⚫','black','أسود'], ['⚪','white','أبيض'], ['🟣','purple','بنفسجي'],
+  ['🟠','orange color','برتقالي'], ['🩷','pink','وردي,بمبي'], ['🟤','brown','بني'], ['⬜','shape,square','مربع'],
+  ['🔺','triangle','مثلث'],
+];
+
+// --- Icon search: build once, a flat list of {icon, keywords} entries so
+// typing a name (English or Arabic) surfaces matching stickers, reusing
+// every word/icon pair already curated across the app's levels plus the
+// extra English keyword map.
+let _iconSearchIndex = null;
+function getIconSearchIndex(){
+  if(_iconSearchIndex) return _iconSearchIndex;
+  const byIcon = new Map(); // icon -> Set of lowercase keywords
+  const addEntry = (icon, ...keywords) => {
+    if(!icon) return;
+    if(!byIcon.has(icon)) byIcon.set(icon, new Set());
+    const set = byIcon.get(icon);
+    keywords.forEach(k => { if(k) set.add(k.trim().toLowerCase()); });
+  };
+  ICON_SEARCH_DICTIONARY.forEach(([icon, enCsv, arCsv]) => {
+    addEntry(icon, ...enCsv.split(','), ...arCsv.split(','));
+  });
+  levels.forEach(level => {
+    level.words.forEach(w => addEntry(w.icon, w.en, w.ar));
+  });
+  Object.keys(EXTRA_ICON_MAP).forEach(key => addEntry(EXTRA_ICON_MAP[key], key));
+  _iconSearchIndex = Array.from(byIcon.entries()).map(([icon, keywords]) => ({
+    icon, keywords: Array.from(keywords)
+  }));
+  return _iconSearchIndex;
+}
+
+// Returns matching icons for a typed name, or null when the query is
+// empty (meaning: show the default candidates instead).
+function searchIconCandidates(query){
+  const q = query.trim().toLowerCase();
+  if(!q) return null;
+  const out = [];
+  getIconSearchIndex().forEach(entry => {
+    if(entry.keywords.some(k => k.includes(q))) out.push(entry.icon);
+  });
+  return out;
+}
+
+// --- Wider emoji search: our own dictionary above only covers a curated
+// set of words. For anything outside it, lazily fetch a public, free,
+// no-API-key emoji keyword dataset (Emojibase, via jsDelivr's CDN — same
+// "no login needed" spirit as the LoremFlickr photos already used) the
+// first time it's actually needed, then cache it in localStorage so
+// later searches (even in future visits) are instant and offline-safe.
+// English-only: the dataset has no Arabic keywords, so this tier mainly
+// helps when the typed query is in English.
+const EMOJI_CDN_URL = 'https://cdn.jsdelivr.net/npm/emojibase-data/en/compact.json';
+const EMOJI_CDN_CACHE_KEY = 'emoji-cdn-dataset-v1';
+const SKIN_TONE_MODIFIERS = ['\u{1F3FB}','\u{1F3FC}','\u{1F3FD}','\u{1F3FE}','\u{1F3FF}'];
+let _emojiCdnPromise = null;
+
+function loadEmojiCdnDataset(){
+  if(_emojiCdnPromise) return _emojiCdnPromise;
+  _emojiCdnPromise = (async () => {
+    try{
+      const cached = localStorage.getItem(EMOJI_CDN_CACHE_KEY);
+      if(cached) return JSON.parse(cached);
+    }catch(e){ /* corrupt/unavailable cache, fetch fresh instead */ }
+
+    const res = await fetch(EMOJI_CDN_URL);
+    if(!res.ok) throw new Error('emoji dataset fetch failed');
+    const data = await res.json();
+
+    const out = [];
+    data.forEach(entry => {
+      const icon = entry.unicode || entry.emoji;
+      if(!icon) return;
+      // Skip skin-tone variants of the same base emoji — one neutral
+      // version per concept is enough for a search result grid.
+      if(SKIN_TONE_MODIFIERS.some(m => icon.includes(m))) return;
+      const keywords = [entry.label, ...(entry.tags || [])]
+        .filter(Boolean).map(k => k.toLowerCase());
+      if(!keywords.length) return;
+      out.push([icon, keywords.join(',')]);
+    });
+
+    try{ localStorage.setItem(EMOJI_CDN_CACHE_KEY, JSON.stringify(out)); }
+    catch(e){ /* storage full/unavailable — still usable for this session */ }
+    return out;
+  })();
+  return _emojiCdnPromise;
+}
+
+async function searchEmojiCdn(query){
+  const q = query.trim().toLowerCase();
+  if(!q) return [];
+  let dataset;
+  try{ dataset = await loadEmojiCdnDataset(); }
+  catch(e){ return []; } // offline or CDN unreachable — local dictionary still works fine
+  const out = [];
+  dataset.forEach(([icon, keywordsCsv]) => {
+    if(keywordsCsv.includes(q)) out.push(icon);
+  });
+  return out.slice(0, 60); // cap so the grid doesn't get overwhelming
+}
+
+const iconPickerOverlay = document.getElementById('icon-picker-overlay');
+const iconPickerGrid = document.getElementById('icon-picker-grid');
+const iconPickerEmptyMsg = document.getElementById('icon-picker-empty');
+const iconPickerCustomInput = document.getElementById('icon-picker-custom-input');
+const iconPickerCustomApply = document.getElementById('icon-picker-custom-apply');
+const iconPickerSearchInput = document.getElementById('icon-picker-search-input');
+const iconPickerSearchBtn = document.getElementById('icon-picker-search-btn');
+const iconPickerWordEnLabel = document.getElementById('icon-picker-word-en');
+const iconPickerCopyEnBtn = document.getElementById('icon-picker-copy-en');
+let iconPickerWordIndex = null;
+let iconPickerDefaultCandidates = [];
+let iconPickerSearchRequestId = 0;
+
+function renderIconPickerOptions(candidates, emptyState){
+  iconPickerGrid.style.display = candidates.length ? '' : 'none';
+  iconPickerEmptyMsg.style.display = candidates.length ? 'none' : 'block';
+  iconPickerGrid.innerHTML = candidates.map(icon => `
+    <button type="button" class="icon-picker-option" data-icon="${escapeAttr(icon)}">${icon}</button>
+  `).join('');
+  if(!candidates.length){
+    iconPickerEmptyMsg.textContent = emptyState === 'not-found'
+      ? 'غير متوفر ملصق لهذه الكلمة. تقدر تكتب الإيموجي بنفسك في الخانة اللي فوق.'
+      : 'مفيش نتيجة في القاموس المحلي. دوس "🔍 بحث" عشان يدوّر في مصدر أوسع.';
+  }
+}
+
+function openIconPicker(i){
+  const w = activeLevel.words[i];
+  if(!w) return;
+  iconPickerWordIndex = i;
+  iconPickerCustomInput.value = '';
+  iconPickerSearchInput.value = '';
+  iconPickerWordEnLabel.textContent = w.en;
+  iconPickerDefaultCandidates = buildIconCandidates(w.en, w.sentenceEn);
+  renderIconPickerOptions(iconPickerDefaultCandidates);
+  iconPickerOverlay.classList.add('show');
+}
+
+// Typing filters instantly against the local dictionary only (no
+// network) — cheap, so it can run on every keystroke.
+iconPickerSearchInput.addEventListener('input', () => {
+  ++iconPickerSearchRequestId; // invalidate any in-flight wider search
+  const query = iconPickerSearchInput.value;
+  const localResults = searchIconCandidates(query);
+  const shown = localResults === null ? iconPickerDefaultCandidates : localResults;
+  renderIconPickerOptions(shown);
+});
+
+// Pressing the "بحث" button (or Enter) runs the full search: the local
+// dictionary plus the wider CDN dataset. The button shows a spinning
+// arrow the whole time it's waiting on the network, then lands on
+// either the matching sticker(s) or a clear "not available" message.
+async function runIconPickerSearch(){
+  const query = iconPickerSearchInput.value;
+  const requestId = ++iconPickerSearchRequestId;
+  const localResults = searchIconCandidates(query);
+  const shown = localResults === null ? iconPickerDefaultCandidates : localResults;
+  renderIconPickerOptions(shown);
+  if(localResults === null) return; // empty query — nothing to search for
+
+  iconPickerSearchBtn.disabled = true;
+  iconPickerSearchBtn.innerHTML = '<span class="icon-picker-spin">↻</span> بيدوّر...';
+  try{
+    const extra = await searchEmojiCdn(query);
+    if(requestId !== iconPickerSearchRequestId) return; // query changed meanwhile
+    const seen = new Set(shown);
+    const merged = shown.concat(extra.filter(icon => !seen.has(icon)));
+    renderIconPickerOptions(merged, merged.length ? null : 'not-found');
+  }catch(e){
+    if(requestId !== iconPickerSearchRequestId) return;
+    // Offline or CDN unreachable — local results (if any) are final.
+    renderIconPickerOptions(shown, shown.length ? null : 'not-found');
+  }finally{
+    if(requestId === iconPickerSearchRequestId){
+      iconPickerSearchBtn.disabled = false;
+      iconPickerSearchBtn.textContent = '🔍 بحث';
+    }
+  }
+}
+
+iconPickerSearchBtn.addEventListener('click', runIconPickerSearch);
+iconPickerSearchInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    runIconPickerSearch();
+  }
+});
+
+
+// Copies the word's English text so it's a one-tap job to go search an
+// emoji site (e.g. Emojipedia) for something the local dictionary above
+// doesn't cover, then paste the result into the custom-emoji input.
+iconPickerCopyEnBtn.addEventListener('click', async () => {
+  const w = activeLevel.words[iconPickerWordIndex];
+  if(!w) return;
+  const original = iconPickerCopyEnBtn.textContent;
+  try{
+    await navigator.clipboard.writeText(w.en);
+    iconPickerCopyEnBtn.textContent = '✅ اتنسخت';
+  }catch(e){
+    // Clipboard API unavailable (older browser / no permission) — fall
+    // back to selecting the text so the person can copy it manually.
+    const range = document.createRange();
+    range.selectNodeContents(iconPickerWordEnLabel);
+    const sel = window.getSelection();
+    sel.removeAllRanges();
+    sel.addRange(range);
+    iconPickerCopyEnBtn.textContent = '👆 اختر وانسخ يدوي';
+  }
+  setTimeout(() => { iconPickerCopyEnBtn.textContent = original; }, 1500);
+});
+
+function closeIconPicker(){
+  iconPickerOverlay.classList.remove('show');
+  iconPickerWordIndex = null;
+}
+
+// Pasted/typed text sometimes contains more than one visible emoji glyph —
+// either the person actually typed a few, or a single "combo" emoji (like
+// an office-worker ZWJ sequence) fails to render as one glyph and shows as
+// two separate characters instead. Either way, only the *first* one is the
+// intended sticker, so grab just that using proper grapheme segmentation
+// (keeps genuine multi-codepoint emoji intact, only splits distinct ones).
+function firstEmojiGrapheme(text){
+  if(!text) return text;
+  let out = text;
+  if(typeof Intl !== 'undefined' && Intl.Segmenter){
+    const seg = new Intl.Segmenter('en', { granularity: 'grapheme' });
+    const first = seg.segment(text)[Symbol.iterator]().next();
+    if(!first.done) out = first.value.segment;
+  } else {
+    out = Array.from(text)[0] || text;
+  }
+  // A ZWJ-joined combo emoji (e.g. person + briefcase = "office worker")
+  // still counts as one grapheme cluster, but when the device's emoji
+  // font can't render that specific combined glyph, it falls back to
+  // showing every joined piece separately — which reads as "two
+  // stickers" even though the saved text is technically one. Keep just
+  // the base emoji (before the first ZWJ) so what's saved always shows
+  // as a single icon everywhere, regardless of font support.
+  const zwj = '\u200D';
+  if(out.includes(zwj)) out = out.split(zwj)[0];
+  return out;
+}
+
+function applyIconChoice(icon){
+  const i = iconPickerWordIndex;
+  if(i === null || !icon) return;
+
+  persistWordFieldEdit(i, 'icon', firstEmojiGrapheme(icon));
+
+  closeIconPicker();
+  renderCard(i);
+}
+
+iconPickerGrid.addEventListener('click', (e) => {
+  const option = e.target.closest('.icon-picker-option');
+  if(!option) return;
+  applyIconChoice(option.dataset.icon);
+});
+
+iconPickerCustomApply.addEventListener('click', () => {
+  const val = iconPickerCustomInput.value.trim();
+  if(!val){
+    alert('اكتب إيموجي الأول.');
+    return;
+  }
+  applyIconChoice(val);
+});
+iconPickerCustomInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    iconPickerCustomApply.click();
+  }
+});
+
+document.getElementById('cancel-icon-picker').addEventListener('click', closeIconPicker);
+iconPickerOverlay.addEventListener('click', (e) => {
+  if(e.target === iconPickerOverlay) closeIconPicker();
 });
 
 function refreshCounts(){
@@ -7796,7 +9901,10 @@ function loadVoicesList(){
 }
 loadVoicesList();
 if('speechSynthesis' in window){
-  window.speechSynthesis.onvoiceschanged = loadVoicesList;
+  window.speechSynthesis.onvoiceschanged = () => {
+    loadVoicesList();
+    updateMobileDualVoiceState();
+  };
 }
 
 // Browsers don't expose an explicit gender field on voices, so we match
@@ -7812,6 +9920,42 @@ function voiceNameMatchesHints(name, hints){
   const lower = name.toLowerCase();
   return hints.some(h => new RegExp(`\\b${h}\\b`, 'i').test(lower));
 }
+
+// Strict lookup: only returns a voice if the device genuinely has one
+// *distinctly named* for this gender — no substitution, no "closest
+// guess". Used to decide whether we can speak instantly for free using
+// the phone's own voice, or need to fall back to Puter's cloud voice
+// because the device simply doesn't have this gender available at all.
+function getExactNamedVoiceForGender(gender){
+  if(!cachedVoices.length) loadVoicesList();
+  const enVoices = cachedVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  const hints = gender === 'male' ? MALE_VOICE_HINTS : FEMALE_VOICE_HINTS;
+  return enVoices.find(v => voiceNameMatchesHints(v.name, hints)) || null;
+}
+
+// Checks whether THIS device genuinely has two distinctly-named English
+// voices, one matching each gender (and not the literal same voice
+// object). Only then is toggling the card picker on mobile meaningful —
+// otherwise there's nothing real to switch between. See
+// `.mobile-dual-voice-available` CSS above for how this gates the button.
+function deviceHasDualNamedVoices(){
+  const male = getExactNamedVoiceForGender('male');
+  const female = getExactNamedVoiceForGender('female');
+  return !!(male && female && male.name !== female.name);
+}
+
+// Reveals the flashcard voice-gender picker on mobile once we've confirmed
+// the device actually has two distinct named voices to switch between.
+// Voice lists load asynchronously on many mobile browsers, so this is
+// called both immediately and again on `onvoiceschanged`.
+function updateMobileDualVoiceState(){
+  if(!isMobileDevice) return;
+  if(deviceHasDualNamedVoices()) document.body.classList.add('mobile-dual-voice-available');
+  else document.body.classList.remove('mobile-dual-voice-available');
+}
+// Run once now (covers browsers that expose the voice list synchronously);
+// `onvoiceschanged` above covers the async case too.
+updateMobileDualVoiceState();
 
 function getPreferredVoice(){
   if(!cachedVoices.length) loadVoicesList();
@@ -7845,16 +9989,38 @@ function getPreferredVoice(){
   return null;
 }
 
-function buildVoiceGenderControl(){
+function buildVoiceGenderControl(context){
+  // 'card' (flashcard word/sentence rows) vs 'chat' (AI chat voice
+  // settings) — mobile hides the flashcard picker (see CSS) unless the
+  // device genuinely has two distinct named local voices to switch
+  // between; the chat picker stays visible everywhere (after Puter
+  // sign-in on mobile) since the chat's cloud voice always honors it.
+  const contextClass = context === 'chat' ? 'voice-gender-wrap-chat' : 'voice-gender-wrap-card';
   return `
-    <div class="voice-gender-wrap">
+    <div class="voice-gender-wrap ${contextClass}">
       <button type="button" class="voice-gender-btn" title="اختيار صوت الراوي">▾</button>
       <div class="voice-gender-menu">
         <button type="button" class="voice-gender-option ${voiceGender === 'male' ? 'active' : ''}" data-gender="male">🚹 رجل</button>
         <button type="button" class="voice-gender-option ${voiceGender === 'female' ? 'active' : ''}" data-gender="female">🚺 امرأة</button>
+        <button type="button" class="voice-gender-diagnose" data-action="diagnose-voices">🔍 اعرض الأصوات المتاحة</button>
       </div>
     </div>
   `;
+}
+
+// Debug helper: lists every voice the device/browser actually exposes, so
+// we can tell apart "the phone genuinely has only one English voice" from
+// "there's a second voice but our name-matching missed it". Shown as a
+// plain alert so it works even on phones with no accessible dev console.
+function diagnoseVoices(){
+  if(!cachedVoices.length) loadVoicesList();
+  const enVoices = cachedVoices.filter(v => v.lang && v.lang.toLowerCase().startsWith('en'));
+  if(!enVoices.length){
+    alert('الجهاز ده مش رجّع أي صوت إنجليزي خالص لسه (ممكن الصفحة اتفتحت لسه وقائمة الأصوات لسه بتتحمل، جرب تاني بعد شوية).');
+    return;
+  }
+  const lines = enVoices.map((v, i) => `${i + 1}. ${v.name}  —  ${v.lang}${v.default ? '  (افتراضي)' : ''}`);
+  alert(`الأصوات الإنجليزية المتاحة على الجهاز ده (${enVoices.length}):\n\n${lines.join('\n')}`);
 }
 
 function setVoiceGender(gender){
@@ -7872,6 +10038,31 @@ function closeAllVoiceGenderMenus(){
   document.querySelectorAll('.voice-gender-btn.open').forEach(b => b.classList.remove('open'));
 }
 
+// The menu defaults to centering itself under its button (left:50% +
+// translateX(-50%) in CSS). That works fine when the button sits away
+// from a card's edge, but this button often sits right at the edge of
+// the row (e.g. the example-sentence row), so a centered menu can spill
+// past the card's right or left border. Cards clip overflow (needed for
+// the flip animation + rounded corners), so any spillover was silently
+// cut off instead of just looking slightly off-center. This nudges the
+// menu sideways, only exactly as much as needed, so it always stays
+// fully visible inside its card (or the viewport outside of a card).
+function keepVoiceGenderMenuInBounds(menu){
+  menu.style.transform = '';
+  const boundsEl = menu.closest('.face');
+  const PADDING = 6;
+  const boundsLeft = boundsEl ? boundsEl.getBoundingClientRect().left + PADDING : PADDING;
+  const boundsRight = boundsEl ? boundsEl.getBoundingClientRect().right - PADDING : window.innerWidth - PADDING;
+  const rect = menu.getBoundingClientRect();
+  const overflowRight = rect.right - boundsRight;
+  const overflowLeft = boundsLeft - rect.left;
+  if(overflowRight > 0){
+    menu.style.transform = `translateX(calc(-50% - ${overflowRight}px))`;
+  } else if(overflowLeft > 0){
+    menu.style.transform = `translateX(calc(-50% + ${overflowLeft}px))`;
+  }
+}
+
 document.addEventListener('click', (e) => {
   const btn = e.target.closest('.voice-gender-btn');
   if(btn){
@@ -7883,6 +10074,7 @@ document.addEventListener('click', (e) => {
     if(!wasOpen){
       menu.classList.add('open');
       btn.classList.add('open');
+      keepVoiceGenderMenuInBounds(menu);
     }
     return;
   }
@@ -7903,6 +10095,14 @@ document.addEventListener('click', (e) => {
     }
     return;
   }
+  const diag = e.target.closest('.voice-gender-diagnose');
+  if(diag){
+    e.preventDefault();
+    e.stopPropagation();
+    closeAllVoiceGenderMenus();
+    diagnoseVoices();
+    return;
+  }
   closeAllVoiceGenderMenus();
 });
 
@@ -7918,35 +10118,150 @@ function resolveEnglishVoice(){
   return cachedVoices.find(v => v.lang && v.lang.toLowerCase().startsWith('en')) || null;
 }
 
+// --- Cloud text-to-speech via Puter.js (puter.ai.txt2speech) ---
+// Local browser voices vary wildly by device — some phones only expose a
+// single (usually female) English voice with no way to switch, as we found
+// out by inspecting real device voice lists. Since this app is meant for
+// many different users on many different phones, we now speak English via
+// Puter's free TTS service (AWS Polly neural voices) so *everyone* hears
+// the exact same real male or female voice regardless of what's installed
+// on their device. The browser's own speechSynthesis is kept as a silent
+// fallback for when Puter is unavailable, the user declines sign-in, or
+// there's no network — so pronunciation never just stops working entirely.
+const CLOUD_VOICE_BY_GENDER = { male: 'Matthew', female: 'Joanna' };
+// Cache generated audio per (text, gender) pair so repeatedly tapping the
+// same word/sentence (very common while studying) replays instantly
+// instead of re-requesting it from the network every time.
+const cloudAudioCache = new Map();
+let currentCloudAudio = null;
+
+function stopAnySpeaking(){
+  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  if(currentCloudAudio){
+    currentCloudAudio.onended = null;
+    currentCloudAudio.pause();
+  }
+}
+
+// Plain browser TTS using one specific, already-resolved voice — used
+// when the device genuinely has a distinctly-named voice for the chosen
+// gender, so we can speak instantly, for free, fully offline, with no
+// Puter sign-in involved at all.
+function speakWithLocalVoice(text, voice){
+  return new Promise((resolve) => {
+    if(!('speechSynthesis' in window)){ resolve(); return; }
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = speechRate;
+    utter.voice = voice;
+    utter.onend = resolve;
+    utter.onerror = resolve;
+    window.speechSynthesis.speak(utter);
+  });
+}
+
+// Plain browser TTS, used only as a last-resort fallback if even the
+// cloud request fails. Returns a Promise that resolves once speech
+// finishes (or immediately if unsupported/failed), so callers can chain
+// "speak word, then speak sentence" reliably either way.
+function speakLocalFallback(text){
+  return new Promise((resolve) => {
+    if(!('speechSynthesis' in window)){ resolve(); return; }
+    const utter = new SpeechSynthesisUtterance(text);
+    utter.lang = 'en-US';
+    utter.rate = speechRate;
+    const voice = resolveEnglishVoice();
+    if(voice) utter.voice = voice;
+    utter.onend = resolve;
+    utter.onerror = resolve;
+    window.speechSynthesis.speak(utter);
+  });
+}
+
+// Speaks English text, choosing the source in this order:
+//  1. A genuinely-named local voice matching the chosen gender, if the
+//     device actually has one — instant, free, offline, no sign-in.
+//  2. Puter's cloud voice (Matthew/Joanna) — only reached when the
+//     device has no real voice for that gender, so the gender choice is
+//     still honored accurately instead of silently substituting whatever
+//     voice happens to be installed.
+//  3. Any local voice at all, as a last resort if the cloud call itself
+//     fails (offline, Puter down, sign-in declined, etc.).
+async function speakEnglish(text){
+  stopAnySpeaking();
+
+  const localVoice = getExactNamedVoiceForGender(voiceGender);
+  if(localVoice){
+    await speakWithLocalVoice(text, localVoice);
+    return;
+  }
+
+  try{
+    if(!window.puter || !window.puter.ai || !window.puter.ai.txt2speech){
+      throw new Error('puter-unavailable');
+    }
+    await ensurePuterSignedIn();
+    const key = `${text}|${voiceGender}`;
+    let audio = cloudAudioCache.get(key);
+    if(!audio){
+      audio = await puter.ai.txt2speech(text, {
+        voice: CLOUD_VOICE_BY_GENDER[voiceGender] || 'Joanna',
+        engine: 'neural',
+        language: 'en-US'
+      });
+      cloudAudioCache.set(key, audio);
+    } else {
+      audio.currentTime = 0;
+    }
+    currentCloudAudio = audio;
+    audio.playbackRate = speechRate;
+    await new Promise((resolve) => {
+      audio.onended = resolve;
+      audio.play().catch(resolve);
+    });
+  } catch(err){
+    await speakLocalFallback(text);
+  }
+}
+
+// Flashcard word/sentence pronunciation on mobile: if the device genuinely
+// has two distinctly-named local voices (see deviceHasDualNamedVoices),
+// honor the user's gender choice with that real local voice — still fully
+// offline, no Puter involved. Otherwise fall back to whatever English
+// voice the phone provides by default, since there's nothing real to
+// switch between anyway. The chat's mic already requires a Puter sign-in
+// to work at all, but simple word pronunciation shouldn't force that same
+// sign-in on every visitor just tapping through flashcards. Desktops
+// almost always have real named male/female voices installed, so there
+// they still get full gender matching via speakEnglish, exactly as before.
+function speakMobileCard(text){
+  if(deviceHasDualNamedVoices()){
+    const localVoice = getExactNamedVoiceForGender(voiceGender);
+    if(localVoice) return speakWithLocalVoice(text, localVoice);
+  }
+  return speakLocalFallback(text);
+}
+
 function speakWord(text){
-  if(!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'en-US';
-  utter.rate = speechRate;
-  const voice = resolveEnglishVoice();
-  if(voice) utter.voice = voice;
-  window.speechSynthesis.speak(utter);
+  stopAnySpeaking();
+  if(isMobileDevice){
+    speakMobileCard(text);
+    return;
+  }
+  speakEnglish(text);
 }
 
 function speakSequence(word, sentence){
-  if(!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const voice = resolveEnglishVoice();
-  const wordUtter = new SpeechSynthesisUtterance(word);
-  wordUtter.lang = 'en-US';
-  wordUtter.rate = speechRate;
-  if(voice) wordUtter.voice = voice;
-  if(sentence){
-    const sentenceUtter = new SpeechSynthesisUtterance(sentence);
-    sentenceUtter.lang = 'en-US';
-    sentenceUtter.rate = speechRate;
-    if(voice) sentenceUtter.voice = voice;
-    wordUtter.onend = () => {
-      window.speechSynthesis.speak(sentenceUtter);
-    };
+  stopAnySpeaking();
+  if(isMobileDevice){
+    speakMobileCard(word).then(() => {
+      if(sentence) return speakMobileCard(sentence);
+    });
+    return;
   }
-  window.speechSynthesis.speak(wordUtter);
+  speakEnglish(word).then(() => {
+    if(sentence) return speakEnglish(sentence);
+  });
 }
 
 // Event delegation so speak buttons work for every card, including ones
@@ -8457,6 +10772,39 @@ function fitAllCardWords(){
   document.querySelectorAll('.back-word-en').forEach(el => fitWordText(el, 11));
 }
 
+// The back face has a fixed height (matches every other card on the site)
+// with overflow-y:hidden, so a longer example sentence/translation than
+// the hand-curated words usually have — e.g. from a dictionary lookup or
+// AI generation for a custom word — can silently get clipped instead of
+// scrolling. Rather than letting the card grow or scroll (which would make
+// custom-word cards look different from the rest of the site), shrink the
+// sentence/translation font just enough to fit, the same way fitWordText
+// already shrinks the word itself when it's too wide.
+function fitCardBackContent(wrap){
+  const back = wrap && wrap.querySelector('.face.back');
+  if(!back) return;
+  const enText = back.querySelector('.example .en');
+  const arText = back.querySelector('.example .ar');
+  if(!enText && !arText) return;
+
+  [enText, arText].forEach(el => { if(el) el.style.fontSize = ''; });
+
+  let guard = 0;
+  while(back.scrollHeight > back.clientHeight + 1 && guard < 40){
+    let shrunkAny = false;
+    [enText, arText].forEach(el => {
+      if(!el) return;
+      const current = parseFloat(getComputedStyle(el).fontSize);
+      if(current > 10.5){
+        el.style.fontSize = (current - 0.5) + 'px';
+        shrunkAny = true;
+      }
+    });
+    if(!shrunkAny) break;
+    guard++;
+  }
+}
+
 // Forces the two icon columns flanking the word (speed control / voice
 // gender on one side, speak / YouGlish buttons on the other) to the same
 // width, so the word column sits in the true center of the row no matter
@@ -8505,7 +10853,10 @@ if(document.fonts && document.fonts.ready){
 function buildFrontBack(i, w){
   return `
     <div class="face front">
-      <div class="word-icon">${w.icon}</div>
+      <div class="icon-wrap">
+        <div class="word-icon">${w.icon}</div>
+        <button type="button" class="edit-icon-btn" data-edit-icon="${i}" title="اختر ملصق تاني للكلمة">✏️</button>
+      </div>
       <div class="word-en-row">
         <div class="word-en-row-side side-start">${buildSpeedControl(`front-${i}`)}${buildVoiceGenderControl()}</div>
         <div class="word-en">${w.en}</div>
@@ -8520,10 +10871,17 @@ function buildFrontBack(i, w){
         <button class="mini-diff-btn medium" data-level="medium" data-index="${i}">متوسط</button>
         <button class="mini-diff-btn hard" data-level="hard" data-index="${i}">صعب</button>
       </div>
-      ${customWordsMode ? `<button type="button" class="delete-word-btn" data-delete-word="${i}">🗑️ حذف الكلمة</button>` : ''}
+      ${customWordsMode ? `
+      <div class="word-actions-row">
+        <button type="button" class="edit-word-btn" data-edit-word="${i}">✏️ تعديل</button>
+        <button type="button" class="delete-word-btn" data-delete-word="${i}">🗑️ حذف الكلمة</button>
+      </div>` : ''}
     </div>
     <div class="face back">
-      <img class="back-photo" src="${w.img}" alt="${w.en}" loading="lazy">
+      <div class="photo-wrap">
+        <img class="back-photo" src="${w.img}" alt="${w.en}" loading="lazy">
+        <button type="button" class="edit-photo-btn" data-edit-photo="${i}" title="اختر صورة تانية للكلمة">✏️</button>
+      </div>
       <div class="word-en-row">
         <div class="word-en-row-side side-start">${buildSpeedControl(`back-${i}`)}</div>
         <div class="back-word-en">${w.en}</div>
@@ -8542,6 +10900,10 @@ function buildFrontBack(i, w){
           <span class="sentence-text">"${highlightWordInSentence(w.sentenceEn, w.en)}"</span>
           ${buildVoiceGenderControl()}
         </div>
+        ${sentenceLooksLikeTemplate(w) ? `
+        <div class="sentence-source-row">
+          <button type="button" class="sentence-regenerate-btn" data-regenerate-sentence="${i}" title="حاول تدور على جملة من القاموس، أو غيّر القالب">🔄</button>
+        </div>` : ''}
         <div class="ar">${highlightWordInArabicSentence(w.sentenceAr, w.ar)}</div>
       </div>
       <div class="difficulty-row">
@@ -8554,29 +10916,123 @@ function buildFrontBack(i, w){
   `;
 }
 
-function wireDeleteButton(wrap, i){
-  const btn = wrap.querySelector('.delete-word-btn');
-  if(!btn) return;
-  btn.addEventListener('click', (e) => {
-    e.stopPropagation();
-    const word = activeLevel.words[i];
-    if(!confirm(`متأكد إنك عايز تحذف الكلمة "${word.en}"؟`)) return;
+// Called from the 🔄 button that appears next to the "جملة من قوالبنا"
+// badge — i.e. only for a word whose current sentence came from our own
+// template cycle, not the dictionary. Tries the dictionary once more (in
+// case an earlier lookup just didn't have this word yet, or the app has
+// since been used with other words that share entries), and only if that
+// still comes up empty does it move on to a different template, so the
+// user always ends up with *some* new sentence when they tap it.
+async function regenerateSentenceForWord(i){
+  const w = activeLevel.words[i];
+  if(!w) return;
+  const btn = document.querySelector(`.sentence-regenerate-btn[data-regenerate-sentence="${i}"]`);
+  if(btn){
+    btn.disabled = true;
+    btn.classList.add('spinning');
+  }
+  try{
+    const examples = await fetchDictionaryExamples(w.en);
+    const dictionaryPick = pickEasiestDictionaryExample(examples, w.en);
+    let sentenceEn, sentenceSource;
+    if(dictionaryPick){
+      sentenceEn = dictionaryPick;
+      sentenceSource = 'dictionary';
+    } else {
+      sentenceEn = nextSentenceTemplate()(w.en);
+      sentenceSource = 'template';
+    }
 
-    const list = loadCustomWords();
-    list.splice(i, 1);
-    saveCustomWords(list);
+    let sentenceAr = w.sentenceAr;
+    try{
+      sentenceAr = await translateEnToAr(sentenceEn);
 
-    // Every word's saved schedule/rated/difficulty is keyed by its index
-    // in the list. Removing a word shifts every later index, so instead
-    // of risking that data pointing at the wrong word now, just clear
-    // this folder's progress and let it rebuild naturally.
-    const keys = folderStorageKeys('custom-words');
-    localStorage.removeItem(keys.schedule);
-    localStorage.removeItem(keys.rated);
-    localStorage.removeItem(keys.difficulty);
+      // Same as the sentence-picker flow: once we know how THIS new
+      // sentence was translated, check whether one of the word's known
+      // Arabic senses actually shows up inside it, and if so use that as
+      // the word's own meaning too — instead of leaving whatever generic
+      // meaning was there before, which may no longer match the sense
+      // this new sentence uses.
+      try{
+        const senses = await fetchGoogleWordSenses(w.en);
+        const matchedSense = senses.find(s => sentenceAr.includes(s));
+        if(matchedSense) persistWordFieldEdit(i, 'ar', matchedSense);
+      }catch(e){
+        // Keep the existing word meaning.
+      }
+    }catch(e){
+      // Keep the previous Arabic translation rather than losing it over a
+      // failed translate call.
+    }
 
-    openCustomWords();
-  });
+    persistWordFieldEdit(i, 'sentenceEn', sentenceEn);
+    persistWordFieldEdit(i, 'sentenceAr', sentenceAr);
+    persistWordFieldEdit(i, 'sentenceSource', sentenceSource);
+    renderCard(i);
+  }catch(e){
+    if(btn){
+      btn.disabled = false;
+      btn.classList.remove('spinning');
+    }
+  }
+}
+
+function wireWordActionButtons(wrap, i){
+  const deleteBtn = wrap.querySelector('.delete-word-btn');
+  if(deleteBtn){
+    deleteBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const word = activeLevel.words[i];
+      if(!confirm(`متأكد إنك عايز تحذف الكلمة "${word.en}"؟`)) return;
+
+      const list = loadCustomWords();
+      list.splice(i, 1);
+      saveCustomWords(list);
+
+      // Every word's saved schedule/rated/difficulty is keyed by its index
+      // in the list. Removing a word shifts every later index, so instead
+      // of risking that data pointing at the wrong word now, just clear
+      // this folder's progress and let it rebuild naturally.
+      const keys = folderStorageKeys('custom-words');
+      localStorage.removeItem(keys.schedule);
+      localStorage.removeItem(keys.rated);
+      localStorage.removeItem(keys.difficulty);
+
+      openCustomWords();
+    });
+  }
+
+  const editBtn = wrap.querySelector('.edit-word-btn');
+  if(editBtn){
+    editBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openEditWordModal(i);
+    });
+  }
+
+  const editPhotoBtn = wrap.querySelector('.edit-photo-btn');
+  if(editPhotoBtn){
+    editPhotoBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openImagePicker(i);
+    });
+  }
+
+  const editIconBtn = wrap.querySelector('.edit-icon-btn');
+  if(editIconBtn){
+    editIconBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      openIconPicker(i);
+    });
+  }
+
+  const regenSentenceBtn = wrap.querySelector('.sentence-regenerate-btn');
+  if(regenSentenceBtn){
+    regenSentenceBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      regenerateSentenceForWord(i);
+    });
+  }
 }
 
 function renderCard(i){
@@ -8586,10 +11042,13 @@ function renderCard(i){
   const entry = schedule[i];
   const now = Date.now();
 
-  // Only words in the "own words" folder can be deleted — built-in
-  // level words aren't backed by a deletable list.
+  // Only words in the "own words" folder can be deleted/edited — built-in
+  // level words aren't backed by an editable/deletable list.
   const deleteBtnHtml = customWordsMode
-    ? `<button type="button" class="delete-word-btn" data-delete-word="${i}">🗑️ حذف الكلمة</button>`
+    ? `<div class="word-actions-row">
+         <button type="button" class="edit-word-btn" data-edit-word="${i}">✏️ تعديل</button>
+         <button type="button" class="delete-word-btn" data-delete-word="${i}">🗑️ حذف الكلمة</button>
+       </div>`
     : '';
 
   // Sequential unlock disabled by request: every word is available right
@@ -8607,7 +11066,7 @@ function renderCard(i){
       <div class="toast"></div>
       ${deleteBtnHtml}
     `;
-    wireDeleteButton(wrap, i);
+    wireWordActionButtons(wrap, i);
     return;
   }
 
@@ -8624,7 +11083,7 @@ function renderCard(i){
       <div class="toast"></div>
       ${deleteBtnHtml}
     `;
-    wireDeleteButton(wrap, i);
+    wireWordActionButtons(wrap, i);
     return;
   }
 
@@ -8635,27 +11094,54 @@ function renderCard(i){
 
   wrap.innerHTML = `
     <div class="flip-scene">
+      <button type="button" class="card-back-corner-btn" title="رجوع للموضوعات">←</button>
       <div class="flip-card" id="flip-${i}">
         ${buildFrontBack(i, w)}
       </div>
     </div>
     <div class="toast">تم حفظ تقييمك ✓</div>
   `;
-  wireDeleteButton(wrap, i);
+  wireWordActionButtons(wrap, i);
+
+  const cornerBackBtn = wrap.querySelector('.card-back-corner-btn');
+  if(cornerBackBtn){
+    cornerBackBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const cardEl = document.getElementById(`flip-${i}`);
+      if(cardEl && cardEl.classList.contains('is-flipped')){
+        // Currently showing the back (image/video translation side): this
+        // arrow's job here is just to flip back to the front face, not to
+        // leave the level entirely. Reuse the real close-btn's own click
+        // so the exact same cleanup runs (stopping the video/speech,
+        // resetting the translation reveal) instead of duplicating it.
+        const closeBtn = wrap.querySelector('.close-btn');
+        if(closeBtn) closeBtn.click();
+      } else {
+        // On the front face there's nothing to flip back from, so the
+        // arrow's job is to leave the level and go back to the topics list.
+        closeTopic();
+      }
+    });
+  }
 
   balanceWordRows(wrap);
   fitWordText(wrap.querySelector('.word-en'), 14);
   fitWordText(wrap.querySelector('.back-word-en'), 11);
+  fitCardBackContent(wrap);
   requestAnimationFrame(() => {
     balanceWordRows(wrap);
     fitWordText(wrap.querySelector('.word-en'), 14);
     fitWordText(wrap.querySelector('.back-word-en'), 11);
+    fitCardBackContent(wrap);
   });
 
   wrap.querySelectorAll('[data-flip]').forEach(btn => {
     btn.addEventListener('click', () => {
       const cardEl = document.getElementById(`flip-${i}`);
       cardEl.classList.toggle('is-flipped');
+      if(cornerBackBtn){
+        cornerBackBtn.title = cardEl.classList.contains('is-flipped') ? 'رجوع للكارت' : 'رجوع للموضوعات';
+      }
       if(cardEl.classList.contains('is-flipped')){
         // The front's video button flips to the back AND opens the
         // YouGlish embed right away, instead of requiring a second tap
@@ -8666,12 +11152,15 @@ function renderCard(i){
           const videoBtn = wrap.querySelector('.youglish-btn');
           if(videoBtn && !videoBtn.classList.contains('active')) toggleYouglishEmbed(videoBtn);
         } else {
-          speakSequence(w.en, w.sentenceEn);
+          // Auto-pronunciation on flip is sentence-only by request — the
+          // word itself is still spoken on demand via its own speak
+          // button, but flipping the card shouldn't say the word first.
+          // Falls back to the word if this entry has no example sentence.
+          if(w.sentenceEn) speakWord(w.sentenceEn);
+          else speakWord(w.en);
         }
       } else {
-        if('speechSynthesis' in window){
-          window.speechSynthesis.cancel();
-        }
+        stopAnySpeaking();
         // Reset the translation reveal so next time this card flips to
         // its back, "الترجمة" starts visible again and both the word's
         // and the sentence's translations start hidden until tapped.
@@ -8692,6 +11181,10 @@ function renderCard(i){
       if(trans) trans.classList.add('show');
       if(sentenceAr) sentenceAr.classList.add('show');
       btn.classList.add('yg-hidden');
+      // The Arabic sentence was just revealed (previously display:none, so
+      // it added no height at all), so it can only push the card's total
+      // content past the fixed-height limit *now* — re-check right after.
+      requestAnimationFrame(() => fitCardBackContent(wrap));
     });
   });
 
@@ -8955,7 +11448,7 @@ function startChatRecording(){
     return;
   }
   if(voiceChatBusy) return;
-  if('speechSynthesis' in window) window.speechSynthesis.cancel();
+  stopAnySpeaking();
 
   const expectedLang = getExpectedRecognitionLang();
 
@@ -9011,6 +11504,19 @@ function ensurePuterSignedIn(){
     puterSignInPromise = puter.auth.signIn().finally(() => { puterSignInPromise = null; });
   }
   return puterSignInPromise;
+}
+
+// Reveals the chat's voice-gender picker on mobile once Puter sign-in has
+// actually happened (see the `.is-mobile-device .voice-gender-wrap-chat`
+// CSS above). By the time the first AI reply lands, `ensurePuterSignedIn()`
+// has already resolved, so tapping the picker's cloud voice from here on
+// never triggers a fresh sign-in tab. Also called once on page load so a
+// returning user (already signed in to Puter from a previous visit) sees
+// the picker immediately instead of waiting for a reply.
+function updateChatVoiceUnlockState(){
+  if(!isMobileDevice) return;
+  const signedIn = !!(window.puter && window.puter.auth && puter.auth.isSignedIn());
+  if(signedIn) document.body.classList.add('chat-voice-unlocked');
 }
 
 micBtn.addEventListener('click', async () => {
@@ -9089,6 +11595,7 @@ async function handleUserSpeech(text){
     });
     saveChatHistory();
     renderChatMessages();
+    updateChatVoiceUnlockState();
     setChatStatus('اضغط على الميكروفون عشان ترد', false);
 
     // The main Arabic explanation isn't spoken aloud (the user reads that),
@@ -9220,33 +11727,17 @@ async function fetchArabicTranslation(englishText){
   return extractPuterReplyText(response).trim();
 }
 
-let warnedNoEnglishVoice = false;
-
 function speakAiReply(text, lang){
   // Arabic replies are just for understanding the topic — the user reads
   // those, they don't need them spoken aloud. Only English practice
   // replies get read out, since that's the whole point of the speaking
   // practice.
   if(lang !== 'en') return;
-  if(!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const utter = new SpeechSynthesisUtterance(text);
-  utter.lang = 'en-US';
-  utter.rate = speechRate;
-  // Explicitly pick *some* English voice whenever one exists, instead of
-  // leaving utter.voice unset. Some mobile TTS engines ignore utter.lang
-  // when no voice object is attached and silently fall back to whatever
-  // the device's default system voice is (often Arabic on an Arabic-set
-  // phone) — which is what makes English replies sound like they're
-  // being read in Arabic on some phones, even though the text is English.
-  let voice = resolveEnglishVoice();
-  if(voice){
-    utter.voice = voice;
-  } else if(!warnedNoEnglishVoice){
-    warnedNoEnglishVoice = true;
-    setChatStatus('ملحوظة: الجهاز ده مفيهوش صوت إنجليزي متثبت، فالنطق ممكن يطلع غلط. تقدر تثبّت صوت إنجليزي من إعدادات تحويل النص لكلام في الموبايل.', false);
-  }
-  window.speechSynthesis.speak(utter);
+  // By this point the user is already signed in to Puter (required to
+  // send a chat message at all), so this resolves straight to the cloud
+  // voice with no extra prompt; it silently falls back to the device's
+  // local voice if the network/Puter call fails for any reason.
+  speakEnglish(text);
 }
 
 // Reuse the same voice-gender and speed controls used for flashcard
@@ -9255,10 +11746,16 @@ function speakAiReply(text, lang){
 // listeners, so no extra event handling is needed here.
 document.getElementById('chat-voice-settings').innerHTML = `
   <span class="chat-voice-settings-label">🗣️ صوت الرد:</span>
-  ${buildVoiceGenderControl()}
+  ${buildVoiceGenderControl('chat')}
   <span class="chat-voice-settings-label">⏱️ السرعة:</span>
   ${buildSpeedControl('chat')}
 `;
+// Covers the returning-user case: if they signed in to Puter on a past
+// visit, the session is still valid, so show the picker right away instead
+// of waiting for another reply. `puter` loads async, so this is retried
+// shortly after in case it wasn't ready yet on this very first check.
+updateChatVoiceUnlockState();
+setTimeout(updateChatVoiceUnlockState, 1500);
 
 renderCategories();
 </script>
