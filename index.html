@@ -151,11 +151,30 @@
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 1.5rem;
+    display:grid;
+    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+    align-items:center;
+    gap: 10px;
+    row-gap: 12px;
+  }
+  /* Whichever element sits on the "back" side (a lone .back-btn in
+     folders-view, or a .back-btn-group elsewhere) hugs the near edge;
+     the title always sits dead-center between whatever is on each
+     side; anything trailing (review/add-word buttons) hugs the far
+     edge — grouped together via .header-btn-group so they stay a
+     tight pair instead of spreading out with the grid's own gap. */
+  .level-header > .back-btn,
+  .level-header > .back-btn-group{ justify-self: start; }
+  .level-header > .level-title{ justify-self: center; text-align:center; }
+  .level-header > .review-words-btn,
+  .level-header > .header-btn-group{ justify-self: end; }
+
+  .header-btn-group{
     display:flex;
     align-items:center;
-    justify-content:space-between;
-    flex-wrap: wrap;
     gap: 10px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
   }
 
   .back-btn{
@@ -170,6 +189,29 @@
     cursor:pointer;
   }
   .back-btn:hover{ background: var(--accent-soft); border-color: var(--accent); }
+
+  /* Groups the main back-btn together with its compact "jump directly
+     there" shortcut buttons, so they always sit side by side wherever
+     they appear. */
+  .back-btn-group{
+    display:flex;
+    align-items:center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .jump-btn{
+    background: transparent;
+    border: 1.5px solid var(--line);
+    color: var(--muted);
+    font-family:'Cairo', sans-serif;
+    font-weight:600;
+    font-size: 12px;
+    padding: 7px 12px;
+    border-radius: 10px;
+    cursor:pointer;
+  }
+  .jump-btn:hover{ background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
 
   .restore-words-btn{
     background: var(--paper);
@@ -186,6 +228,279 @@
     gap:6px;
   }
   .restore-words-btn:hover{ background: var(--accent-soft); border-color: var(--accent); }
+
+  .review-words-btn{
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+    color:#fff;
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 13.5px;
+    padding: 9px 16px;
+    border-radius: 12px;
+    cursor:pointer;
+  }
+  .review-words-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
+
+  .review-all-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    max-width: 900px;
+    margin: 1.2rem auto 0;
+    background: var(--paper);
+    border: 1.5px dashed var(--accent);
+    color: var(--accent-deep);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 15px;
+    padding: 13px 20px;
+    border-radius: var(--radius);
+    cursor:pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+  }
+  .review-all-btn:hover{ background: var(--accent-soft); transform: translateY(-2px); }
+  .review-all-btn[disabled]{ opacity:0.5; cursor:not-allowed; }
+  .review-all-btn[disabled]:hover{ background: var(--paper); transform:none; }
+
+  #review-folders-view, #review-cards-view{ display:none; }
+  #writing-practice-view{ display:none; }
+  #pronunciation-practice-view{ display:none; }
+
+  .wp-shell{
+    max-width: 460px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.5rem 60px;
+  }
+  .wp-card{
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 26px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    text-align:center;
+  }
+  .wp-instruction{
+    font-weight:700;
+    font-size: 18px;
+    color: var(--ink);
+  }
+  .wp-audio-row{
+    display:flex;
+    align-items:center;
+    gap:14px;
+  }
+  .wp-answer-form{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  .wp-answer-input{
+    width:100%;
+    box-sizing:border-box;
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 13px 16px;
+    font-family:'Cairo', sans-serif;
+    font-size: 16px;
+    text-align:center;
+    direction: ltr;
+  }
+  .wp-answer-input:focus{ outline:none; border-color: var(--accent); }
+  .wp-answer-input:disabled{ background: var(--bg); color: var(--muted); }
+  .wp-submit-btn{
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+    color:#fff;
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 14.5px;
+    padding: 11px 0;
+    border-radius: 12px;
+    cursor:pointer;
+  }
+  .wp-submit-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
+  .wp-submit-btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .wp-reveal{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    padding-top: 6px;
+    border-top: 1.5px dashed var(--line);
+  }
+  .wp-reveal-label{ color: var(--muted); font-size: 13.5px; }
+  .wp-reveal-word{
+    font-family:'Fraunces', serif;
+    font-size: 30px;
+    direction: ltr;
+  }
+  .wp-reveal-word.wp-correct{ color: var(--easy); }
+  .wp-reveal-word.wp-incorrect{ color: var(--hard); }
+  .wp-your-answer{ color: var(--muted); font-size: 13.5px; direction: ltr; }
+  .wp-actions{
+    width:100%;
+    display:flex;
+    gap:10px;
+  }
+  .wp-actions .back-btn, .wp-actions .review-words-btn{ flex:1; }
+  .wp-cancel-btn-early{ width:100%; }
+  .wp-skip-btn{ width:100%; }
+  .pp-record-btn{
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+    color:#fff;
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 15px;
+    padding: 13px 0;
+    border-radius: 12px;
+    cursor:pointer;
+    transition: background 0.2s ease, border-color 0.2s ease;
+  }
+  .pp-record-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
+  .pp-record-btn .pp-record-icon{ font-size:18px; line-height:1; }
+  .pp-record-btn.recording{
+    background: var(--hard);
+    border-color: var(--hard);
+    animation: mic-pulse 1.1s ease-in-out infinite;
+  }
+  .pp-record-btn:disabled{ opacity:0.6; cursor:not-allowed; }
+  .pp-status{ color: var(--muted); font-size: 13.5px; min-height: 18px; }
+  .review-hint{
+    text-align:center;
+    color: var(--muted);
+    font-size: 15px;
+    max-width: 560px;
+    margin: 12px auto 0;
+    line-height:1.8;
+  }
+
+  .review-word-card{
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    padding: 18px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+    text-align:center;
+  }
+  #review-cards-grid{
+    display:flex;
+    justify-content:center;
+    padding: 10px 1.5rem 60px;
+  }
+  .review-floating-card{
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 32px 26px;
+    max-width: 460px;
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:18px;
+    text-align:center;
+  }
+  .review-floating-card .review-word-en-row{
+    flex-direction: column;
+    gap: 8px;
+  }
+  .review-floating-card .review-word-en{
+    font-size: 36px;
+  }
+  .review-floating-card .review-flip-btn{
+    font-size: 14.5px;
+    padding: 9px 22px;
+  }
+  .review-floating-card .example{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:8px;
+    font-size: 26px;
+  }
+  .review-floating-card .example .en{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:6px;
+    text-align:center;
+  }
+  .review-floating-card .example .ar{
+    text-align:center;
+  }
+  .review-floating-card .example .en{
+    font-size: 26px;
+  }
+  .review-floating-card .example .en > span.sentence-text{
+    display: block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+  .review-floating-card .example .ar{
+    font-size: 22px;
+  }
+  .review-floating-card .mini-diff-row{
+    width:100%;
+    display:flex;
+    gap:10px;
+  }
+  .review-floating-card .mini-diff-btn{
+    flex:1;
+    padding: 12px 0;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+  .review-cancel-link{
+    background:none;
+    border:none;
+    color: var(--muted);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 17px;
+    text-decoration: underline;
+    cursor:pointer;
+    margin-top: 4px;
+  }
+  .review-cancel-link:hover{ color: var(--ink); }
+  .review-word-icon{ font-size: 34px; }
+  .review-word-en-row{ display:flex; align-items:center; gap:8px; }
+  .review-word-en{ font-family:'Fraunces', serif; font-size: 20px; direction:ltr; }
+  .review-word-details{ display:flex; flex-direction:column; gap:8px; width:100%; }
+  .review-word-ar{ font-weight:700; color: var(--ink); }
+  .review-flip-btn{
+    background: var(--paper);
+    border: 1.2px solid var(--line);
+    color: var(--ink);
+    font-family:'Cairo', sans-serif;
+    font-weight:600;
+    font-size: 13px;
+    padding: 7px 16px;
+    border-radius: 10px;
+    cursor:pointer;
+  }
+  .review-flip-btn:hover{ background: var(--accent-soft); border-color: var(--accent); }
+
+
 
   .add-word-btn{
     background: var(--accent);
@@ -2016,29 +2331,41 @@
   <div class="level-header">
     <button class="back-btn" id="back-to-categories">→ رجوع للرئيسية</button>
     <div class="level-title" id="folders-level-title"></div>
+    <button type="button" class="review-words-btn" id="review-words-btn-folders">📖 مراجعة الكلمات</button>
   </div>
   <div class="folders-grid" id="folders-grid"></div>
 </div>
 
 <div id="topics-view">
   <div class="level-header">
-    <button class="back-btn" id="back-to-folders-from-topics">→ رجوع للمستويات</button>
+    <div class="back-btn-group">
+      <button class="back-btn" id="back-to-folders-from-topics">→ رجوع للمستويات</button>
+      <button type="button" class="jump-btn" id="jump-home-from-topics">الرئيسية</button>
+    </div>
     <div class="level-title" id="topics-level-title"></div>
+    <button type="button" class="review-words-btn" id="review-words-btn-topics">📖 مراجعة الكلمات</button>
   </div>
   <div class="folders-grid" id="topics-grid"></div>
 </div>
 
 <div id="level-view">
   <div class="level-header">
-    <button class="back-btn" id="back-to-folders">→ رجوع للموضوعات</button>
+    <div class="back-btn-group">
+      <button class="back-btn" id="back-to-folders">→ رجوع للموضوعات</button>
+      <button type="button" class="jump-btn" id="jump-levels-from-level">المستويات</button>
+      <button type="button" class="jump-btn" id="jump-home-from-level">الرئيسية</button>
+    </div>
     <div class="level-title" id="level-title"></div>
-    <button type="button" class="add-word-btn" id="add-word-btn" style="display:none;">+ إضافة كلمة</button>
+    <div class="header-btn-group">
+      <button type="button" class="add-word-btn" id="add-word-btn" style="display:none;">+ إضافة كلمة</button>
+      <button type="button" class="review-words-btn" id="review-words-btn-level">📖 مراجعة الكلمات</button>
+    </div>
   </div>
 
   <div class="stats-bar">
-    <div class="stat-pill"><span class="dot easy"></span> سهل (تعود بعد 3 أيام): <b id="count-easy">0</b></div>
-    <div class="stat-pill"><span class="dot medium"></span> متوسط (تعود بعد يوم): <b id="count-medium">0</b></div>
-    <div class="stat-pill"><span class="dot hard"></span> صعب (تعود بعد دقيقة واحدة): <b id="count-hard">0</b></div>
+    <div class="stat-pill"><span class="dot easy"></span> سهل: <b id="count-easy">0</b></div>
+    <div class="stat-pill"><span class="dot medium"></span> متوسط: <b id="count-medium">0</b></div>
+    <div class="stat-pill"><span class="dot hard"></span> صعب: <b id="count-hard">0</b></div>
     <button type="button" class="restore-words-btn" id="restore-deleted-words-btn" style="display:none;">↩️ إعادة الكلمات المحذوفة</button>
   </div>
 
@@ -2049,6 +2376,31 @@
     <div class="llock-sub">استنى لحد ما ترجع أول كلمة عشان تقدر تكمل المراجعة</div>
     <div class="llock-countdown" id="llock-countdown">--</div>
   </div>
+</div>
+
+<div id="review-folders-view">
+  <div class="level-header">
+    <div class="back-btn-group">
+      <button class="back-btn" id="back-from-review-folders">→ رجوع</button>
+      <button type="button" class="jump-btn" id="jump-home-from-review-folders" style="display:none;">الرئيسية</button>
+    </div>
+    <div class="level-title" id="review-folders-title">مراجعة الكلمات</div>
+  </div>
+  <div class="folders-grid" id="review-folders-grid"></div>
+  <button type="button" class="review-all-btn" id="review-all-btn">📚 مراجعة الكل</button>
+</div>
+
+<div id="review-cards-view">
+  <div class="level-header">
+    <div class="back-btn-group">
+      <button class="back-btn" id="back-from-review-cards">→ رجوع</button>
+      <button type="button" class="jump-btn" id="jump-home-from-review-cards">الرئيسية</button>
+    </div>
+    <div class="level-title" id="review-cards-title"></div>
+  </div>
+  <p class="review-hint">قيّم الكلمة لظهور الأخرى</p>
+  <p class="review-hint">حاول تتذكر معنى الكلمة قبل الضغط على الترجمة</p>
+  <div id="review-cards-grid"></div>
 </div>
 
 <div id="voice-chat-view">
@@ -2072,6 +2424,28 @@
       </div>
       <button type="button" class="chat-reset-btn" id="chat-reset-btn">بدء محادثة جديدة</button>
     </div>
+  </div>
+</div>
+
+<div id="writing-practice-view">
+  <div class="level-header">
+    <button class="back-btn" id="back-to-categories-from-writing">→ رجوع للرئيسية</button>
+    <div class="level-title">✏️ تدرب على الكتابة والاستماع</div>
+  </div>
+
+  <div class="wp-shell">
+    <div class="wp-card" id="writing-practice-card"></div>
+  </div>
+</div>
+
+<div id="pronunciation-practice-view">
+  <div class="level-header">
+    <button class="back-btn" id="back-to-categories-from-pronunciation">→ رجوع للرئيسية</button>
+    <div class="level-title">🎤 تدرب على النطق والاستماع</div>
+  </div>
+
+  <div class="wp-shell">
+    <div class="wp-card" id="pronunciation-practice-card"></div>
   </div>
 </div>
 
@@ -2209,6 +2583,9 @@ if(isMobileDevice) document.body.classList.add('is-mobile-device');
 const categories = [
   { id: "english", title: "تعلم اللغة الانجليزية", icon: "📘", type: "levels" },
   { id: "custom", title: "كلماتك الخاصة", icon: "✍️", type: "custom" },
+  { id: "review-all", title: "مراجعة الكلمات", icon: "📖", type: "review" },
+  { id: "writing-practice", title: "تدرب على الكتابة والاستماع", icon: "✏️", type: "writing-practice" },
+  { id: "pronunciation-practice", title: "تدرب على النطق والاستماع", icon: "🎤", type: "pronunciation-practice" },
   { id: "voice-chat", title: "التحدث الصوتي مع الذكاء الاصطناعي", icon: "🎙️", type: "voice-chat" }
 ];
 
@@ -7737,6 +8114,12 @@ let activeTopic = null;
 let schedule = {};
 let ratedWords = {};
 let wordDifficulty = {};
+// Words the person opened manually via "🔓 فتح" before their real cooldown
+// ended. This only ever affects whether renderCard() SHOWS the card as
+// locked — the word's real schedule[i].unlockAt is left untouched, so it
+// keeps counting as locked for review-folder purposes (isRefAvailableNow)
+// until that real time actually passes.
+let earlyUnlocked = {};
 let customWordsMode = false;
 const CUSTOM_WORDS_KEY = 'custom-words-list';
 
@@ -7799,6 +8182,8 @@ const levelView = document.getElementById('level-view');
 const cardsGrid = document.getElementById('cards-grid');
 const levelLockedScreen = document.getElementById('level-locked-screen');
 const llockCountdown = document.getElementById('llock-countdown');
+const writingPracticeView = document.getElementById('writing-practice-view');
+const pronunciationPracticeView = document.getElementById('pronunciation-practice-view');
 
 // Keeps the fixed floating arrow in sync with whichever list view (levels
 // or topics) is currently showing, instead of hard-coding it into every
@@ -7841,6 +8226,12 @@ const NAV_STATE_KEY = 'flashcards-nav-state-v1';
 function currentNavState(){
   if(typeof voiceChatView !== 'undefined' && voiceChatView.style.display === 'block'){
     return { screen: 'voice-chat' };
+  }
+  if(typeof writingPracticeView !== 'undefined' && writingPracticeView.style.display === 'block'){
+    return { screen: 'writing-practice' };
+  }
+  if(typeof pronunciationPracticeView !== 'undefined' && pronunciationPracticeView.style.display === 'block'){
+    return { screen: 'pronunciation-practice' };
   }
   if(levelView.style.display === 'block'){
     if(customWordsMode) return { screen: 'level', customWords: true };
@@ -7894,6 +8285,8 @@ function applyPopState(state){
 
     if(target.screen === 'categories'){
       if(current.screen === 'voice-chat') closeVoiceChat();
+      else if(current.screen === 'writing-practice') closeWritingPractice();
+      else if(current.screen === 'pronunciation-practice') closePronunciationPractice();
       else if(current.screen === 'folders') closeCategory();
       else if(current.screen === 'level' && customWordsMode) closeTopic();
       else if(current.screen === 'topics'){ closeLevel(); closeCategory(); }
@@ -7925,6 +8318,14 @@ function applyPopState(state){
     }
     if(target.screen === 'voice-chat'){
       openVoiceChat();
+      return;
+    }
+    if(target.screen === 'writing-practice'){
+      openWritingPractice();
+      return;
+    }
+    if(target.screen === 'pronunciation-practice'){
+      openPronunciationPractice();
       return;
     }
   } finally {
@@ -7973,6 +8374,10 @@ function initNavigation(){
       const categoryId = restored.categoryId || 'english';
       if(restored.screen === 'voice-chat'){
         history.pushState({ screen: 'voice-chat' }, '');
+      } else if(restored.screen === 'writing-practice'){
+        history.pushState({ screen: 'writing-practice' }, '');
+      } else if(restored.screen === 'pronunciation-practice'){
+        history.pushState({ screen: 'pronunciation-practice' }, '');
       } else if(restored.screen === 'folders'){
         history.pushState({ screen: 'folders', categoryId }, '');
       } else if(restored.screen === 'topics'){
@@ -7998,7 +8403,8 @@ function folderStorageKeys(levelId){
     schedule: `flashcards-schedule-${levelId}`,
     stats: `flashcards-stats-${levelId}`,
     rated: `flashcards-rated-${levelId}`,
-    difficulty: `flashcards-difficulty-${levelId}`
+    difficulty: `flashcards-difficulty-${levelId}`,
+    earlyUnlocked: `flashcards-early-unlocked-${levelId}`
   };
 }
 
@@ -8135,10 +8541,13 @@ function renderCategories(){
         ? `${total} كلمة مضافة · تمت مراجعة ${Math.min(learned, total)}/${total}`
         : 'لسه معملتش أي كلمة، دوس وابدأ 📝';
     } else if(cat.type === 'voice-chat'){
-      const hist = loadJSON(CHAT_HISTORY_STORAGE, []);
-      meta = hist.length
-        ? `محادثة مستمرة · ${hist.length} رسالة`
-        : 'اتكلم بالإنجليزي مع الذكاء الاصطناعي وهو هيرد عليك بالصوت 🎧';
+      meta = '';
+    } else if(cat.type === 'review'){
+      meta = 'راجع كل الكلمات المتاحة للمراجعة 🔁';
+    } else if(cat.type === 'writing-practice'){
+      meta = '';
+    } else if(cat.type === 'pronunciation-practice'){
+      meta = '';
     } else {
       total = levels.reduce((sum, lvl) => sum + lvl.words.length, 0);
       learned = levels.reduce((sum, lvl) => sum + countLearned(lvl.id), 0);
@@ -8175,6 +8584,22 @@ function openCategory(categoryId){
     return;
   }
 
+  if(cat.type === 'review'){
+    reviewQueues = {};
+    openReviewFolders({ type: 'everything' });
+    return;
+  }
+
+  if(cat.type === 'writing-practice'){
+    openWritingPractice();
+    return;
+  }
+
+  if(cat.type === 'pronunciation-practice'){
+    openPronunciationPractice();
+    return;
+  }
+
   document.getElementById('folders-level-title').textContent = cat.title;
   document.getElementById('main-title').textContent = cat.title;
   document.getElementById('main-subtitle').textContent = 'اختر مستوى للبدء في مراجعة الكلمات وحفظها.';
@@ -8197,10 +8622,19 @@ function openCustomWords(){
   schedule = loadJSON(keys.schedule, {});
   ratedWords = loadJSON(keys.rated, {});
   wordDifficulty = loadJSON(keys.difficulty, {});
+  earlyUnlocked = loadJSON(keys.earlyUnlocked, {});
 
   document.getElementById('level-title').textContent = 'كلماتك الخاصة';
   document.getElementById('main-title').textContent = 'كلماتك الخاصة';
   document.getElementById('main-subtitle').textContent = 'ضيف كلماتك وذاكرها بنفس طريقة المراجعة والتقييم.';
+
+  // Custom words sits directly under the home screen (no levels/topics
+  // above it), so its back button goes straight home and the extra
+  // jump shortcuts (which only make sense when there ARE levels/topics
+  // above the current screen) are hidden.
+  document.getElementById('back-to-folders').textContent = '→ رجوع للرئيسية';
+  document.getElementById('jump-levels-from-level').style.display = 'none';
+  document.getElementById('jump-home-from-level').style.display = 'none';
 
   categoriesView.style.display = 'none';
   foldersView.style.display = 'none';
@@ -8311,6 +8745,7 @@ function openLevel(levelId){
   schedule = loadJSON(keys.schedule, {});
   ratedWords = loadJSON(keys.rated, {});
   wordDifficulty = loadJSON(keys.difficulty, {});
+  earlyUnlocked = loadJSON(keys.earlyUnlocked, {});
 
   document.getElementById('topics-level-title').textContent = activeLevel.title;
   document.getElementById('main-title').textContent = activeLevel.title;
@@ -8372,10 +8807,17 @@ function openTopic(topicId){
 
   document.getElementById('level-title').textContent = activeLevel.title + ' — ' + topic.title;
   document.getElementById('main-title').textContent = activeLevel.title + ' — ' + topic.title;
-  document.getElementById('main-subtitle').textContent = 'اضغط على "عرض الترجمة والتفاصيل" لقلب كل بطاقة، ثم قيّم مدى معرفتك بالكلمة.';
+  document.getElementById('main-subtitle').textContent = 'اضغط على "عرض الترجمة" لقلب كل بطاقة، ثم قيّم مدى معرفتك بالكلمة.';
 
   topicsView.style.display = 'none';
   levelView.style.display = 'block';
+
+  // Regular topic cards (unlike custom words) have both a topics screen
+  // and a levels screen above them, so restore the normal back label
+  // and show both jump shortcuts.
+  document.getElementById('back-to-folders').textContent = '→ رجوع للموضوعات';
+  document.getElementById('jump-levels-from-level').style.display = '';
+  document.getElementById('jump-home-from-level').style.display = '';
 
   document.getElementById('restore-deleted-words-btn').style.display = customWordsMode ? 'none' : 'flex';
 
@@ -8405,6 +8847,989 @@ function currentTopicIndices(){
   return out;
 }
 
+// --- "مراجعة الكلمات" (review words by difficulty) ---
+// A separate, lightweight review flow layered on top of the normal
+// browsing views. It never touches activeLevel/activeTopic/schedule/etc,
+// so leaving it just re-shows whichever main view was already open.
+// Rating a word here writes to that word's OWN origin level's real
+// schedule/rated/difficulty storage (same keys, same duration rules as
+// the normal diff-btn), so it behaves identically everywhere else too.
+let reviewScope = null;
+const reviewFoldersView = document.getElementById('review-folders-view');
+const reviewCardsView = document.getElementById('review-cards-view');
+const reviewCardsGrid = document.getElementById('review-cards-grid');
+
+function getScopeWordRefs(scope){
+  const refs = [];
+  function addLevel(levelObj, topicFilter){
+    if(!levelObj) return;
+    const isCustom = levelObj.id === 'custom-words';
+    (levelObj.words || []).forEach((w, i) => {
+      if(topicFilter && w.topic !== topicFilter) return;
+      if(!isCustom && isWordHidden(levelObj.id, i)) return;
+      refs.push({ levelId: levelObj.id, index: i });
+    });
+  }
+  if(scope.type === 'topic'){
+    addLevel(levels.find(l => l.id === scope.levelId), scope.topicId);
+  } else if(scope.type === 'level'){
+    addLevel(levels.find(l => l.id === scope.levelId), null);
+  } else if(scope.type === 'all-levels'){
+    levels.forEach(lvl => addLevel(lvl, null));
+  } else if(scope.type === 'custom'){
+    addLevel(buildCustomLevel(), null);
+  } else if(scope.type === 'everything'){
+    levels.forEach(lvl => addLevel(lvl, null));
+    addLevel(buildCustomLevel(), null);
+  }
+  return refs;
+}
+
+function getRefDifficulty(ref){
+  const diffMap = loadJSON(folderStorageKeys(ref.levelId).difficulty, {});
+  const entry = diffMap[ref.index];
+  return entry && typeof entry === 'object' ? entry.level : entry;
+}
+
+// A word only belongs in a review folder once it's actually due again —
+// same moment it would reappear (unlocked) in its normal topic/level
+// view, not the instant it gets rated.
+function isRefAvailableNow(ref){
+  const sched = loadJSON(folderStorageKeys(ref.levelId).schedule, {});
+  const entry = sched[ref.index];
+  return !entry || entry.unlockAt <= Date.now();
+}
+function getRefUnlockAt(ref){
+  const sched = loadJSON(folderStorageKeys(ref.levelId).schedule, {});
+  const entry = sched[ref.index];
+  return entry ? entry.unlockAt : 0;
+}
+
+// The review folders/cards screens can be entered from four different
+// places (the home "مراجعة الكلمات" folder, or the review shortcut
+// button in the levels/topics/cards headers), and closeReviewMode()
+// already sends the real "→ رجوع" back button to wherever is correct
+// for each case. This just keeps its label honest about that
+// destination, and decides whether a "الرئيسية" shortcut is worth
+// showing next to it (not when back already goes home).
+function reviewBackLabelFor(scope){
+  switch(scope && scope.type){
+    case 'everything': return { label: '→ رجوع للرئيسية', showHome: false };
+    case 'all-levels': return { label: '→ رجوع للمستويات', showHome: true };
+    case 'level': return { label: '→ رجوع للموضوعات', showHome: true };
+    case 'topic':
+    case 'custom': return { label: '→ رجوع للكلمات', showHome: true };
+    default: return { label: '→ رجوع', showHome: true };
+  }
+}
+
+// Closes the review overlay and jumps straight to the home screen,
+// regardless of how deep the real (non-review) screen underneath it
+// is — popping however many history entries that takes in one go.
+function jumpHomeFromReview(){
+  reviewFoldersView.style.display = 'none';
+  reviewCardsView.style.display = 'none';
+  const state = history.state;
+  let depth = 0;
+  if(state && state.screen){
+    if(state.screen === 'level') depth = state.customWords ? 1 : 3;
+    else if(state.screen === 'topics') depth = 2;
+    else if(state.screen === 'folders') depth = 1;
+    else if(state.screen === 'voice-chat') depth = 1;
+  }
+  if(depth > 0 && canGoBackInApp()){
+    history.go(-depth);
+  } else {
+    closeCategory();
+  }
+}
+document.getElementById('jump-home-from-review-folders').addEventListener('click', jumpHomeFromReview);
+document.getElementById('jump-home-from-review-cards').addEventListener('click', jumpHomeFromReview);
+
+// Labels the review-folders screen itself according to how wide its
+// scope is: all levels, all topics of one level, or just one topic
+// (plus the custom/everything scopes reachable from elsewhere).
+function reviewFoldersTitleFor(scope){
+  switch(scope && scope.type){
+    case 'all-levels': return 'مراجعة كلمات كل المستويات';
+    case 'level': return 'مراجعة كلمات كل المواضيع';
+    case 'topic': return 'مراجعة كلمات الموضوع';
+    case 'custom': return 'مراجعة الكلمات الخاصة';
+    case 'everything': return 'مراجعة كل الكلمات';
+    default: return 'مراجعة الكلمات';
+  }
+}
+
+function openReviewFolders(scope){
+  reviewScope = scope;
+  const { label, showHome } = reviewBackLabelFor(scope);
+  document.getElementById('back-from-review-folders').textContent = label;
+  document.getElementById('jump-home-from-review-folders').style.display = showHome ? '' : 'none';
+  document.getElementById('review-folders-title').textContent = reviewFoldersTitleFor(scope);
+  const refs = getScopeWordRefs(scope);
+  const counts = { easy: 0, medium: 0, hard: 0 };
+  refs.forEach(ref => {
+    const d = getRefDifficulty(ref);
+    if((d === 'easy' || d === 'medium' || d === 'hard') && isRefAvailableNow(ref)) counts[d]++;
+  });
+
+  categoriesView.style.display = 'none';
+  foldersView.style.display = 'none';
+  topicsView.style.display = 'none';
+  levelView.style.display = 'none';
+  reviewCardsView.style.display = 'none';
+  reviewFoldersView.style.display = 'block';
+
+  const buckets = [
+    { level: 'easy', icon: '🟢', title: 'مراجعة الكلمات السهلة' },
+    { level: 'medium', icon: '🟠', title: 'مراجعة الكلمات المتوسطة' },
+    { level: 'hard', icon: '🔴', title: 'مراجعة الكلمات الصعبة' }
+  ];
+  const grid = document.getElementById('review-folders-grid');
+  grid.innerHTML = '';
+  buckets.forEach(b => {
+    const card = document.createElement('div');
+    card.className = 'folder-card';
+    card.innerHTML = `
+      <div class="folder-icon">${b.icon}</div>
+      <div class="folder-title">${b.title}</div>
+      <div class="folder-meta">${counts[b.level]} كلمة</div>
+    `;
+    card.addEventListener('click', () => openReviewCards(b.level));
+    grid.appendChild(card);
+  });
+
+  const total = counts.easy + counts.medium + counts.hard;
+  const allBtn = document.getElementById('review-all-btn');
+  allBtn.textContent = `📚 مراجعة الكل (${total} كلمة)`;
+  allBtn.disabled = total === 0;
+}
+document.getElementById('review-all-btn').addEventListener('click', () => {
+  if(!reviewScope) return;
+  openReviewCards('all');
+});
+
+// One ordered queue per difficulty, kept alive for the whole time the
+// person stays inside this review scope (reset only when they open the
+// review feature fresh from one of the three header buttons). Cards
+// that have been waiting the longest since unlocking come up first.
+// Pressing "إلغاء" just leaves the queue and its position untouched, so
+// coming back into the same folder shows the exact same card again.
+// Rating a card only moves the queue forward — it never deletes anything
+// from the word's own real schedule, so once its new cooldown ends it
+// will naturally show up in review again like any other word.
+let reviewQueues = {};
+let reviewCurrentDifficulty = null;
+
+function openReviewCards(difficulty){
+  reviewCurrentDifficulty = difficulty;
+  const existing = reviewQueues[difficulty];
+  if(!existing || existing.pos >= existing.refs.length){
+    const refs = getScopeWordRefs(reviewScope).filter(ref => {
+      const d = getRefDifficulty(ref);
+      const matchesDifficulty = difficulty === 'all'
+        ? (d === 'easy' || d === 'medium' || d === 'hard')
+        : d === difficulty;
+      return matchesDifficulty && isRefAvailableNow(ref);
+    });
+    refs.sort((a, b) => getRefUnlockAt(a) - getRefUnlockAt(b));
+    reviewQueues[difficulty] = { refs, pos: 0 };
+  }
+
+  reviewFoldersView.style.display = 'none';
+  reviewCardsView.style.display = 'block';
+
+  const names = { easy: 'السهلة', medium: 'المتوسطة', hard: 'الصعبة' };
+  document.getElementById('review-cards-title').textContent = difficulty === 'all'
+    ? reviewFoldersTitleFor(reviewScope)
+    : `مراجعة الكلمات ${names[difficulty]}`;
+
+  renderReviewCards();
+}
+
+// Keeps the review card's example sentence on a single line always —
+// growing short sentences up toward the normal size and shrinking long
+// ones down — instead of ever letting it wrap to a second line.
+const REVIEW_SENTENCE_MAX_FONT = 26;
+const REVIEW_SENTENCE_MIN_FONT = 13;
+function fitReviewSentenceToOneLine(){
+  const el = reviewCardsGrid.querySelector('.review-floating-card .example .en > span.sentence-text');
+  if(!el) return;
+  let size = REVIEW_SENTENCE_MAX_FONT;
+  el.style.fontSize = size + 'px';
+  while(size > REVIEW_SENTENCE_MIN_FONT && el.scrollWidth > el.clientWidth){
+    size -= 1;
+    el.style.fontSize = size + 'px';
+  }
+}
+window.addEventListener('resize', () => {
+  if(reviewCardsView.style.display === 'block') fitReviewSentenceToOneLine();
+});
+
+function renderReviewCards(){
+  const q = reviewQueues[reviewCurrentDifficulty];
+  if(!q || q.pos >= q.refs.length){
+    reviewCardsGrid.innerHTML = `<div class="empty-custom">تمام، خلصت كل كلمات هذا التصنيف دلوقتي 🎉</div>`;
+    return;
+  }
+  const ref = q.refs[q.pos];
+  const lvl = ref.levelId === 'custom-words' ? buildCustomLevel() : levels.find(l => l.id === ref.levelId);
+  const w = lvl && lvl.words[ref.index];
+  if(!w || !isRefAvailableNow(ref)){
+    // Stale reference — the word no longer exists, or it got rated
+    // again (here or anywhere else) since this queue was built, pushing
+    // its real unlock time into the future. Either way, skip it.
+    q.pos++;
+    renderReviewCards();
+    return;
+  }
+  reviewCardsGrid.innerHTML = `
+    <div class="review-floating-card">
+      <div class="review-word-en-row">
+        <div class="review-word-en">${w.en}</div>
+        <button type="button" class="speak-btn" data-speak="${escapeAttr(w.en)}" title="استمع للنطق">🔊</button>
+      </div>
+      <button type="button" class="review-flip-btn">عرض الترجمة</button>
+      <div class="review-word-ar" style="display:none">${w.ar}</div>
+      <div class="example">
+        <div class="en"><span class="sentence-text">"${highlightWordInSentence(w.sentenceEn, w.en)}"</span> <button type="button" class="speak-btn small" data-speak="${escapeAttr(w.sentenceEn)}" title="استمع للجملة">🔊</button></div>
+        <div class="ar" style="display:none">${highlightWordInArabicSentence(w.sentenceAr, w.ar)}</div>
+      </div>
+      <div class="mini-diff-row">
+        <button type="button" class="mini-diff-btn easy" data-review-rate="easy">سهل</button>
+        <button type="button" class="mini-diff-btn medium" data-review-rate="medium">متوسط</button>
+        <button type="button" class="mini-diff-btn hard" data-review-rate="hard">صعب</button>
+      </div>
+      <button type="button" class="review-cancel-link" id="review-cancel-btn">إلغاء</button>
+    </div>
+  `;
+  fitReviewSentenceToOneLine();
+}
+
+function rateReviewWord(levelId, index, diffLevel){
+  const keys = folderStorageKeys(levelId);
+  const sched = loadJSON(keys.schedule, {});
+  const rated = loadJSON(keys.rated, {});
+  const diffMap = loadJSON(keys.difficulty, {});
+  const earlyMap = loadJSON(keys.earlyUnlocked, {});
+
+  const prev = diffMap[index];
+  const prevLevel = prev && typeof prev === 'object' ? prev.level : prev;
+  const prevDuration = prev && typeof prev === 'object' ? prev.duration : null;
+  const duration = (prevLevel === diffLevel && prevDuration) ? prevDuration * 3 : DURATIONS[diffLevel];
+
+  sched[index] = { level: diffLevel, unlockAt: Date.now() + duration };
+  rated[index] = true;
+  diffMap[index] = { level: diffLevel, duration };
+  // A fresh rating (from review, just like from the normal card view)
+  // starts a brand-new cooldown cycle, so any earlier manual-open flag
+  // no longer applies — otherwise the word would wrongly show as still
+  // "open" once its new (future) unlockAt is checked next.
+  delete earlyMap[index];
+
+  saveJSON(keys.schedule, sched);
+  saveJSON(keys.rated, rated);
+  saveJSON(keys.difficulty, diffMap);
+  saveJSON(keys.earlyUnlocked, earlyMap);
+
+  // The word's own topic/level view (sitting hidden underneath this
+  // review overlay) keeps its own in-memory schedule/ratedWords/
+  // wordDifficulty/earlyUnlocked copies, loaded when that level was
+  // opened — those don't auto-refresh from storage. If this rating
+  // belongs to that same currently-loaded level, mirror it into those
+  // in-memory copies and re-render the card right now, so the card
+  // already shows correctly locked the instant the person goes back,
+  // with no stale "open" flash.
+  if(activeLevel && activeLevel.id === levelId){
+    schedule[index] = sched[index];
+    ratedWords[index] = true;
+    wordDifficulty[index] = diffMap[index];
+    delete earlyUnlocked[index];
+    renderCard(index);
+    updateLevelLockState();
+    refreshCounts();
+  }
+
+  const q = reviewQueues[reviewCurrentDifficulty];
+  if(q) q.pos++;
+  renderReviewCards();
+}
+
+reviewCardsGrid.addEventListener('click', (e) => {
+  if(e.target.closest('#review-cancel-btn')){
+    reviewCardsView.style.display = 'none';
+    openReviewFolders(reviewScope);
+    return;
+  }
+  const flipBtn = e.target.closest('.review-flip-btn');
+  if(flipBtn){
+    const card = flipBtn.closest('.review-floating-card');
+    card.querySelector('.review-word-ar').style.display = 'block';
+    card.querySelector('.example .ar').style.display = 'block';
+    flipBtn.style.display = 'none';
+    return;
+  }
+  const rateBtn = e.target.closest('[data-review-rate]');
+  if(rateBtn){
+    const q = reviewQueues[reviewCurrentDifficulty];
+    if(!q || q.pos >= q.refs.length) return;
+    const ref = q.refs[q.pos];
+    rateReviewWord(ref.levelId, ref.index, rateBtn.dataset.reviewRate);
+  }
+});
+
+function closeReviewMode(){
+  reviewFoldersView.style.display = 'none';
+  reviewCardsView.style.display = 'none';
+  if(activeLevel && activeTopic){
+    levelView.style.display = 'block';
+  } else if(activeLevel){
+    topicsView.style.display = 'block';
+  } else if(activeCategoryId === 'english'){
+    foldersView.style.display = 'block';
+  } else {
+    categoriesView.style.display = 'block';
+  }
+}
+
+document.getElementById('review-words-btn-folders').addEventListener('click', () => {
+  reviewQueues = {};
+  openReviewFolders({ type: 'all-levels' });
+});
+document.getElementById('review-words-btn-topics').addEventListener('click', () => {
+  if(!activeLevel) return;
+  reviewQueues = {};
+  openReviewFolders({ type: 'level', levelId: activeLevel.id });
+});
+document.getElementById('review-words-btn-level').addEventListener('click', () => {
+  if(!activeLevel) return;
+  reviewQueues = {};
+  if(customWordsMode){
+    openReviewFolders({ type: 'custom' });
+  } else if(activeTopic){
+    openReviewFolders({ type: 'topic', levelId: activeLevel.id, topicId: activeTopic.id });
+  }
+});
+document.getElementById('back-from-review-folders').addEventListener('click', closeReviewMode);
+document.getElementById('back-from-review-cards').addEventListener('click', () => {
+  reviewCardsView.style.display = 'none';
+  openReviewFolders(reviewScope);
+});
+
+// --- "تدرب على الكتابة والاستماع" (listen-and-write practice) ---
+// Draws from every word that has EVER been rated before (any difficulty,
+// regardless of whether it's currently locked/waiting its cooldown) —
+// unlike مراجعة الكلمات, this isn't about spaced-repetition timing, it's
+// just drilling spelling/listening on words already learned.
+function getAllRatedWordRefs(){
+  const refs = [];
+  function addLevel(levelObj){
+    if(!levelObj) return;
+    const isCustom = levelObj.id === 'custom-words';
+    const rated = loadJSON(folderStorageKeys(levelObj.id).rated, {});
+    (levelObj.words || []).forEach((w, i) => {
+      if(!rated[i]) return;
+      if(!isCustom && isWordHidden(levelObj.id, i)) return;
+      refs.push({ levelId: levelObj.id, index: i });
+    });
+  }
+  levels.forEach(lvl => addLevel(lvl));
+  addLevel(buildCustomLevel());
+  return refs;
+}
+
+function refWord(ref){
+  const lvl = ref.levelId === 'custom-words' ? buildCustomLevel() : levels.find(l => l.id === ref.levelId);
+  return lvl && lvl.words[ref.index];
+}
+
+function shuffleArray(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+// Goes through every rated word in three phases — all "easy" words
+// (shuffled among themselves) first, then all "medium", then all
+// "hard" — each phase fully exhausted with no repeats before moving to
+// the next, then cycling back to "easy" once "hard" is done too. When a
+// fresh phase happens to start with the same word that just finished
+// the previous one, swap it so two turns of the same word never land
+// back to back.
+const WP_PHASE_ORDER = ['easy', 'medium', 'hard'];
+let writingPracticePhase = 'easy';
+let writingPracticeQueue = [];
+let writingPracticeLastRef = null;
+let writingPracticeCurrentRef = null;
+let writingPracticeCurrentWord = null;
+let writingPracticeAnswered = false;
+// Counts skips in a row (reset by any real submit or by a motivational
+// detour). After 3 in a row, and only once past the "easy" phase, the
+// next card becomes one easy word as a confidence boost, then practice
+// resumes exactly where it left off in the real phase/queue.
+let writingPracticeConsecutiveSkips = 0;
+let writingPracticeInMotivationDetour = false;
+
+function getRatedWordRefsByDifficulty(difficulty){
+  const seen = new Set();
+  const result = [];
+  getAllRatedWordRefs().forEach(ref => {
+    if(getRefDifficulty(ref) !== difficulty) return;
+    const w = refWord(ref);
+    if(!w) return;
+    // Dedupe by the word's own text — if the same word was rated more
+    // than once (or exists under more than one level/folder), it should
+    // still only take one slot in the bag, so it can't come up again
+    // until every other rated word at this difficulty has had its turn.
+    const key = (w.en || '').trim().toLowerCase();
+    if(seen.has(key)) return;
+    seen.add(key);
+    result.push(ref);
+  });
+  return result;
+}
+
+function pickNextWritingPracticeRef(){
+  let loops = 0;
+  while(writingPracticeQueue.length === 0){
+    const refs = getRatedWordRefsByDifficulty(writingPracticePhase);
+    if(refs.length > 0){
+      writingPracticeQueue = shuffleArray(refs);
+      break;
+    }
+    // Nothing rated at this difficulty right now — move to the next
+    // phase. After a full loop with nothing found anywhere, give up.
+    writingPracticePhase = WP_PHASE_ORDER[(WP_PHASE_ORDER.indexOf(writingPracticePhase) + 1) % WP_PHASE_ORDER.length];
+    loops++;
+    if(loops > WP_PHASE_ORDER.length) return null;
+  }
+
+  if(writingPracticeLastRef && writingPracticeQueue.length > 1 &&
+     writingPracticeQueue[0].levelId === writingPracticeLastRef.levelId &&
+     writingPracticeQueue[0].index === writingPracticeLastRef.index){
+    [writingPracticeQueue[0], writingPracticeQueue[1]] = [writingPracticeQueue[1], writingPracticeQueue[0]];
+  }
+
+  const ref = writingPracticeQueue.shift();
+  writingPracticeLastRef = ref;
+  if(writingPracticeQueue.length === 0){
+    // This phase is now fully done — the next pick moves on to the
+    // next difficulty (or cycles back to "easy" after "hard").
+    writingPracticePhase = WP_PHASE_ORDER[(WP_PHASE_ORDER.indexOf(writingPracticePhase) + 1) % WP_PHASE_ORDER.length];
+  }
+  return ref;
+}
+
+// Renders a specific word (used both for drawing a fresh one and for
+// resuming a word the person left without answering).
+function renderWritingPracticeCardForRef(ref){
+  const card = document.getElementById('writing-practice-card');
+  writingPracticeCurrentRef = ref;
+  writingPracticeAnswered = false;
+
+  if(!ref){
+    card.innerHTML = `<div class="empty-custom">لسه معندكش كلمات اتقيّمت قبل كده — قيّم شوية كلمات الأول عشان تقدر تتدرب عليها هنا 📝</div>`;
+    return;
+  }
+  const w = refWord(ref);
+  if(!w){
+    // Stale reference (word no longer exists) — skip it and draw a fresh one instead.
+    renderWritingPracticeCard();
+    return;
+  }
+  writingPracticeCurrentWord = w;
+
+  card.innerHTML = `
+    <div class="wp-instruction">🎧 اسمع ثم اكتب اللي سمعته</div>
+    <div class="wp-audio-row">
+      <button type="button" class="speak-btn" data-speak="${escapeAttr(w.en)}" title="استمع للنطق">🔊</button>
+      ${buildSpeedControl('wp')}
+    </div>
+    <form class="wp-answer-form" id="wp-answer-form">
+      <input type="text" id="wp-answer-input" class="wp-answer-input" placeholder="اكتب الكلمة اللي سمعتها..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+      <button type="submit" class="wp-submit-btn">إرسال</button>
+    </form>
+    <button type="button" class="back-btn wp-skip-btn" id="wp-skip-btn">تخطي</button>
+    <button type="button" class="back-btn wp-cancel-btn-early" id="wp-cancel-btn-early">إلغاء</button>
+    <div class="wp-reveal" id="wp-reveal" style="display:none">
+      <div class="wp-reveal-label">الكلمة كانت:</div>
+      <div class="wp-reveal-word" id="wp-reveal-word"></div>
+      <div class="wp-actions">
+        <button type="button" class="review-words-btn" id="wp-next-btn">التالي</button>
+        <button type="button" class="back-btn" id="wp-cancel-btn">إلغاء</button>
+      </div>
+    </div>
+  `;
+  speakWord(w.en);
+  const input = document.getElementById('wp-answer-input');
+  if(input) input.focus();
+}
+
+function renderWritingPracticeCard(){
+  const ref = pickNextWritingPracticeRef();
+  renderWritingPracticeCardForRef(ref);
+}
+
+const writingPracticeCard = document.getElementById('writing-practice-card');
+writingPracticeCard.addEventListener('submit', (e) => {
+  const form = e.target.closest('#wp-answer-form');
+  if(!form || writingPracticeAnswered) return;
+  e.preventDefault();
+  writingPracticeAnswered = true;
+
+  const input = document.getElementById('wp-answer-input');
+  const userVal = (input.value || '').trim();
+  const correct = writingPracticeCurrentWord ? writingPracticeCurrentWord.en : '';
+  const isCorrect = !!userVal && userVal.toLowerCase() === correct.toLowerCase();
+
+  input.disabled = true;
+  form.querySelector('.wp-submit-btn').disabled = true;
+
+  const earlyCancel = document.getElementById('wp-cancel-btn-early');
+  if(earlyCancel) earlyCancel.style.display = 'none';
+  const skipBtn = document.getElementById('wp-skip-btn');
+  if(skipBtn) skipBtn.style.display = 'none';
+
+  // Any real answer (right or wrong) breaks a skip streak.
+  writingPracticeConsecutiveSkips = 0;
+
+  const revealWord = document.getElementById('wp-reveal-word');
+  revealWord.textContent = correct;
+  revealWord.className = 'wp-reveal-word ' + (isCorrect ? 'wp-correct' : 'wp-incorrect');
+  document.getElementById('wp-reveal').style.display = 'flex';
+});
+
+// Skipping shows the word (with no right/wrong color, since nothing was
+// actually attempted) and puts it back into this phase's bag so it
+// comes up again later, instead of disappearing for good.
+function handleWritingPracticeSkip(){
+  if(writingPracticeAnswered) return;
+  writingPracticeAnswered = true;
+
+  const input = document.getElementById('wp-answer-input');
+  if(input) input.disabled = true;
+  const form = document.getElementById('wp-answer-form');
+  if(form){
+    const submitBtn = form.querySelector('.wp-submit-btn');
+    if(submitBtn) submitBtn.disabled = true;
+  }
+  const earlyCancel = document.getElementById('wp-cancel-btn-early');
+  if(earlyCancel) earlyCancel.style.display = 'none';
+  const skipBtn = document.getElementById('wp-skip-btn');
+  if(skipBtn) skipBtn.style.display = 'none';
+
+  const correct = writingPracticeCurrentWord ? writingPracticeCurrentWord.en : '';
+  const revealWord = document.getElementById('wp-reveal-word');
+  revealWord.textContent = correct;
+  revealWord.className = 'wp-reveal-word';
+  document.getElementById('wp-reveal').style.display = 'flex';
+
+  // The motivational easy word doesn't belong to the real phase's bag,
+  // so it's never re-queued and never counts toward the skip streak.
+  if(!writingPracticeInMotivationDetour){
+    if(writingPracticeCurrentRef) writingPracticeQueue.push(writingPracticeCurrentRef);
+    writingPracticeConsecutiveSkips++;
+  }
+}
+
+// Decides what the "next" card should be: normally just draws the next
+// word, but after 3 skips in a row past the "easy" phase it inserts one
+// easy word as a confidence boost first, then resumes exactly where the
+// real phase/queue left off.
+function advanceWritingPracticeCard(){
+  if(writingPracticeInMotivationDetour){
+    writingPracticeInMotivationDetour = false;
+    renderWritingPracticeCard();
+    return;
+  }
+  if(writingPracticeConsecutiveSkips >= 3 && writingPracticePhase !== 'easy'){
+    writingPracticeConsecutiveSkips = 0;
+    const easyRefs = getRatedWordRefsByDifficulty('easy');
+    if(easyRefs.length > 0){
+      writingPracticeInMotivationDetour = true;
+      renderWritingPracticeCardForRef(easyRefs[Math.floor(Math.random() * easyRefs.length)]);
+      return;
+    }
+  }
+  renderWritingPracticeCard();
+}
+
+writingPracticeCard.addEventListener('click', (e) => {
+  if(e.target.closest('#wp-cancel-btn') || e.target.closest('#wp-cancel-btn-early')){ closeWritingPractice(); return; }
+  if(e.target.closest('#wp-skip-btn')){ handleWritingPracticeSkip(); return; }
+  if(e.target.closest('#wp-next-btn')){ advanceWritingPracticeCard(); return; }
+});
+
+function openWritingPractice(){
+  document.getElementById('main-title').textContent = 'تدرب على الكتابة والاستماع';
+  document.getElementById('main-subtitle').textContent = 'اسمع الكلمة وحاول تكتبها صح.';
+
+  categoriesView.style.display = 'none';
+  foldersView.style.display = 'none';
+  topicsView.style.display = 'none';
+  levelView.style.display = 'none';
+  reviewFoldersView.style.display = 'none';
+  reviewCardsView.style.display = 'none';
+  voiceChatView.style.display = 'none';
+  pronunciationPracticeView.style.display = 'none';
+  writingPracticeView.style.display = 'block';
+
+  if(writingPracticeCurrentRef && !writingPracticeAnswered){
+    // They left this word without answering it — show it again instead
+    // of drawing a new one, so leaving and coming back doesn't cost
+    // them their place.
+    renderWritingPracticeCardForRef(writingPracticeCurrentRef);
+  } else {
+    // A fresh bag every time the feature is opened on a clean slate —
+    // always starting from "easy" again.
+    writingPracticePhase = 'easy';
+    writingPracticeQueue = [];
+    writingPracticeLastRef = null;
+    writingPracticeConsecutiveSkips = 0;
+    writingPracticeInMotivationDetour = false;
+    renderWritingPracticeCard();
+  }
+  pushNav();
+}
+
+function closeWritingPractice(){
+  stopAnySpeaking();
+  writingPracticeView.style.display = 'none';
+  categoriesView.style.display = 'block';
+  document.getElementById('main-title').textContent = 'تعلم اللغة الإنجليزية';
+  document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
+  renderCategories();
+}
+document.getElementById('back-to-categories-from-writing').addEventListener('click', goBack);
+
+// ===== Pronunciation practice (same word-selection logic as writing =====
+// practice, but the person speaks the word into the mic instead of
+// typing it. Transcribed with the browser's own built-in speech
+// recognition (Web Speech API) — no sign-in and no server round-trip,
+// unlike the AI voice chat's Puter-based pipeline. Supported on
+// Chrome/Edge (desktop + Android) and Safari (desktop + iOS); browsers
+// without support (e.g. Firefox) get a clear message instead of a mic
+// button that silently does nothing.
+let pronunciationPracticePhase = 'easy';
+let pronunciationPracticeQueue = [];
+let pronunciationPracticeLastRef = null;
+let pronunciationPracticeCurrentRef = null;
+let pronunciationPracticeCurrentWord = null;
+let pronunciationPracticeAnswered = false;
+let pronunciationPracticeConsecutiveSkips = 0;
+let pronunciationPracticeInMotivationDetour = false;
+
+let ppRecording = false;
+let ppRecognition = null;
+
+function getPpSpeechRecognitionCtor(){
+  return window.SpeechRecognition || window.webkitSpeechRecognition || null;
+}
+
+function pickNextPronunciationPracticeRef(){
+  let loops = 0;
+  while(pronunciationPracticeQueue.length === 0){
+    const refs = getRatedWordRefsByDifficulty(pronunciationPracticePhase);
+    if(refs.length > 0){
+      pronunciationPracticeQueue = shuffleArray(refs);
+      break;
+    }
+    pronunciationPracticePhase = WP_PHASE_ORDER[(WP_PHASE_ORDER.indexOf(pronunciationPracticePhase) + 1) % WP_PHASE_ORDER.length];
+    loops++;
+    if(loops > WP_PHASE_ORDER.length) return null;
+  }
+
+  if(pronunciationPracticeLastRef && pronunciationPracticeQueue.length > 1 &&
+     pronunciationPracticeQueue[0].levelId === pronunciationPracticeLastRef.levelId &&
+     pronunciationPracticeQueue[0].index === pronunciationPracticeLastRef.index){
+    [pronunciationPracticeQueue[0], pronunciationPracticeQueue[1]] = [pronunciationPracticeQueue[1], pronunciationPracticeQueue[0]];
+  }
+
+  const ref = pronunciationPracticeQueue.shift();
+  pronunciationPracticeLastRef = ref;
+  if(pronunciationPracticeQueue.length === 0){
+    pronunciationPracticePhase = WP_PHASE_ORDER[(WP_PHASE_ORDER.indexOf(pronunciationPracticePhase) + 1) % WP_PHASE_ORDER.length];
+  }
+  return ref;
+}
+
+function renderPronunciationPracticeCardForRef(ref){
+  const card = document.getElementById('pronunciation-practice-card');
+  pronunciationPracticeCurrentRef = ref;
+  pronunciationPracticeAnswered = false;
+
+  if(!ref){
+    card.innerHTML = `<div class="empty-custom">لسه معندكش كلمات اتقيّمت قبل كده — قيّم شوية كلمات الأول عشان تقدر تتدرب عليها هنا 🎤</div>`;
+    return;
+  }
+  const w = refWord(ref);
+  if(!w){
+    // Stale reference (word no longer exists) — skip it and draw a fresh one instead.
+    renderPronunciationPracticeCard();
+    return;
+  }
+  pronunciationPracticeCurrentWord = w;
+
+  card.innerHTML = `
+    <div class="wp-instruction">🎧 اسمع ثم انطق الكلمة</div>
+    <div class="wp-audio-row">
+      <button type="button" class="speak-btn" data-speak="${escapeAttr(w.en)}" title="استمع للنطق">🔊</button>
+      ${buildSpeedControl('pp')}
+    </div>
+    <button type="button" class="pp-record-btn" id="pp-record-btn">
+      <span class="pp-record-icon">🎤</span>
+      <span class="pp-record-label" id="pp-record-label">اضغط وانطق الكلمة</span>
+    </button>
+    <div class="pp-status" id="pp-status"></div>
+    <button type="button" class="back-btn wp-skip-btn" id="pp-skip-btn">تخطي</button>
+    <button type="button" class="back-btn wp-cancel-btn-early" id="pp-cancel-btn-early">إلغاء</button>
+    <div class="wp-reveal" id="pp-reveal" style="display:none">
+      <div class="wp-reveal-label">الكلمة كانت:</div>
+      <div class="wp-reveal-word" id="pp-reveal-word"></div>
+      <div class="wp-your-answer" id="pp-your-said"></div>
+      <div class="wp-actions">
+        <button type="button" class="review-words-btn" id="pp-next-btn">التالي</button>
+        <button type="button" class="back-btn" id="pp-cancel-btn">إلغاء</button>
+      </div>
+    </div>
+  `;
+  speakWord(w.en);
+}
+
+function renderPronunciationPracticeCard(){
+  const ref = pickNextPronunciationPracticeRef();
+  renderPronunciationPracticeCardForRef(ref);
+}
+
+function setPpStatus(text){
+  const el = document.getElementById('pp-status');
+  if(el) el.textContent = text || '';
+}
+
+function updatePpRecordButtonUI(){
+  const btn = document.getElementById('pp-record-btn');
+  const label = document.getElementById('pp-record-label');
+  if(!btn) return;
+  btn.classList.toggle('recording', ppRecording);
+  if(label) label.textContent = ppRecording ? 'دوس تاني لما تخلص' : 'اضغط وانطق الكلمة';
+}
+
+function startPpRecording(){
+  const SpeechRecognitionCtor = getPpSpeechRecognitionCtor();
+  if(!SpeechRecognitionCtor){
+    setPpStatus('المتصفح ده مش بيدعم التعرف على الصوت، جرب Chrome أو Safari.');
+    return;
+  }
+  if(ppRecording || pronunciationPracticeAnswered) return;
+  stopAnySpeaking();
+
+  const recordBtn = document.getElementById('pp-record-btn');
+  if(recordBtn) recordBtn.disabled = false;
+
+  ppRecognition = new SpeechRecognitionCtor();
+  ppRecognition.lang = 'en-US';
+  ppRecognition.interimResults = false;
+  ppRecognition.maxAlternatives = 1;
+  ppRecognition.continuous = false;
+
+  let handled = false;
+
+  ppRecognition.onresult = (event) => {
+    handled = true;
+    const transcript = ((event.results && event.results[0] && event.results[0][0] && event.results[0][0].transcript) || '').trim();
+    if(!transcript){
+      setPpStatus('مسمعتش كلام واضح، جرب تاني.');
+      return;
+    }
+    revealPronunciationResult(transcript);
+  };
+
+  ppRecognition.onerror = (event) => {
+    handled = true;
+    console.warn('[pp-stt] recognition error:', event && event.error);
+    if(pronunciationPracticeAnswered) return; // already moved on, ignore
+    if(event && (event.error === 'not-allowed' || event.error === 'service-not-allowed')){
+      setPpStatus('محتاجين إذن استخدام الميكروفون من المتصفح');
+    } else if(event && event.error === 'no-speech'){
+      setPpStatus('مسمعتش كلام واضح، جرب تاني.');
+    } else {
+      setPpStatus('حصلت مشكلة في التعرف على الصوت، جرب تاني.');
+    }
+  };
+
+  ppRecognition.onend = () => {
+    ppRecording = false;
+    updatePpRecordButtonUI();
+    if(!handled && !pronunciationPracticeAnswered){
+      setPpStatus('مسمعتش كلام واضح، جرب تاني.');
+    }
+  };
+
+  try{
+    ppRecognition.start();
+  }catch(e){
+    setPpStatus('حصلت مشكلة في بدء التسجيل، جرب تاني.');
+    return;
+  }
+  ppRecording = true;
+  updatePpRecordButtonUI();
+  setPpStatus('بيسمعك دلوقتي... انطق الكلمة، ودوس تاني لما تخلص');
+}
+
+function stopPpRecording(){
+  if(ppRecognition && ppRecording){
+    try{ ppRecognition.stop(); }catch(e){}
+  }
+  ppRecording = false;
+  updatePpRecordButtonUI();
+}
+
+function normalizePronunciationText(s){
+  return (s || '').toLowerCase().replace(/[^a-z']/g, ' ').trim().replace(/\s+/g, ' ');
+}
+
+function revealPronunciationResult(transcript){
+  if(pronunciationPracticeAnswered) return;
+  pronunciationPracticeAnswered = true;
+
+  const correct = pronunciationPracticeCurrentWord ? pronunciationPracticeCurrentWord.en : '';
+  const targetNorm = normalizePronunciationText(correct);
+  const transcriptNorm = normalizePronunciationText(transcript);
+  const tokens = transcriptNorm.split(' ').filter(Boolean);
+  const isCorrect = !!targetNorm && (transcriptNorm === targetNorm || tokens.includes(targetNorm));
+
+  const recordBtn = document.getElementById('pp-record-btn');
+  if(recordBtn){ recordBtn.disabled = true; recordBtn.style.display = 'none'; }
+  setPpStatus('');
+
+  const earlyCancel = document.getElementById('pp-cancel-btn-early');
+  if(earlyCancel) earlyCancel.style.display = 'none';
+  const skipBtn = document.getElementById('pp-skip-btn');
+  if(skipBtn) skipBtn.style.display = 'none';
+
+  // Any real attempt (right or wrong) breaks a skip streak.
+  pronunciationPracticeConsecutiveSkips = 0;
+
+  const revealWord = document.getElementById('pp-reveal-word');
+  revealWord.textContent = correct;
+  revealWord.className = 'wp-reveal-word ' + (isCorrect ? 'wp-correct' : 'wp-incorrect');
+  const saidEl = document.getElementById('pp-your-said');
+  if(saidEl) saidEl.textContent = `انت قلت: ${transcript}`;
+  document.getElementById('pp-reveal').style.display = 'flex';
+}
+
+// Skipping shows the word (no right/wrong color, since nothing was
+// actually attempted) and puts it back into this phase's bag so it
+// comes up again later, instead of disappearing for good.
+function handlePronunciationPracticeSkip(){
+  if(pronunciationPracticeAnswered) return;
+  pronunciationPracticeAnswered = true;
+
+  if(ppRecording) stopPpRecording();
+  const recordBtn = document.getElementById('pp-record-btn');
+  if(recordBtn){ recordBtn.disabled = true; recordBtn.style.display = 'none'; }
+  setPpStatus('');
+  const earlyCancel = document.getElementById('pp-cancel-btn-early');
+  if(earlyCancel) earlyCancel.style.display = 'none';
+  const skipBtn = document.getElementById('pp-skip-btn');
+  if(skipBtn) skipBtn.style.display = 'none';
+
+  const correct = pronunciationPracticeCurrentWord ? pronunciationPracticeCurrentWord.en : '';
+  const revealWord = document.getElementById('pp-reveal-word');
+  revealWord.textContent = correct;
+  revealWord.className = 'wp-reveal-word';
+  const saidEl = document.getElementById('pp-your-said');
+  if(saidEl) saidEl.textContent = '';
+  document.getElementById('pp-reveal').style.display = 'flex';
+
+  // The motivational easy word doesn't belong to the real phase's bag,
+  // so it's never re-queued and never counts toward the skip streak.
+  if(!pronunciationPracticeInMotivationDetour){
+    if(pronunciationPracticeCurrentRef) pronunciationPracticeQueue.push(pronunciationPracticeCurrentRef);
+    pronunciationPracticeConsecutiveSkips++;
+  }
+}
+
+// Decides what the "next" card should be: normally just draws the next
+// word, but after 3 skips in a row past the "easy" phase it inserts one
+// easy word as a confidence boost first, then resumes exactly where the
+// real phase/queue left off.
+function advancePronunciationPracticeCard(){
+  if(pronunciationPracticeInMotivationDetour){
+    pronunciationPracticeInMotivationDetour = false;
+    renderPronunciationPracticeCard();
+    return;
+  }
+  if(pronunciationPracticeConsecutiveSkips >= 3 && pronunciationPracticePhase !== 'easy'){
+    pronunciationPracticeConsecutiveSkips = 0;
+    const easyRefs = getRatedWordRefsByDifficulty('easy');
+    if(easyRefs.length > 0){
+      pronunciationPracticeInMotivationDetour = true;
+      renderPronunciationPracticeCardForRef(easyRefs[Math.floor(Math.random() * easyRefs.length)]);
+      return;
+    }
+  }
+  renderPronunciationPracticeCard();
+}
+
+const pronunciationPracticeCard = document.getElementById('pronunciation-practice-card');
+pronunciationPracticeCard.addEventListener('click', (e) => {
+  if(e.target.closest('#pp-cancel-btn') || e.target.closest('#pp-cancel-btn-early')){ closePronunciationPractice(); return; }
+  if(e.target.closest('#pp-skip-btn')){ handlePronunciationPracticeSkip(); return; }
+  if(e.target.closest('#pp-next-btn')){ advancePronunciationPracticeCard(); return; }
+  if(e.target.closest('#pp-record-btn')){
+    if(pronunciationPracticeAnswered) return;
+    if(ppRecording) stopPpRecording(); else startPpRecording();
+    return;
+  }
+});
+
+function openPronunciationPractice(){
+  document.getElementById('main-title').textContent = 'تدرب على النطق والاستماع';
+  document.getElementById('main-subtitle').textContent = 'اسمع الكلمة وحاول تنطقها صح.';
+
+  categoriesView.style.display = 'none';
+  foldersView.style.display = 'none';
+  topicsView.style.display = 'none';
+  levelView.style.display = 'none';
+  reviewFoldersView.style.display = 'none';
+  reviewCardsView.style.display = 'none';
+  voiceChatView.style.display = 'none';
+  writingPracticeView.style.display = 'none';
+  pronunciationPracticeView.style.display = 'block';
+
+  if(pronunciationPracticeCurrentRef && !pronunciationPracticeAnswered){
+    // They left this word without answering it — show it again instead
+    // of drawing a new one, so leaving and coming back doesn't cost
+    // them their place.
+    renderPronunciationPracticeCardForRef(pronunciationPracticeCurrentRef);
+  } else {
+    // A fresh bag every time the feature is opened on a clean slate —
+    // always starting from "easy" again.
+    pronunciationPracticePhase = 'easy';
+    pronunciationPracticeQueue = [];
+    pronunciationPracticeLastRef = null;
+    pronunciationPracticeConsecutiveSkips = 0;
+    pronunciationPracticeInMotivationDetour = false;
+    renderPronunciationPracticeCard();
+  }
+  pushNav();
+}
+
+function closePronunciationPractice(){
+  stopAnySpeaking();
+  if(ppRecording) stopPpRecording();
+  pronunciationPracticeView.style.display = 'none';
+  categoriesView.style.display = 'block';
+  document.getElementById('main-title').textContent = 'تعلم اللغة الإنجليزية';
+  document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
+  renderCategories();
+}
+document.getElementById('back-to-categories-from-pronunciation').addEventListener('click', goBack);
+
 function updateLevelLockState(){
   if(!activeLevel || !activeTopic) return;
   const now = Date.now();
@@ -8416,7 +9841,7 @@ function updateLevelLockState(){
 
   for(const i of indices){
     const entry = schedule[i];
-    if(!entry || entry.unlockAt <= now){
+    if(!entry || entry.unlockAt <= now || earlyUnlocked[i]){
       allLocked = false;
       break;
     }
@@ -8468,6 +9893,22 @@ function closeLevel(){
 }
 document.getElementById('back-to-folders-from-topics').addEventListener('click', goBack);
 document.getElementById('back-to-folders').addEventListener('click', goBack);
+
+// Jump shortcuts: unlike the main back button (one step at a time),
+// these hop straight to a screen further up the chain by popping
+// several history entries at once. applyPopState() already knows how
+// to resolve a jump of any distance (it was built to also handle the
+// normal one-step case), so this only needs to work out how many
+// steps to pop.
+document.getElementById('jump-home-from-topics').addEventListener('click', () => {
+  if(canGoBackInApp()) history.go(-2); // topics -> categories
+});
+document.getElementById('jump-levels-from-level').addEventListener('click', () => {
+  if(canGoBackInApp()) history.go(-2); // level -> folders
+});
+document.getElementById('jump-home-from-level').addEventListener('click', () => {
+  if(canGoBackInApp()) history.go(-3); // level -> categories
+});
 
 const addWordBtn = document.getElementById('add-word-btn');
 const addWordOverlay = document.getElementById('add-word-overlay');
@@ -11972,6 +13413,7 @@ function wireWordActionButtons(wrap, i){
         localStorage.removeItem(keys.schedule);
         localStorage.removeItem(keys.rated);
         localStorage.removeItem(keys.difficulty);
+        localStorage.removeItem(keys.earlyUnlocked);
 
         openCustomWords();
       } else {
@@ -12030,6 +13472,7 @@ function renderCard(i){
   if(!wrap) return;
   const entry = schedule[i];
   const now = Date.now();
+  const isEarlyUnlocked = !!(entry && earlyUnlocked[i]);
 
   // Edit/delete buttons only ever appear on the flippable front face
   // (see buildFrontBack) — once a word is rated and goes into its locked/
@@ -12054,7 +13497,7 @@ function renderCard(i){
     return;
   }
 
-  if(entry && entry.unlockAt > now){
+  if(entry && entry.unlockAt > now && !isEarlyUnlocked){
     wrap.innerHTML = `
       <div class="flip-scene">
         <div class="hidden-card ${entry.level}">
@@ -12073,8 +13516,12 @@ function renderCard(i){
       unlockEarlyBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         if(!confirm('هل انت متأكد من فتح الكارت قبل الموعد؟ (هذا سيكون مجهود كبير عليك)')) return;
-        delete schedule[i];
-        saveJSON(folderStorageKeys(activeLevel.id).schedule, schedule);
+        // Only marks the card as "not showing locked" — the real
+        // schedule[i].unlockAt stays exactly as it was, so this word
+        // still won't appear in مراجعة الكلمات until that real time
+        // actually passes.
+        earlyUnlocked[i] = true;
+        saveJSON(folderStorageKeys(activeLevel.id).earlyUnlocked, earlyUnlocked);
         renderCard(i);
         updateLevelLockState();
       });
@@ -12082,9 +13529,13 @@ function renderCard(i){
     return;
   }
 
-  if(entry){
+  if(entry && entry.unlockAt <= now){
     delete schedule[i];
     saveJSON(folderStorageKeys(activeLevel.id).schedule, schedule);
+    if(earlyUnlocked[i]){
+      delete earlyUnlocked[i];
+      saveJSON(folderStorageKeys(activeLevel.id).earlyUnlocked, earlyUnlocked);
+    }
   }
 
   wrap.innerHTML = `
@@ -12219,6 +13670,7 @@ function renderCard(i){
       schedule = loadJSON(keys.schedule, {});
       ratedWords = loadJSON(keys.rated, {});
       wordDifficulty = loadJSON(keys.difficulty, {});
+      earlyUnlocked = loadJSON(keys.earlyUnlocked, {});
 
       // If the word comes back and gets rated the same difficulty again
       // in a row, triple its previous wait instead of resetting to the
@@ -12236,10 +13688,14 @@ function renderCard(i){
       // previously "hard" and now comes back rated "easy", it moves out
       // of "hard" entirely instead of being counted in both.
       wordDifficulty[i] = { level, duration };
+      // A fresh rating starts a brand-new cooldown cycle, so any earlier
+      // manual-open flag from the previous cycle no longer applies.
+      delete earlyUnlocked[i];
 
       saveJSON(keys.schedule, schedule);
       saveJSON(keys.rated, ratedWords);
       saveJSON(keys.difficulty, wordDifficulty);
+      saveJSON(keys.earlyUnlocked, earlyUnlocked);
       refreshCounts();
 
       const toast = wrap.querySelector('.toast');
@@ -12259,11 +13715,16 @@ setInterval(() => {
     const now = Date.now();
     const keys = folderStorageKeys(activeLevel.id);
     let changed = false;
+    let earlyChanged = false;
     activeLevel.words.forEach((w, i) => {
       const entry = schedule[i];
       if(entry && entry.unlockAt <= now){
         delete schedule[i];
         changed = true;
+        if(earlyUnlocked[i]){
+          delete earlyUnlocked[i];
+          earlyChanged = true;
+        }
         renderCard(i);
       } else if(entry){
         const el = document.querySelector(`#cards-grid .countdown[data-index="${i}"]`);
@@ -12280,6 +13741,14 @@ setInterval(() => {
       });
       schedule = latest;
       saveJSON(keys.schedule, schedule);
+    }
+    if(earlyChanged){
+      const latestEarly = loadJSON(keys.earlyUnlocked, {});
+      activeLevel.words.forEach((w, i) => {
+        if(!earlyUnlocked[i]) delete latestEarly[i];
+      });
+      earlyUnlocked = latestEarly;
+      saveJSON(keys.earlyUnlocked, earlyUnlocked);
     }
     updateLevelLockState();
   } else if(foldersView.style.display !== 'none'){
@@ -12396,6 +13865,8 @@ function openVoiceChat(){
   foldersView.style.display = 'none';
   topicsView.style.display = 'none';
   levelView.style.display = 'none';
+  writingPracticeView.style.display = 'none';
+  pronunciationPracticeView.style.display = 'none';
   voiceChatView.style.display = 'block';
 
   renderChatMessages();
