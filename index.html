@@ -148,31 +148,44 @@
   #folders-view{ display:none; }
 
   .level-header{
+    position: relative;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 1.5rem;
-    display:grid;
-    grid-template-columns: minmax(0,1fr) auto minmax(0,1fr);
+    padding: 0 clamp(0.85rem, 4vw, 1.5rem);
+    display:flex;
     align-items:center;
-    gap: 10px;
-    row-gap: 12px;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: clamp(6px, 2vw, 10px);
+    row-gap: 10px;
   }
-  /* Whichever element sits on the "back" side (a lone .back-btn in
-     folders-view, or a .back-btn-group elsewhere) hugs the near edge;
-     the title always sits dead-center between whatever is on each
-     side; anything trailing (review/add-word buttons) hugs the far
-     edge — grouped together via .header-btn-group so they stay a
-     tight pair instead of spreading out with the grid's own gap. */
-  .level-header > .back-btn,
-  .level-header > .back-btn-group{ justify-self: start; }
-  .level-header > .level-title{ justify-self: center; text-align:center; }
-  .level-header > .review-words-btn,
-  .level-header > .header-btn-group{ justify-self: end; }
+  /* Most pages now only have two edge items — a back button (or
+     .back-btn-group) and a trailing action (.review-words-btn or
+     .header-btn-group) — so space-between alone keeps them pinned to
+     opposite ends and lets them shrink/grow together with the row.
+     A couple of views (the review folders/cards screens) still keep
+     a visible .level-title. It's taken out of the flex flow and
+     centered absolutely against the whole header row (left:50% +
+     translateX), so it lines up with the page's true center instead
+     of just centering in whatever space is left after the back
+     button group — which used to shift it visibly off-center. */
+  .level-header > .level-title{
+    flex: none;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    text-align:center;
+    white-space: nowrap;
+    max-width: 60vw;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
   .header-btn-group{
     display:flex;
     align-items:center;
-    gap: 10px;
+    gap: clamp(6px, 2vw, 10px);
     flex-wrap: wrap;
     justify-content: flex-end;
   }
@@ -183,10 +196,11 @@
     color: var(--ink);
     font-family:'Cairo', sans-serif;
     font-weight:600;
-    font-size: 13.5px;
-    padding: 9px 16px;
+    font-size: clamp(11.5px, 3vw, 13.5px);
+    padding: clamp(7px, 2vw, 9px) clamp(10px, 3vw, 16px);
     border-radius: 12px;
     cursor:pointer;
+    white-space: nowrap;
   }
   .back-btn:hover{ background: var(--accent-soft); border-color: var(--accent); }
 
@@ -196,7 +210,7 @@
   .back-btn-group{
     display:flex;
     align-items:center;
-    gap: 8px;
+    gap: clamp(5px, 1.6vw, 8px);
     flex-wrap: wrap;
   }
 
@@ -206,10 +220,11 @@
     color: var(--muted);
     font-family:'Cairo', sans-serif;
     font-weight:600;
-    font-size: 12px;
-    padding: 7px 12px;
+    font-size: clamp(10.5px, 2.6vw, 12px);
+    padding: clamp(5px, 1.6vw, 7px) clamp(8px, 2.4vw, 12px);
     border-radius: 10px;
     cursor:pointer;
+    white-space: nowrap;
   }
   .jump-btn:hover{ background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
 
@@ -219,15 +234,121 @@
     color: var(--ink);
     font-family:'Cairo', sans-serif;
     font-weight:600;
-    font-size: 13px;
-    padding: 9px 16px;
+    font-size: clamp(11.5px, 3vw, 13px);
+    padding: clamp(7px, 2vw, 9px) clamp(10px, 3vw, 16px);
     border-radius: 12px;
     cursor:pointer;
     display:flex;
     align-items:center;
     gap:6px;
+    white-space: nowrap;
   }
   .restore-words-btn:hover{ background: var(--accent-soft); border-color: var(--accent); }
+
+  .reset-default-btn{
+    background: var(--paper);
+    border: 1.5px solid var(--hard);
+    color: var(--hard);
+    font-family:'Cairo', sans-serif;
+    font-weight:600;
+    font-size: clamp(11.5px, 3vw, 13px);
+    padding: clamp(7px, 2vw, 9px) clamp(10px, 3vw, 16px);
+    border-radius: 12px;
+    cursor:pointer;
+    display:flex;
+    align-items:center;
+    gap:6px;
+    white-space: nowrap;
+  }
+  .reset-default-btn:hover{ background: var(--hard); color:#fff; }
+
+  .deleted-topics-list{
+    display:flex;
+    flex-direction:column;
+    gap:8px;
+    margin-top: 8px;
+  }
+  .deleted-topic-item{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    background: var(--bg);
+    border: 1.5px solid var(--line);
+    border-radius: 12px;
+    padding: 8px 10px;
+  }
+  .deleted-topic-icon{ font-size: 20px; line-height:1; }
+  .deleted-topic-title{
+    flex:1;
+    font-weight:600;
+    font-size: 14px;
+    color: var(--ink);
+  }
+  .deleted-topic-restore-btn{
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border: 1.5px solid var(--accent);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .deleted-topic-restore-btn:hover{ background: var(--accent); color:#fff; }
+  .deleted-topics-empty-msg{
+    color: var(--muted);
+    font-size: 13.5px;
+    text-align:center;
+    padding: 10px 0;
+  }
+  .restore-all-btn{
+    background: var(--accent);
+    color:#fff;
+    border: 1.5px solid var(--accent);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor:pointer;
+    width:100%;
+    margin-top: 8px;
+  }
+  .restore-all-btn:hover{ opacity:0.9; }
+  .purge-all-btn{
+    background: var(--paper);
+    color: var(--hard);
+    border: 1.5px solid var(--hard);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor:pointer;
+    width:100%;
+    margin-top: 8px;
+  }
+  .purge-all-btn:hover{ background: var(--hard); color:#fff; }
+  .deleted-topic-actions{
+    display:flex;
+    align-items:center;
+    gap:6px;
+  }
+  .deleted-topic-purge-btn{
+    background: var(--paper);
+    color: var(--hard);
+    border: 1.5px solid var(--hard);
+    font-family:'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 12.5px;
+    padding: 6px 12px;
+    border-radius: 999px;
+    cursor:pointer;
+    white-space:nowrap;
+  }
+  .deleted-topic-purge-btn:hover{ background: var(--hard); color:#fff; }
 
   .review-words-btn{
     background: var(--accent);
@@ -235,10 +356,11 @@
     color:#fff;
     font-family:'Cairo', sans-serif;
     font-weight:700;
-    font-size: 13.5px;
-    padding: 9px 16px;
+    font-size: clamp(11.5px, 3vw, 13.5px);
+    padding: clamp(7px, 2vw, 9px) clamp(10px, 3vw, 16px);
     border-radius: 12px;
     cursor:pointer;
+    white-space: nowrap;
   }
   .review-words-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
 
@@ -891,9 +1013,45 @@
   }
   .edit-icon-btn:hover{ background: var(--accent); color:#fff; }
 
+  /* Sticker preview + change button shown inside the edit-word / edit-topic
+     modals (replaces the little ✏️ badge that used to sit on the card
+     itself — the sticker is now only editable from inside "تعديل"). */
+  .edit-modal-icon-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap: 12px;
+    margin-bottom: 6px;
+  }
+  .edit-modal-icon-preview{
+    font-size: 40px;
+    line-height:1;
+    width: 64px;
+    height: 64px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background: var(--bg);
+    border: 1.5px solid var(--line);
+    border-radius: 16px;
+  }
+  .modal-icon-edit-btn{
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border: 1.5px solid var(--accent-soft);
+    font-family:'Cairo', sans-serif;
+    font-weight:600;
+    font-size: 13px;
+    padding: 8px 14px;
+    border-radius: 12px;
+    cursor:pointer;
+    white-space: nowrap;
+  }
+  .modal-icon-edit-btn:hover{ background: var(--accent); border-color: var(--accent); color:#fff; }
+
   .level-title{
     font-weight:700;
-    font-size: 20px;
+    font-size: clamp(15px, 4.5vw, 20px);
   }
 
   .speed-control{
@@ -929,27 +1087,46 @@
     margin: 1.5rem auto 0;
     display:flex;
     justify-content:center;
-    gap: 14px;
+    align-items:center;
+    gap: clamp(8px, 2.2vw, 14px);
     flex-wrap: wrap;
     padding: 0 1.5rem;
   }
 
   .stat-pill{
     background: var(--paper);
-    border: 1px solid var(--line);
+    border: 1.5px solid var(--line);
     border-radius: 14px;
-    padding: 10px 18px;
-    font-size: 14px;
+    padding: clamp(7px, 2vw, 10px) clamp(12px, 3.2vw, 18px);
+    font-size: clamp(11.5px, 3vw, 14px);
+    font-family:'Cairo', sans-serif;
     display:flex;
     align-items:center;
-    gap:8px;
+    gap: clamp(5px, 1.6vw, 8px);
     color: var(--muted);
+    cursor:pointer;
+    white-space: nowrap;
+    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   }
+  .stat-pill:hover{ background: var(--accent-soft); border-color: var(--accent); transform: translateY(-1px); }
+  .stat-pill[disabled]{ opacity:0.45; cursor:not-allowed; }
+  .stat-pill[disabled]:hover{ background: var(--paper); border-color: var(--line); transform:none; }
   .stat-pill b{ color: var(--ink); font-weight:700; }
-  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; }
+  .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
   .dot.easy{ background: var(--easy); }
   .dot.medium{ background: var(--medium); }
   .dot.hard{ background: var(--hard); }
+
+  .stat-pill-all{
+    background: var(--accent);
+    border-color: var(--accent);
+    color:#fff;
+    font-weight:700;
+  }
+  .stat-pill-all b{ color:#fff; }
+  .stat-pill-all:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
+  .stat-pill-all[disabled]{ background: var(--paper); border-color: var(--line); color: var(--muted); }
+  .stat-pill-all[disabled] b{ color: var(--muted); }
 
   .grid{
     max-width: 1200px;
@@ -2314,23 +2491,6 @@
     header{ padding: 1.8rem 1rem 1.3rem; }
     h1{ font-size: 22px; margin: 10px 0 6px; }
     header p{ font-size: 13px; line-height: 1.6; }
-
-    .level-header{
-      padding: 0 0.85rem;
-      gap: 6px;
-      row-gap: 8px;
-    }
-    .level-title{ font-size: 15px; }
-    .back-btn,
-    .review-words-btn{
-      font-size: 11.5px;
-      padding: 7px 10px;
-      border-radius: 10px;
-    }
-    .header-btn-group{ gap: 6px; }
-    .back-btn-group{ gap: 5px; }
-    .jump-btn{ font-size: 10.5px; padding: 5px 8px; border-radius: 8px; }
-    .restore-words-btn{ font-size: 11.5px; padding: 7px 10px; }
   }
 
 </style>
@@ -2352,7 +2512,7 @@
 <div id="folders-view">
   <div class="level-header">
     <button class="back-btn" id="back-to-categories">→ رجوع للرئيسية</button>
-    <div class="level-title" id="folders-level-title"></div>
+    <div class="level-title" id="folders-level-title" style="display:none;"></div>
     <button type="button" class="review-words-btn" id="review-words-btn-folders">📖 مراجعة الكلمات</button>
   </div>
   <div class="folders-grid" id="folders-grid"></div>
@@ -2364,8 +2524,12 @@
       <button class="back-btn" id="back-to-folders-from-topics">→ رجوع للمستويات</button>
       <button type="button" class="jump-btn" id="jump-home-from-topics">الرئيسية</button>
     </div>
-    <div class="level-title" id="topics-level-title"></div>
-    <button type="button" class="review-words-btn" id="review-words-btn-topics">📖 مراجعة الكلمات</button>
+    <div class="level-title" id="topics-level-title" style="display:none;"></div>
+    <div class="header-btn-group">
+      <button type="button" class="add-word-btn" id="add-topic-btn">+ إضافة موضوع</button>
+      <button type="button" class="restore-words-btn" id="restore-deleted-topics-btn">↩️ المواضيع المحذوفة</button>
+      <button type="button" class="review-words-btn" id="review-words-btn-topics">📖 مراجعة الكلمات</button>
+    </div>
   </div>
   <div class="folders-grid" id="topics-grid"></div>
 </div>
@@ -2377,18 +2541,20 @@
       <button type="button" class="jump-btn" id="jump-levels-from-level">المستويات</button>
       <button type="button" class="jump-btn" id="jump-home-from-level">الرئيسية</button>
     </div>
-    <div class="level-title" id="level-title"></div>
+    <div class="level-title" id="level-title" style="display:none;"></div>
     <div class="header-btn-group">
       <button type="button" class="add-word-btn" id="add-word-btn" style="display:none;">+ إضافة كلمة</button>
+      <button type="button" class="restore-words-btn" id="restore-deleted-words-btn" style="display:none;">↩️ الكلمات المحذوفة</button>
+      <button type="button" class="reset-default-btn" id="reset-default-btn" style="display:none;">↺ الوضع الافتراضي</button>
       <button type="button" class="review-words-btn" id="review-words-btn-level">📖 مراجعة الكلمات</button>
     </div>
   </div>
 
   <div class="stats-bar">
-    <div class="stat-pill"><span class="dot easy"></span> سهل: <b id="count-easy">0</b></div>
-    <div class="stat-pill"><span class="dot medium"></span> متوسط: <b id="count-medium">0</b></div>
-    <div class="stat-pill"><span class="dot hard"></span> صعب: <b id="count-hard">0</b></div>
-    <button type="button" class="restore-words-btn" id="restore-deleted-words-btn" style="display:none;">↩️ إعادة الكلمات المحذوفة</button>
+    <button type="button" class="stat-pill" id="stat-btn-easy" data-level="easy"><span class="dot easy"></span> سهل: <b id="count-easy">0</b></button>
+    <button type="button" class="stat-pill" id="stat-btn-medium" data-level="medium"><span class="dot medium"></span> متوسط: <b id="count-medium">0</b></button>
+    <button type="button" class="stat-pill" id="stat-btn-hard" data-level="hard"><span class="dot hard"></span> صعب: <b id="count-hard">0</b></button>
+    <button type="button" class="stat-pill stat-pill-all" id="stat-btn-all" data-level="all">📚 الكل: <b id="count-all">0</b></button>
   </div>
 
   <div class="grid" id="cards-grid"></div>
@@ -2428,7 +2594,7 @@
 <div id="voice-chat-view">
   <div class="level-header">
     <button class="back-btn" id="back-to-categories-from-chat">→ رجوع للرئيسية</button>
-    <div class="level-title">🎙️ التحدث الصوتي مع الذكاء الاصطناعي</div>
+    <div class="level-title" style="display:none;">🎙️ التحدث الصوتي مع الذكاء الاصطناعي</div>
   </div>
 
   <div class="chat-shell">
@@ -2452,7 +2618,7 @@
 <div id="writing-practice-view">
   <div class="level-header">
     <button class="back-btn" id="back-to-categories-from-writing">→ رجوع للرئيسية</button>
-    <div class="level-title">✏️ تدرب على الكتابة والاستماع</div>
+    <div class="level-title" style="display:none;">✏️ تدرب على الكتابة والاستماع</div>
   </div>
 
   <div class="wp-shell">
@@ -2463,7 +2629,7 @@
 <div id="pronunciation-practice-view">
   <div class="level-header">
     <button class="back-btn" id="back-to-categories-from-pronunciation">→ رجوع للرئيسية</button>
-    <div class="level-title">🎤 تدرب على النطق والاستماع</div>
+    <div class="level-title" style="display:none;">🎤 تدرب على النطق والاستماع</div>
   </div>
 
   <div class="wp-shell">
@@ -2490,9 +2656,77 @@
   </div>
 </div>
 
+<div class="modal-overlay" id="add-topic-overlay">
+  <div class="modal-box">
+    <div class="modal-title">إضافة موضوع جديد</div>
+
+    <label for="new-topic-title">اسم الموضوع</label>
+    <input type="text" id="new-topic-title" placeholder="مثال: الرياضة">
+
+    <label for="new-topic-icon">أيقونة الموضوع (اختياري)</label>
+    <div class="icon-picker-custom-row">
+      <input type="text" id="new-topic-icon" placeholder="مثال: ⚽" maxlength="4">
+      <button type="button" class="add-word-btn" id="search-topic-icon-btn">🔍 بحث عن ملصق</button>
+    </div>
+
+    <div class="modal-actions">
+      <button type="button" class="back-btn" id="cancel-add-topic">إلغاء</button>
+      <button type="button" class="add-word-btn" id="save-add-topic-btn">إضافة</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="edit-topic-overlay">
+  <div class="modal-box">
+    <div class="modal-title">تعديل الموضوع</div>
+
+    <div class="edit-modal-icon-row">
+      <div class="edit-modal-icon-preview" id="edit-topic-icon-preview">📂</div>
+      <button type="button" class="modal-icon-edit-btn" id="edit-topic-icon-btn">✏️ غيّر الملصق</button>
+    </div>
+
+    <label for="edit-topic-title-input">اسم الموضوع</label>
+    <input type="text" id="edit-topic-title-input" placeholder="مثال: الرياضة">
+
+    <div class="modal-actions">
+      <button type="button" class="back-btn" id="cancel-edit-topic">إلغاء</button>
+      <button type="button" class="add-word-btn" id="save-edit-topic-btn">حفظ</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="restore-topics-overlay">
+  <div class="modal-box">
+    <div class="modal-title">المواضيع المحذوفة</div>
+    <button type="button" class="restore-all-btn" id="restore-all-topics-btn">↩️ استرجاع الكل</button>
+    <button type="button" class="purge-all-btn" id="purge-all-topics-btn">🗑️ حذف الكل نهائيًا</button>
+    <div class="deleted-topics-list" id="deleted-topics-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="back-btn" id="close-restore-topics-modal">إغلاق</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="restore-words-overlay">
+  <div class="modal-box">
+    <div class="modal-title">الكلمات المحذوفة</div>
+    <button type="button" class="restore-all-btn" id="restore-all-words-btn">↩️ استرجاع الكل</button>
+    <button type="button" class="purge-all-btn" id="purge-all-words-btn">🗑️ حذف الكل نهائيًا</button>
+    <div class="deleted-topics-list" id="deleted-words-list"></div>
+    <div class="modal-actions">
+      <button type="button" class="back-btn" id="close-restore-words-modal">إغلاق</button>
+    </div>
+  </div>
+</div>
+
 <div class="modal-overlay" id="edit-word-overlay">
   <div class="modal-box">
     <div class="modal-title">تعديل الكلمة</div>
+
+    <div class="edit-modal-icon-row">
+      <div class="edit-modal-icon-preview" id="edit-word-icon-preview">🔤</div>
+      <button type="button" class="modal-icon-edit-btn" id="edit-word-icon-btn">✏️ غيّر الملصق</button>
+    </div>
 
     <label for="edit-word-en">الكلمة بالإنجليزي</label>
     <input type="text" id="edit-word-en" placeholder="مثال: apple">
@@ -8099,7 +8333,9 @@ function hideBuiltinWord(levelId, i){
   saveHiddenWords(map);
 }
 // Un-hides every word that was deleted (hidden) from the topic currently
-// open, without touching hidden words in any other topic/level.
+// open, without touching hidden words in any other topic/level. Purged
+// words are left out — "restore all" only brings back the ones still
+// sitting in the trash, not the ones the user permanently deleted from it.
 function restoreDeletedWordsForCurrentTopic(){
   if(!activeLevel || !activeTopic) return;
   const map = loadHiddenWords();
@@ -8107,10 +8343,110 @@ function restoreDeletedWordsForCurrentTopic(){
   if(hiddenForLevel && hiddenForLevel.length){
     const topicIndices = new Set();
     activeLevel.words.forEach((w, i) => { if(w.topic === activeTopic.id) topicIndices.add(i); });
-    map[activeLevel.id] = hiddenForLevel.filter(i => !topicIndices.has(i));
+    map[activeLevel.id] = hiddenForLevel.filter(i => !topicIndices.has(i) || isBuiltinWordPurged(activeLevel.id, i));
     saveHiddenWords(map);
   }
   openTopic(activeTopic.id);
+}
+
+// Words the user chose to permanently delete from the "الكلمات المحذوفة"
+// trash (as opposed to merely hidden/soft-deleted). Kept as a separate map
+// layered on top of the hidden-words one: the word's hidden state never
+// changes (it was already, and stays, excluded from review/grids), this
+// just makes it stop showing up in the trash list and skips it whenever
+// "restore all" runs, so a purged word can never come back.
+const PURGED_WORDS_KEY = 'purged-builtin-words-v1';
+function loadPurgedWords(){
+  return loadJSON(PURGED_WORDS_KEY, {});
+}
+function savePurgedWords(map){
+  saveJSON(PURGED_WORDS_KEY, map);
+}
+function isBuiltinWordPurged(levelId, i){
+  const map = loadPurgedWords();
+  return !!(map[levelId] && map[levelId].includes(i));
+}
+function purgeSingleBuiltinWord(levelId, i){
+  const map = loadPurgedWords();
+  if(!map[levelId]) map[levelId] = [];
+  if(!map[levelId].includes(i)) map[levelId].push(i);
+  savePurgedWords(map);
+}
+// Permanently deletes every word currently sitting in the trash for the
+// topic open right now.
+function purgeAllDeletedWordsForCurrentTopic(){
+  if(!activeLevel || !activeTopic) return;
+  const hiddenIndices = getHiddenWordIndicesForCurrentTopic();
+  const map = loadPurgedWords();
+  if(!map[activeLevel.id]) map[activeLevel.id] = [];
+  hiddenIndices.forEach(i => {
+    if(!map[activeLevel.id].includes(i)) map[activeLevel.id].push(i);
+  });
+  savePurgedWords(map);
+}
+
+// --- Persisted "add word" support for built-in level topics ---
+// Custom words (customWordsMode) already had their own add-word flow,
+// saved into a separate localStorage-only list. This does the same job
+// for a word added while browsing a REAL topic inside a built-in level:
+// the word needs to end up permanently attached to that exact topic,
+// not dumped into "كلماتك الخاصة".
+//
+// Built-in level words live in the hard-coded `levels` array (not
+// localStorage), and every other word's schedule/rated/difficulty is
+// keyed by its index in `level.words` — so, same constraint as the
+// hidden-words feature above, we can never insert or reorder the actual
+// array. Added words are therefore always appended to the END of the
+// array (both in memory and in the replay below), which guarantees every
+// existing word keeps the exact index it already had. Each added word is
+// tagged with `__added: true` so the *display* layer (see
+// orderTopicIndicesForDisplay) can show newest-added-first without ever
+// touching real array positions.
+const ADDED_WORDS_KEY = 'added-topic-words-v1';
+function loadAddedWordsMap(){
+  return loadJSON(ADDED_WORDS_KEY, {});
+}
+function saveAddedWordsMap(map){
+  saveJSON(ADDED_WORDS_KEY, map);
+}
+// Saves `word` under `levelId` so it survives reloads, then appends it
+// to the live level's word list right away for the current session.
+function addWordToBuiltinLevel(levelId, word){
+  word.__added = true;
+  const map = loadAddedWordsMap();
+  if(!map[levelId]) map[levelId] = [];
+  map[levelId].push(word);
+  saveAddedWordsMap(map);
+
+  const lvl = levels.find(l => l.id === levelId);
+  if(lvl) lvl.words.push(word);
+}
+// Replays every previously added word back onto its level, in the same
+// order it was added, so indices land identically to last session.
+function applyAddedWords(){
+  const map = loadAddedWordsMap();
+  levels.forEach(lvl => {
+    const added = map[lvl.id];
+    if(added && added.length) lvl.words.push(...added);
+  });
+}
+applyAddedWords();
+// Reorders a list of word indices for *display only*: words the user
+// added manually (marked __added) are shown first, most-recently-added
+// on top, followed by the original words in their normal order. The
+// indices themselves never change, so schedule/rated/difficulty (all
+// keyed by index) stay untouched — this only affects render order.
+function orderTopicIndicesForDisplay(levelId, indices){
+  const lvl = levels.find(l => l.id === levelId);
+  if(!lvl) return indices;
+  const added = [];
+  const normal = [];
+  indices.forEach(i => {
+    if(lvl.words[i] && lvl.words[i].__added) added.push(i);
+    else normal.push(i);
+  });
+  added.sort((a, b) => b - a); // higher index = added later = show first
+  return added.concat(normal);
 }
 
 const DURATIONS = {
@@ -8194,6 +8530,299 @@ function buildCustomLevel(){
   };
 }
 
+// --- Soft-delete for custom words ---
+// Custom words are a real, splice-able localStorage array, but their
+// saved schedule/rated/difficulty are still keyed by the word's *index*
+// in that array — so splicing one out on delete would shift every later
+// word onto the wrong progress. Instead, "deleting" a custom word just
+// hides it (tracked by its stable `id`, not its index, since ids never
+// change) so it stops appearing, and it can be restored later exactly
+// like a deleted built-in word, with its progress intact.
+const HIDDEN_CUSTOM_WORDS_KEY = 'hidden-custom-words-v1';
+function loadHiddenCustomWords(){
+  return loadJSON(HIDDEN_CUSTOM_WORDS_KEY, []);
+}
+function saveHiddenCustomWords(ids){
+  saveJSON(HIDDEN_CUSTOM_WORDS_KEY, ids);
+}
+function isCustomWordHidden(id){
+  return loadHiddenCustomWords().includes(id);
+}
+function hideCustomWord(id){
+  const ids = loadHiddenCustomWords();
+  if(!ids.includes(id)) ids.push(id);
+  saveHiddenCustomWords(ids);
+}
+function restoreSingleCustomWord(id){
+  saveHiddenCustomWords(loadHiddenCustomWords().filter(x => x !== id));
+}
+// Restores every hidden custom word except the ones permanently deleted
+// from the trash — those stay hidden for good.
+function restoreAllCustomWords(){
+  const purged = loadPurgedCustomWords();
+  saveHiddenCustomWords(loadHiddenCustomWords().filter(id => purged.includes(id)));
+}
+
+// Same "permanently delete from the trash" idea as built-in words, kept
+// as its own list of ids layered on top of the hidden-custom-words one.
+const PURGED_CUSTOM_WORDS_KEY = 'purged-custom-words-v1';
+function loadPurgedCustomWords(){
+  return loadJSON(PURGED_CUSTOM_WORDS_KEY, []);
+}
+function savePurgedCustomWords(ids){
+  saveJSON(PURGED_CUSTOM_WORDS_KEY, ids);
+}
+function isCustomWordPurged(id){
+  return loadPurgedCustomWords().includes(id);
+}
+function purgeSingleCustomWord(id){
+  const ids = loadPurgedCustomWords();
+  if(!ids.includes(id)) ids.push(id);
+  savePurgedCustomWords(ids);
+}
+// Permanently deletes every custom word currently sitting in the trash.
+function purgeAllHiddenCustomWords(){
+  const hiddenIds = loadHiddenCustomWords();
+  const purged = loadPurgedCustomWords();
+  hiddenIds.forEach(id => { if(!purged.includes(id)) purged.push(id); });
+  savePurgedCustomWords(purged);
+}
+
+// --- "الوضع الافتراضي" (reset the current page back to first-open state) ---
+// Whatever page is open (a built-in topic, or the custom words folder),
+// this makes it look exactly like the very first time it was opened:
+// every rating/schedule entry for its words is cleared (so they're
+// "new" again), every word the user deleted from it comes back, and
+// every word the user added to it disappears again. Nothing is actually
+// erased from storage — words the user added just get hidden (same
+// mechanism as normal delete), so this stays fully undoable from
+// "↩️ الكلمات المحذوفة" afterwards if it was pressed by mistake.
+function resetPageToDefault(){
+  if(!activeLevel || !activeTopic) return;
+
+  if(customWordsMode){
+    // Every word in this folder was added by the user — there's no
+    // "original" content to keep — so its first-open state is simply
+    // empty. Hide every word IN THIS TOPIC ONLY (recoverable — other
+    // custom topics are untouched) and wipe just this topic's saved
+    // progress.
+    const topicId = activeTopic.id;
+    const wordsInTopic = loadCustomWords().filter(w => w.topic === topicId);
+    const hidden = new Set(loadHiddenCustomWords());
+    wordsInTopic.forEach(w => hidden.add(w.id));
+    saveHiddenCustomWords([...hidden]);
+
+    const keys = folderStorageKeys('custom-words');
+    const sched = loadJSON(keys.schedule, {});
+    const rated = loadJSON(keys.rated, {});
+    const diff = loadJSON(keys.difficulty, {});
+    const early = loadJSON(keys.earlyUnlocked, {});
+    loadCustomWords().forEach((w, i) => {
+      if(w.topic !== topicId) return;
+      delete sched[i];
+      delete rated[i];
+      delete diff[i];
+      delete early[i];
+    });
+    saveJSON(keys.schedule, sched);
+    saveJSON(keys.rated, rated);
+    saveJSON(keys.difficulty, diff);
+    saveJSON(keys.earlyUnlocked, early);
+    schedule = sched;
+    ratedWords = rated;
+    wordDifficulty = diff;
+    earlyUnlocked = early;
+
+    openTopic(topicId);
+    return;
+  }
+
+  const levelId = activeLevel.id;
+  const topicId = activeTopic.id;
+
+  // Original built-in words in this topic go back to visible; anything
+  // the user added to this topic afterwards gets hidden instead, as if
+  // it was never added.
+  const hiddenMap = loadHiddenWords();
+  const topicHiddenSet = new Set(hiddenMap[levelId] || []);
+  const topicIndices = [];
+  activeLevel.words.forEach((w, i) => {
+    if(w.topic !== topicId) return;
+    topicIndices.push(i);
+    if(w.__added) topicHiddenSet.add(i);
+    else topicHiddenSet.delete(i);
+  });
+  hiddenMap[levelId] = [...topicHiddenSet];
+  saveHiddenWords(hiddenMap);
+
+  // Clear this topic's saved ratings/schedule so every word in it
+  // (including ones just restored above) looks like it was never
+  // reviewed.
+  const keys = folderStorageKeys(levelId);
+  const sched = loadJSON(keys.schedule, {});
+  const rated = loadJSON(keys.rated, {});
+  const diff = loadJSON(keys.difficulty, {});
+  const early = loadJSON(keys.earlyUnlocked, {});
+  topicIndices.forEach(i => {
+    delete sched[i];
+    delete rated[i];
+    delete diff[i];
+    delete early[i];
+  });
+  saveJSON(keys.schedule, sched);
+  saveJSON(keys.rated, rated);
+  saveJSON(keys.difficulty, diff);
+  saveJSON(keys.earlyUnlocked, early);
+  schedule = sched;
+  ratedWords = rated;
+  wordDifficulty = diff;
+  earlyUnlocked = early;
+
+  openTopic(topicId);
+}
+
+// --- User-added topics ("+ إضافة موضوع") ---
+// Built-in levels/topics are a static, hardcoded array (not user-owned
+// storage), so new topics a person adds can't be pushed into that array
+// directly — instead they're kept in their own localStorage map, keyed by
+// level id, and merged on top of the level's built-in topics wherever the
+// topics list is read (see getTopicsForLevel). This mirrors how custom
+// words / word overrides are layered on top of the built-in data above.
+const CUSTOM_TOPICS_KEY = 'custom-topics-map';
+
+function loadCustomTopicsMap(){
+  return loadJSON(CUSTOM_TOPICS_KEY, {});
+}
+function saveCustomTopicsMap(map){
+  saveJSON(CUSTOM_TOPICS_KEY, map);
+}
+function getCustomTopicsForLevel(levelId){
+  const map = loadCustomTopicsMap();
+  return (map[levelId] || []).filter(t => !t.deleted);
+}
+// Every custom topic ever added for this level, including ones the user
+// deleted — used to populate the "restore deleted topics" list.
+function getDeletedCustomTopicsForLevel(levelId){
+  const map = loadCustomTopicsMap();
+  return (map[levelId] || []).filter(t => t.deleted && !t.purged);
+}
+function makeCustomTopicId(){
+  return 'topic-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 6);
+}
+function addCustomTopicToLevel(levelId, topic){
+  const map = loadCustomTopicsMap();
+  if(!map[levelId]) map[levelId] = [];
+  // Newest topic goes first, so it shows up at the front of the grid
+  // right after being added instead of the user having to scroll for it.
+  map[levelId].unshift(topic);
+  saveCustomTopicsMap(map);
+}
+function updateCustomTopicInLevel(levelId, topicId, updates){
+  const map = loadCustomTopicsMap();
+  const list = map[levelId] || [];
+  const t = list.find(t => t.id === topicId);
+  if(t) Object.assign(t, updates);
+  saveCustomTopicsMap(map);
+}
+// Soft-delete: keeps the topic (and its words) in storage, just marked so
+// it's hidden from the normal topics list, so it can be brought back later
+// from the "restore deleted topics" list instead of being lost for good.
+function deleteCustomTopicFromLevel(levelId, topicId){
+  updateCustomTopicInLevel(levelId, topicId, { deleted: true });
+}
+function restoreCustomTopic(levelId, topicId){
+  updateCustomTopicInLevel(levelId, topicId, { deleted: false });
+}
+// Permanently deletes a custom topic from the "المواضيع المحذوفة" trash.
+// Reuses the same soft-delete record (just marks it "purged" on top of
+// "deleted") instead of splicing it out of storage, so the topic's own
+// words/progress are left untouched the exact same way a normal delete
+// leaves them — it just stops showing up in the trash list for good.
+function purgeCustomTopic(levelId, topicId){
+  updateCustomTopicInLevel(levelId, topicId, { purged: true });
+}
+
+// Built-in topics come from the level's own static (shared) data, so they
+// can't be edited/deleted in place — instead each level gets a small map of
+// per-topic overrides (title/icon changes, or a "deleted" flag) layered on
+// top at read time. This lets the exact same edit/delete/icon-change UI
+// used for custom topics also work on built-in ones, without ever touching
+// the static data itself.
+const TOPIC_OVERRIDES_KEY = 'topic-overrides-map';
+function loadTopicOverridesMap(){
+  return loadJSON(TOPIC_OVERRIDES_KEY, {});
+}
+function saveTopicOverridesMap(map){
+  saveJSON(TOPIC_OVERRIDES_KEY, map);
+}
+function getTopicOverridesForLevel(levelId){
+  const map = loadTopicOverridesMap();
+  return map[levelId] || {};
+}
+function setTopicOverride(levelId, topicId, updates){
+  const map = loadTopicOverridesMap();
+  if(!map[levelId]) map[levelId] = {};
+  map[levelId][topicId] = Object.assign({}, map[levelId][topicId], updates);
+  saveTopicOverridesMap(map);
+}
+function markBuiltinTopicDeleted(levelId, topicId){
+  setTopicOverride(levelId, topicId, { deleted: true });
+}
+// Built-in topics currently marked deleted for this level, with whatever
+// title/icon overrides they already had applied — used to populate the
+// "restore deleted topics" list without touching the static level data.
+function getDeletedBuiltinTopicsForLevel(level){
+  if(!level) return [];
+  const overrides = getTopicOverridesForLevel(level.id);
+  return (level.topics || [])
+    .filter(t => overrides[t.id] && overrides[t.id].deleted && !overrides[t.id].purged)
+    .map(t => {
+      const ov = overrides[t.id];
+      return {
+        id: t.id,
+        title: ov.title !== undefined ? ov.title : t.title,
+        icon: ov.icon !== undefined ? ov.icon : t.icon
+      };
+    });
+}
+// Un-marks a built-in topic as deleted, keeping any other saved edits
+// (renamed title/icon) it had before being deleted.
+function restoreBuiltinTopic(levelId, topicId){
+  setTopicOverride(levelId, topicId, { deleted: false });
+}
+// Same "permanently delete from the trash" idea as restoreBuiltinTopic's
+// counterpart above, stored as another flag on the same override record.
+function purgeBuiltinTopic(levelId, topicId){
+  setTopicOverride(levelId, topicId, { purged: true });
+}
+// True for topics the user added from scratch (fully stored in
+// custom-topics-map) as opposed to built-in topics that merely carry an
+// override on top of the static data.
+function isCustomTopicId(levelId, topicId){
+  return getCustomTopicsForLevel(levelId).some(t => t.id === topicId);
+}
+// Returns a level's built-in topics (with any saved edits applied, and any
+// deleted ones filtered out) plus any user-added ones, without mutating the
+// level's own (shared/static) topics array.
+function getTopicsForLevel(level){
+  if(!level) return [];
+  const overrides = getTopicOverridesForLevel(level.id);
+  const builtin = (level.topics || [])
+    .map(t => {
+      const ov = overrides[t.id];
+      if(!ov) return t;
+      if(ov.deleted) return null;
+      const merged = Object.assign({}, t);
+      if(ov.title !== undefined) merged.title = ov.title;
+      if(ov.icon !== undefined) merged.icon = ov.icon;
+      return merged;
+    })
+    .filter(Boolean);
+  // Custom (user-added) topics are shown first, newest first, so a topic
+  // the user just added appears at the very front of the grid.
+  return getCustomTopicsForLevel(level.id).concat(builtin);
+}
+
 const categoriesGrid = document.getElementById('categories-grid');
 const categoriesView = document.getElementById('categories-view');
 const foldersGrid = document.getElementById('folders-grid');
@@ -8256,10 +8885,11 @@ function currentNavState(){
     return { screen: 'pronunciation-practice' };
   }
   if(levelView.style.display === 'block'){
-    if(customWordsMode) return { screen: 'level', customWords: true };
+    if(customWordsMode) return { screen: 'level', customWords: true, topicId: activeTopic && activeTopic.id };
     return { screen: 'level', categoryId: activeCategoryId, levelId: activeLevel && activeLevel.id, topicId: activeTopic && activeTopic.id };
   }
   if(topicsView.style.display === 'block'){
+    if(customWordsMode) return { screen: 'custom-topics' };
     return { screen: 'topics', categoryId: activeCategoryId, levelId: activeLevel && activeLevel.id };
   }
   if(foldersView.style.display === 'block'){
@@ -8310,7 +8940,8 @@ function applyPopState(state){
       else if(current.screen === 'writing-practice') closeWritingPractice();
       else if(current.screen === 'pronunciation-practice') closePronunciationPractice();
       else if(current.screen === 'folders') closeCategory();
-      else if(current.screen === 'level' && customWordsMode) closeTopic();
+      else if(current.screen === 'level' && customWordsMode){ closeTopic(); closeCustomTopics(); }
+      else if(current.screen === 'custom-topics') closeCustomTopics();
       else if(current.screen === 'topics'){ closeLevel(); closeCategory(); }
       else if(current.screen === 'level'){ closeTopic(); closeLevel(); closeCategory(); }
       return;
@@ -8321,6 +8952,11 @@ function applyPopState(state){
       else if(current.screen === 'categories') openCategory(target.categoryId || 'english');
       return;
     }
+    if(target.screen === 'custom-topics'){
+      if(current.screen === 'level' && customWordsMode) closeTopic();
+      else openCustomWords();
+      return;
+    }
     if(target.screen === 'topics'){
       if(current.screen === 'level' && !customWordsMode) closeTopic();
       else { openCategory(target.categoryId || 'english'); openLevel(target.levelId); }
@@ -8328,7 +8964,8 @@ function applyPopState(state){
     }
     if(target.screen === 'level'){
       if(target.customWords){
-        openCustomWords();
+        if(current.screen === 'custom-topics') openTopic(target.topicId);
+        else { openCustomWords(); openTopic(target.topicId); }
       } else if(current.screen === 'topics'){
         openTopic(target.topicId);
       } else {
@@ -8405,9 +9042,12 @@ function initNavigation(){
       } else if(restored.screen === 'topics'){
         history.pushState({ screen: 'folders', categoryId }, '');
         history.pushState({ screen: 'topics', categoryId, levelId: restored.levelId }, '');
+      } else if(restored.screen === 'custom-topics'){
+        history.pushState({ screen: 'custom-topics' }, '');
       } else if(restored.screen === 'level'){
         if(restored.customWords){
-          history.pushState({ screen: 'level', customWords: true }, '');
+          history.pushState({ screen: 'custom-topics' }, '');
+          history.pushState({ screen: 'level', customWords: true, topicId: restored.topicId }, '');
         } else {
           history.pushState({ screen: 'folders', categoryId }, '');
           history.pushState({ screen: 'topics', categoryId, levelId: restored.levelId }, '');
@@ -8635,9 +9275,13 @@ function openCategory(categoryId){
   pushNav();
 }
 
+// Opens "كلماتك الخاصة" at its topics grid — same shape as a normal
+// level (openLevel), just with no folders/levels layer above it. Picking
+// a topic from here (openTopic) shows that topic's word list exactly
+// like a built-in topic does.
 function openCustomWords(){
   activeLevel = buildCustomLevel();
-  activeTopic = activeLevel.topics[0];
+  activeTopic = null;
   customWordsMode = true;
 
   const keys = folderStorageKeys(activeLevel.id);
@@ -8646,49 +9290,36 @@ function openCustomWords(){
   wordDifficulty = loadJSON(keys.difficulty, {});
   earlyUnlocked = loadJSON(keys.earlyUnlocked, {});
 
-  document.getElementById('level-title').textContent = 'كلماتك الخاصة';
+  document.getElementById('topics-level-title').textContent = 'كلماتك الخاصة';
   document.getElementById('main-title').textContent = 'كلماتك الخاصة';
-  document.getElementById('main-subtitle').textContent = 'ضيف كلماتك وذاكرها بنفس طريقة المراجعة والتقييم.';
+  document.getElementById('main-subtitle').textContent = 'اختر موضوعًا عشان تبدأ تراجع كلماته، أو دوس "+ إضافة موضوع" لإنشاء موضوع جديد.';
 
-  // Custom words sits directly under the home screen (no levels/topics
-  // above it), so its back button goes straight home and the extra
-  // jump shortcuts (which only make sense when there ARE levels/topics
-  // above the current screen) are hidden.
-  document.getElementById('back-to-folders').textContent = '→ رجوع للرئيسية';
-  document.getElementById('jump-levels-from-level').style.display = 'none';
-  document.getElementById('jump-home-from-level').style.display = 'none';
+  // Custom words sits directly under the home screen (no levels layer
+  // above it), so its back button goes straight home and the "الرئيسية"
+  // jump shortcut (redundant with a single back-step here) is hidden.
+  document.getElementById('back-to-folders-from-topics').textContent = '→ رجوع للرئيسية';
+  document.getElementById('jump-home-from-topics').style.display = 'none';
 
   categoriesView.style.display = 'none';
   foldersView.style.display = 'none';
-  topicsView.style.display = 'none';
-  levelView.style.display = 'block';
+  levelView.style.display = 'none';
+  topicsView.style.display = 'block';
 
-  document.getElementById('restore-deleted-words-btn').style.display = 'none';
-
-  document.getElementById('add-word-btn').style.display = 'inline-block';
-
-  renderCustomWordsGrid();
+  renderTopics();
   pushNav();
 }
 
-function renderCustomWordsGrid(){
-  refreshCounts();
-  cardsGrid.innerHTML = '';
-
-  if(activeLevel.words.length === 0){
-    cardsGrid.innerHTML = `<div class="empty-custom">لسه ماضفتش أي كلمة 📝<br>دوس على "إضافة كلمة" فوق وابدأ تبني مجموعتك الخاصة.</div>`;
-    levelLockedScreen.style.display = 'none';
-    return;
-  }
-
-  activeLevel.words.forEach((w, i) => {
-    const wrap = document.createElement('div');
-    wrap.className = 'card-wrap';
-    wrap.dataset.index = i;
-    cardsGrid.appendChild(wrap);
-    renderCard(i);
-  });
-  updateLevelLockState();
+// Leaves the custom-words topics grid and goes back to the home screen —
+// the custom-words equivalent of closeLevel().
+function closeCustomTopics(){
+  customWordsMode = false;
+  activeLevel = null;
+  activeTopic = null;
+  topicsView.style.display = 'none';
+  categoriesView.style.display = 'block';
+  document.getElementById('main-title').textContent = 'تعلم اللغة الإنجليزية';
+  document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
+  renderCategories();
 }
 
 function closeCategory(){
@@ -8773,6 +9404,9 @@ function openLevel(levelId){
   document.getElementById('main-title').textContent = activeLevel.title;
   document.getElementById('main-subtitle').textContent = 'اختر موضوعًا عشان تبدأ تراجع كلماته.';
 
+  document.getElementById('back-to-folders-from-topics').textContent = '→ رجوع للمستويات';
+  document.getElementById('jump-home-from-topics').style.display = '';
+
   foldersView.style.display = 'none';
   topicsView.style.display = 'block';
   levelView.style.display = 'none';
@@ -8784,16 +9418,21 @@ function openLevel(levelId){
 function renderTopics(){
   if(!activeLevel) return;
   topicsGrid.innerHTML = '';
-  const topicList = activeLevel.topics || [{ id: 'other', title: 'أخرى' }];
+  const topicList = getTopicsForLevel(activeLevel).length ? getTopicsForLevel(activeLevel) : [{ id: 'other', title: 'أخرى', __fallback: true }];
   topicList.forEach(topic => {
     const topicWords = [];
     activeLevel.words.forEach((w, i) => {
       if(w.topic !== topic.id) return;
-      if(!customWordsMode && isWordHidden(activeLevel.id, i)) return;
+      if(customWordsMode){
+        if(isCustomWordHidden(w.id)) return;
+      } else if(isWordHidden(activeLevel.id, i)) return;
       topicWords.push(i);
     });
     const total = topicWords.length;
-    if(total === 0) return; // don't show empty topics
+    // Built-in topics with no words stay hidden as before, but a topic the
+    // user just added on purpose (still empty until they add words to it)
+    // should still show up so they can find it again.
+    if(total === 0 && !topic.custom) return;
     const learnedSet = getLearnedSet(activeLevel.id);
     const learned = topicWords.filter(i => learnedSet.has(String(i))).length;
     const pct = total ? Math.round((learned / total) * 100) : 0;
@@ -8802,10 +9441,17 @@ function renderTopics(){
     card.className = 'folder-card';
     card.innerHTML = `
       <button type="button" class="card-back-corner-btn" title="رجوع للمستويات">←</button>
-      <div class="folder-icon">${topic.icon || '📂'}</div>
+      <div class="icon-wrap">
+        <div class="folder-icon">${topic.icon || '📂'}</div>
+      </div>
       <div class="folder-title">${topic.title}</div>
       <div class="folder-meta">${total} كلمة · تمت مراجعة ${Math.min(learned, total)}/${total}</div>
       <div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
+      ${!topic.__fallback ? `
+      <div class="word-actions-row">
+        <button type="button" class="edit-word-btn" data-edit-topic="${topic.id}">✏️ تعديل</button>
+        <button type="button" class="delete-word-btn" data-delete-topic="${topic.id}">🗑️ حذف</button>
+      </div>` : ''}
     `;
     card.addEventListener('click', () => openTopic(topic.id));
 
@@ -8817,6 +9463,22 @@ function renderTopics(){
       });
     }
 
+    const editTopicBtn = card.querySelector('[data-edit-topic]');
+    if(editTopicBtn){
+      editTopicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openEditTopicModal(editTopicBtn.dataset.editTopic);
+      });
+    }
+
+    const deleteTopicBtn = card.querySelector('[data-delete-topic]');
+    if(deleteTopicBtn){
+      deleteTopicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        deleteTopicHandler(deleteTopicBtn.dataset.deleteTopic);
+      });
+    }
+
     topicsGrid.appendChild(card);
   });
 }
@@ -8824,7 +9486,7 @@ function renderTopics(){
 function openTopic(topicId){
   if(!activeLevel) return;
   stopAllAutoGen(); // leaving whatever card/topic was active before this
-  const topic = (activeLevel.topics || []).find(t => t.id === topicId) || { id: topicId, title: 'أخرى' };
+  const topic = getTopicsForLevel(activeLevel).find(t => t.id === topicId) || { id: topicId, title: 'أخرى' };
   activeTopic = topic;
 
   document.getElementById('level-title').textContent = activeLevel.title + ' — ' + topic.title;
@@ -8834,20 +9496,35 @@ function openTopic(topicId){
   topicsView.style.display = 'none';
   levelView.style.display = 'block';
 
-  // Regular topic cards (unlike custom words) have both a topics screen
-  // and a levels screen above them, so restore the normal back label
-  // and show both jump shortcuts.
   document.getElementById('back-to-folders').textContent = '→ رجوع للموضوعات';
-  document.getElementById('jump-levels-from-level').style.display = '';
-  document.getElementById('jump-home-from-level').style.display = '';
+  // Custom words has no levels screen above its topics (unlike a normal
+  // level, which sits under a levels/folders screen), so those two jump
+  // shortcuts only make sense outside customWordsMode.
+  document.getElementById('jump-levels-from-level').style.display = customWordsMode ? 'none' : '';
+  document.getElementById('jump-home-from-level').style.display = customWordsMode ? 'none' : '';
 
-  document.getElementById('restore-deleted-words-btn').style.display = customWordsMode ? 'none' : 'flex';
+  document.getElementById('restore-deleted-words-btn').style.display = 'flex';
+  document.getElementById('reset-default-btn').style.display = 'flex';
+  document.getElementById('add-word-btn').style.display = 'inline-block';
 
   refreshCounts();
   cardsGrid.innerHTML = '';
+  let topicOrderedIndices = [];
   activeLevel.words.forEach((w, i) => {
     if(w.topic !== topicId) return;
-    if(!customWordsMode && isWordHidden(activeLevel.id, i)) return;
+    if(customWordsMode){
+      if(isCustomWordHidden(w.id)) return;
+    } else if(isWordHidden(activeLevel.id, i)) return;
+    topicOrderedIndices.push(i);
+  });
+  topicOrderedIndices = orderTopicIndicesForDisplay(activeLevel.id, topicOrderedIndices);
+  if(customWordsMode && topicOrderedIndices.length === 0){
+    cardsGrid.innerHTML = `<div class="empty-custom">لسه ماضفتش أي كلمة هنا 📝<br>دوس على "إضافة كلمة" فوق وابدأ تبني الموضوع ده.</div>`;
+    levelLockedScreen.style.display = 'none';
+    pushNav();
+    return;
+  }
+  topicOrderedIndices.forEach(i => {
     const wrap = document.createElement('div');
     wrap.className = 'card-wrap';
     wrap.dataset.index = i;
@@ -8863,10 +9540,12 @@ function currentTopicIndices(){
   const out = [];
   activeLevel.words.forEach((w, i) => {
     if(w.topic !== activeTopic.id) return;
-    if(!customWordsMode && isWordHidden(activeLevel.id, i)) return;
+    if(customWordsMode){
+      if(isCustomWordHidden(w.id)) return;
+    } else if(isWordHidden(activeLevel.id, i)) return;
     out.push(i);
   });
-  return out;
+  return orderTopicIndicesForDisplay(activeLevel.id, out);
 }
 
 // --- "مراجعة الكلمات" (review words by difficulty) ---
@@ -8888,7 +9567,7 @@ function getScopeWordRefs(scope){
     const isCustom = levelObj.id === 'custom-words';
     (levelObj.words || []).forEach((w, i) => {
       if(topicFilter && w.topic !== topicFilter) return;
-      if(!isCustom && isWordHidden(levelObj.id, i)) return;
+      if(isCustom ? isCustomWordHidden(w.id) : isWordHidden(levelObj.id, i)) return;
       refs.push({ levelId: levelObj.id, index: i });
     });
   }
@@ -8899,7 +9578,7 @@ function getScopeWordRefs(scope){
   } else if(scope.type === 'all-levels'){
     levels.forEach(lvl => addLevel(lvl, null));
   } else if(scope.type === 'custom'){
-    addLevel(buildCustomLevel(), null);
+    addLevel(buildCustomLevel(), scope.topicId || null);
   } else if(scope.type === 'everything'){
     levels.forEach(lvl => addLevel(lvl, null));
     addLevel(buildCustomLevel(), null);
@@ -8954,7 +9633,8 @@ function jumpHomeFromReview(){
   const state = history.state;
   let depth = 0;
   if(state && state.screen){
-    if(state.screen === 'level') depth = state.customWords ? 1 : 3;
+    if(state.screen === 'level') depth = state.customWords ? 2 : 3;
+    else if(state.screen === 'custom-topics') depth = 1;
     else if(state.screen === 'topics') depth = 2;
     else if(state.screen === 'folders') depth = 1;
     else if(state.screen === 'voice-chat') depth = 1;
@@ -9017,7 +9697,10 @@ function openReviewFolders(scope){
       <div class="folder-title">${b.title}</div>
       <div class="folder-meta">${counts[b.level]} كلمة</div>
     `;
-    card.addEventListener('click', () => openReviewCards(b.level));
+    card.addEventListener('click', () => {
+      reviewSkippedFolders = false;
+      openReviewCards(b.level);
+    });
     grid.appendChild(card);
   });
 
@@ -9028,6 +9711,7 @@ function openReviewFolders(scope){
 }
 document.getElementById('review-all-btn').addEventListener('click', () => {
   if(!reviewScope) return;
+  reviewSkippedFolders = false;
   openReviewCards('all');
 });
 
@@ -9042,6 +9726,10 @@ document.getElementById('review-all-btn').addEventListener('click', () => {
 // will naturally show up in review again like any other word.
 let reviewQueues = {};
 let reviewCurrentDifficulty = null;
+// True when review-cards was opened directly from the stats pills
+// (skipping the folders screen), so the back button can return
+// straight to the level page instead of showing folders in between.
+let reviewSkippedFolders = false;
 
 function openReviewCards(difficulty){
   reviewCurrentDifficulty = difficulty;
@@ -9061,10 +9749,18 @@ function openReviewCards(difficulty){
   reviewFoldersView.style.display = 'none';
   reviewCardsView.style.display = 'block';
 
+  // Hidden when this screen was reached directly from the level page's
+  // stats pills (reviewSkippedFolders) — in that case the real "→ رجوع"
+  // already goes straight back to the level page, so a separate "الرئيسية"
+  // shortcut next to it is redundant. Kept visible for the normal path
+  // (entered through the review-folders screen), same as before.
+  document.getElementById('jump-home-from-review-cards').style.display = reviewSkippedFolders ? 'none' : '';
+
   const names = { easy: 'السهلة', medium: 'المتوسطة', hard: 'الصعبة' };
   document.getElementById('review-cards-title').textContent = difficulty === 'all'
     ? reviewFoldersTitleFor(reviewScope)
     : `مراجعة الكلمات ${names[difficulty]}`;
+  fitReviewTitleToOneLine();
 
   renderReviewCards();
 }
@@ -9086,6 +9782,38 @@ function fitReviewSentenceToOneLine(){
 }
 window.addEventListener('resize', () => {
   if(reviewCardsView.style.display === 'block') fitReviewSentenceToOneLine();
+});
+
+// Same idea for the "مراجعة الكلمات السهلة/المتوسطة/الصعبة" title above the
+// cards: shrinks it just enough to stay on one line. Measuring against the
+// element's own clientWidth (rather than relying only on a vw-based CSS
+// clamp) accounts for how much room the back-button group next to it is
+// actually taking up, which changes depending on whether the "الرئيسية"
+// shortcut is shown — so the title always fits whatever space is left.
+const REVIEW_TITLE_MAX_FONT = 20;
+const REVIEW_TITLE_MIN_FONT = 11;
+function fitReviewTitleToOneLine(){
+  const el = document.getElementById('review-cards-title');
+  const header = el && el.closest('.level-header');
+  const group = header && header.querySelector('.back-btn-group');
+  if(!el || !el.textContent || !header || !group) return;
+  // The title is centered on the header's midpoint, so the tightest
+  // side is always the one next to the back-button group: the room
+  // available there is half the header width minus the group's own
+  // width and a small gap. Mirroring that on both sides gives the
+  // real max width the title can use before it would touch the group.
+  const gap = 14;
+  const available = header.clientWidth - 2 * (group.offsetWidth + gap);
+  el.style.maxWidth = Math.max(available, 40) + 'px';
+  let size = REVIEW_TITLE_MAX_FONT;
+  el.style.fontSize = size + 'px';
+  while(size > REVIEW_TITLE_MIN_FONT && el.scrollWidth > el.clientWidth){
+    size -= 1;
+    el.style.fontSize = size + 'px';
+  }
+}
+window.addEventListener('resize', () => {
+  if(reviewCardsView.style.display === 'block') fitReviewTitleToOneLine();
 });
 
 function renderReviewCards(){
@@ -9180,7 +9908,12 @@ function rateReviewWord(levelId, index, diffLevel){
 reviewCardsGrid.addEventListener('click', (e) => {
   if(e.target.closest('#review-cancel-btn')){
     reviewCardsView.style.display = 'none';
-    openReviewFolders(reviewScope);
+    if(reviewSkippedFolders){
+      reviewSkippedFolders = false;
+      closeReviewMode();
+    } else {
+      openReviewFolders(reviewScope);
+    }
     return;
   }
   const flipBtn = e.target.closest('.review-flip-btn');
@@ -9201,6 +9934,7 @@ reviewCardsGrid.addEventListener('click', (e) => {
 });
 
 function closeReviewMode(){
+  reviewSkippedFolders = false;
   reviewFoldersView.style.display = 'none';
   reviewCardsView.style.display = 'none';
   if(activeLevel && activeTopic){
@@ -9221,21 +9955,52 @@ document.getElementById('review-words-btn-folders').addEventListener('click', ()
 document.getElementById('review-words-btn-topics').addEventListener('click', () => {
   if(!activeLevel) return;
   reviewQueues = {};
-  openReviewFolders({ type: 'level', levelId: activeLevel.id });
+  if(customWordsMode){
+    openReviewFolders({ type: 'custom' });
+  } else {
+    openReviewFolders({ type: 'level', levelId: activeLevel.id });
+  }
 });
 document.getElementById('review-words-btn-level').addEventListener('click', () => {
   if(!activeLevel) return;
   reviewQueues = {};
   if(customWordsMode){
-    openReviewFolders({ type: 'custom' });
+    openReviewFolders({ type: 'custom', topicId: activeTopic ? activeTopic.id : null });
   } else if(activeTopic){
     openReviewFolders({ type: 'topic', levelId: activeLevel.id, topicId: activeTopic.id });
   }
 });
+// Lets the stats pills on the level (word list) screen jump straight
+// into reviewing one difficulty (or all of them) without stopping at
+// the folders screen first. Same scope logic as review-words-btn-level.
+function openReviewAtLevel(difficulty){
+  if(!activeLevel) return;
+  reviewQueues = {};
+  let scope = null;
+  if(customWordsMode){
+    scope = { type: 'custom', topicId: activeTopic ? activeTopic.id : null };
+  } else if(activeTopic){
+    scope = { type: 'topic', levelId: activeLevel.id, topicId: activeTopic.id };
+  }
+  if(!scope) return;
+  openReviewFolders(scope);
+  reviewSkippedFolders = true;
+  openReviewCards(difficulty);
+}
+document.getElementById('stat-btn-easy').addEventListener('click', () => openReviewAtLevel('easy'));
+document.getElementById('stat-btn-medium').addEventListener('click', () => openReviewAtLevel('medium'));
+document.getElementById('stat-btn-hard').addEventListener('click', () => openReviewAtLevel('hard'));
+document.getElementById('stat-btn-all').addEventListener('click', () => openReviewAtLevel('all'));
+
 document.getElementById('back-from-review-folders').addEventListener('click', closeReviewMode);
 document.getElementById('back-from-review-cards').addEventListener('click', () => {
   reviewCardsView.style.display = 'none';
-  openReviewFolders(reviewScope);
+  if(reviewSkippedFolders){
+    reviewSkippedFolders = false;
+    closeReviewMode();
+  } else {
+    openReviewFolders(reviewScope);
+  }
 });
 
 // --- "تدرب على الكتابة والاستماع" (listen-and-write practice) ---
@@ -9251,7 +10016,7 @@ function getAllRatedWordRefs(){
     const rated = loadJSON(folderStorageKeys(levelObj.id).rated, {});
     (levelObj.words || []).forEach((w, i) => {
       if(!rated[i]) return;
-      if(!isCustom && isWordHidden(levelObj.id, i)) return;
+      if(isCustom ? isCustomWordHidden(w.id) : isWordHidden(levelObj.id, i)) return;
       refs.push({ levelId: levelObj.id, index: i });
     });
   }
@@ -9879,24 +10644,16 @@ function updateLevelLockState(){
 }
 
 function closeTopic(){
-  stopAllAutoGen(); // leaving the level entirely — nothing left to generate for
+  stopAllAutoGen(); // leaving this topic — nothing left to generate for
   activeTopic = null;
   levelView.style.display = 'none';
   document.getElementById('add-word-btn').style.display = 'none';
 
-  if(customWordsMode){
-    customWordsMode = false;
-    activeLevel = null;
-    categoriesView.style.display = 'block';
-    document.getElementById('main-title').textContent = 'تعلم اللغة الإنجليزية';
-    document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
-    renderCategories();
-    return;
-  }
-
   topicsView.style.display = 'block';
   document.getElementById('main-title').textContent = activeLevel ? activeLevel.title : 'تعلم اللغة الإنجليزية';
-  document.getElementById('main-subtitle').textContent = 'اختر موضوعًا عشان تبدأ تراجع كلماته.';
+  document.getElementById('main-subtitle').textContent = customWordsMode
+    ? 'اختر موضوعًا عشان تبدأ تراجع كلماته، أو دوس "+ إضافة موضوع" لإنشاء موضوع جديد.'
+    : 'اختر موضوعًا عشان تبدأ تراجع كلماته.';
   renderTopics();
 }
 
@@ -9956,8 +10713,373 @@ addWordOverlay.addEventListener('click', (e) => {
   if(e.target === addWordOverlay) closeAddWordModal();
 });
 
+// --- "+ إضافة موضوع" (add a new topic to the current level) ---
+const addTopicBtn = document.getElementById('add-topic-btn');
+const addTopicOverlay = document.getElementById('add-topic-overlay');
+const newTopicTitleInput = document.getElementById('new-topic-title');
+const newTopicIconInput = document.getElementById('new-topic-icon');
+
+function openAddTopicModal(){
+  newTopicTitleInput.value = '';
+  newTopicIconInput.value = '';
+  addTopicOverlay.classList.add('show');
+  newTopicTitleInput.focus();
+}
+function closeAddTopicModal(){
+  addTopicOverlay.classList.remove('show');
+}
+function saveNewTopic(){
+  if(!activeLevel) return;
+  const title = newTopicTitleInput.value.trim();
+  if(!title){
+    newTopicTitleInput.focus();
+    return;
+  }
+  const icon = newTopicIconInput.value.trim() || '📂';
+  addCustomTopicToLevel(activeLevel.id, { id: makeCustomTopicId(), title, icon, custom: true });
+  closeAddTopicModal();
+  renderTopics();
+}
+
+addTopicBtn.addEventListener('click', openAddTopicModal);
+document.getElementById('cancel-add-topic').addEventListener('click', closeAddTopicModal);
+document.getElementById('save-add-topic-btn').addEventListener('click', saveNewTopic);
+document.getElementById('search-topic-icon-btn').addEventListener('click', openIconPickerForTopic);
+addTopicOverlay.addEventListener('click', (e) => {
+  if(e.target === addTopicOverlay) closeAddTopicModal();
+});
+newTopicTitleInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ e.preventDefault(); saveNewTopic(); }
+});
+newTopicIconInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ e.preventDefault(); saveNewTopic(); }
+});
+
+// --- Edit / delete any topic (same "✏️ تعديل" / "🗑️ حذف" pair used on
+// word cards, but for the topic itself). Works the same way whether the
+// topic is one the user added from scratch (stored directly in
+// custom-topics-map) or a built-in one (edited/deleted via a saved
+// override layered on top of the level's static data — see
+// getTopicsForLevel / setTopicOverride above); isCustomTopicId picks the
+// right storage path, the UI and messaging are identical either way.
+const editTopicOverlay = document.getElementById('edit-topic-overlay');
+const editTopicTitleInput = document.getElementById('edit-topic-title-input');
+const editTopicIconPreview = document.getElementById('edit-topic-icon-preview');
+const editTopicIconBtn = document.getElementById('edit-topic-icon-btn');
+let editTopicId = null;
+
+function openEditTopicModal(topicId){
+  if(!activeLevel) return;
+  const topic = getTopicsForLevel(activeLevel).find(t => t.id === topicId);
+  if(!topic) return;
+  editTopicId = topicId;
+  editTopicTitleInput.value = topic.title || '';
+  editTopicIconPreview.textContent = topic.icon || '📂';
+  editTopicOverlay.classList.add('show');
+  editTopicTitleInput.focus();
+}
+function closeEditTopicModal(){
+  editTopicOverlay.classList.remove('show');
+  editTopicId = null;
+}
+
+// The sticker picker lives in its own overlay (shared with words/new-topic),
+// so opening it here just points it at the topic currently being edited —
+// applyIconChoice() writes back into editTopicIconPreview once a sticker is
+// picked, since this modal stays open underneath the picker.
+editTopicIconBtn.addEventListener('click', () => {
+  if(editTopicId === null) return;
+  openIconPickerForExistingTopic(editTopicId);
+});
+function saveEditTopic(){
+  if(!activeLevel || editTopicId === null) return;
+  const title = editTopicTitleInput.value.trim();
+  if(!title){
+    editTopicTitleInput.focus();
+    return;
+  }
+  if(isCustomTopicId(activeLevel.id, editTopicId)){
+    updateCustomTopicInLevel(activeLevel.id, editTopicId, { title });
+  } else {
+    setTopicOverride(activeLevel.id, editTopicId, { title });
+  }
+  closeEditTopicModal();
+  renderTopics();
+}
+
+// Words carry a `topic` field pointing at the topic they were added under
+// (see openTopic/currentTopicIndices), so if the topic they point to gets
+// deleted those words would stop showing up anywhere — warn about that up
+// front rather than silently orphaning them. This applies the same way to
+// built-in topics (marked deleted via an override) as to custom ones
+// (removed from custom-topics-map outright).
+function deleteTopicHandler(topicId){
+  if(!activeLevel) return;
+  const topic = getTopicsForLevel(activeLevel).find(t => t.id === topicId);
+  if(!topic) return;
+  const wordsCount = activeLevel.words.filter(w => w.topic === topicId).length;
+  const msg = wordsCount > 0
+    ? `متأكد إنك عايز تحذف موضوع "${topic.title}"؟ فيه ${wordsCount} كلمة مرتبطة بيه، وهتفضل موجودة بس مش هتظهر تحت أي موضوع بعد الحذف.`
+    : `متأكد إنك عايز تحذف موضوع "${topic.title}"؟`;
+  if(!confirm(msg)) return;
+  if(isCustomTopicId(activeLevel.id, topicId)){
+    deleteCustomTopicFromLevel(activeLevel.id, topicId);
+  } else {
+    markBuiltinTopicDeleted(activeLevel.id, topicId);
+  }
+  renderTopics();
+}
+
+document.getElementById('cancel-edit-topic').addEventListener('click', closeEditTopicModal);
+document.getElementById('save-edit-topic-btn').addEventListener('click', saveEditTopic);
+editTopicOverlay.addEventListener('click', (e) => {
+  if(e.target === editTopicOverlay) closeEditTopicModal();
+});
+editTopicTitleInput.addEventListener('keydown', (e) => {
+  if(e.key === 'Enter'){ e.preventDefault(); saveEditTopic(); }
+});
+
 document.getElementById('restore-deleted-words-btn').addEventListener('click', () => {
+  openRestoreWordsModal();
+});
+
+document.getElementById('reset-default-btn').addEventListener('click', () => {
+  if(!confirm(`متأكد إنك عايز ترجع الموضوع ده للوضع الافتراضي؟ هيمسح كل تقييماتك، ويشيل أي كلمة ضفتها، ويرجع أي كلمة كنت حذفتها. الإجراء ده مينفعش يتراجع فيه (إلا الكلمات المحذوفة/المضافة تقدر تسترجعها لاحقًا من "↩️ الكلمات المحذوفة").`)) return;
+  resetPageToDefault();
+});
+
+// Shows the header button is now always visible; this only builds the
+// combined list (built-in topics marked deleted + custom topics marked
+// deleted) shown inside the restore modal.
+function getAllDeletedTopicsForLevel(level){
+  if(!level) return [];
+  const builtin = getDeletedBuiltinTopicsForLevel(level).map(t => ({ ...t, kind: 'builtin' }));
+  const custom = getDeletedCustomTopicsForLevel(level.id).map(t => ({ id: t.id, title: t.title, icon: t.icon, kind: 'custom' }));
+  return builtin.concat(custom);
+}
+
+const restoreTopicsOverlay = document.getElementById('restore-topics-overlay');
+const deletedTopicsList = document.getElementById('deleted-topics-list');
+
+function renderDeletedTopicsList(){
+  deletedTopicsList.innerHTML = '';
+  if(!activeLevel) return;
+  const deleted = getAllDeletedTopicsForLevel(activeLevel);
+  document.getElementById('restore-all-topics-btn').style.display = deleted.length ? 'block' : 'none';
+  document.getElementById('purge-all-topics-btn').style.display = deleted.length ? 'block' : 'none';
+  if(!deleted.length){
+    deletedTopicsList.innerHTML = '<div class="deleted-topics-empty-msg">مفيش مواضيع محذوفة دلوقتي.</div>';
+    return;
+  }
+  deleted.forEach(topic => {
+    const item = document.createElement('div');
+    item.className = 'deleted-topic-item';
+    item.innerHTML = `
+      <div class="deleted-topic-icon">${topic.icon || '📂'}</div>
+      <div class="deleted-topic-title">${topic.title}</div>
+      <div class="deleted-topic-actions">
+        <button type="button" class="deleted-topic-restore-btn" data-restore-topic="${topic.id}">↩️ استرجاع</button>
+        <button type="button" class="deleted-topic-purge-btn" data-purge-topic="${topic.id}">🗑️ حذف</button>
+      </div>
+    `;
+    item.querySelector('[data-restore-topic]').addEventListener('click', () => {
+      if(topic.kind === 'custom'){
+        restoreCustomTopic(activeLevel.id, topic.id);
+      } else {
+        restoreBuiltinTopic(activeLevel.id, topic.id);
+      }
+      renderDeletedTopicsList();
+      renderTopics();
+    });
+    item.querySelector('[data-purge-topic]').addEventListener('click', () => {
+      if(!confirm('هيتمسح الموضوع ده نهائيًا ومش هتقدر تسترجعه تاني. متأكد؟')) return;
+      if(topic.kind === 'custom'){
+        purgeCustomTopic(activeLevel.id, topic.id);
+      } else {
+        purgeBuiltinTopic(activeLevel.id, topic.id);
+      }
+      renderDeletedTopicsList();
+    });
+    deletedTopicsList.appendChild(item);
+  });
+}
+
+// Restores every deleted topic (built-in and custom) for the level
+// currently open, in one go.
+function restoreAllDeletedTopicsForCurrentLevel(){
+  if(!activeLevel) return;
+  const deleted = getAllDeletedTopicsForLevel(activeLevel);
+  deleted.forEach(topic => {
+    if(topic.kind === 'custom'){
+      restoreCustomTopic(activeLevel.id, topic.id);
+    } else {
+      restoreBuiltinTopic(activeLevel.id, topic.id);
+    }
+  });
+  renderDeletedTopicsList();
+  renderTopics();
+}
+
+// Permanently deletes every topic currently sitting in the trash for the
+// level open right now, in one go.
+function purgeAllDeletedTopicsForCurrentLevel(){
+  if(!activeLevel) return;
+  const deleted = getAllDeletedTopicsForLevel(activeLevel);
+  deleted.forEach(topic => {
+    if(topic.kind === 'custom'){
+      purgeCustomTopic(activeLevel.id, topic.id);
+    } else {
+      purgeBuiltinTopic(activeLevel.id, topic.id);
+    }
+  });
+  renderDeletedTopicsList();
+}
+
+function openRestoreTopicsModal(){
+  renderDeletedTopicsList();
+  restoreTopicsOverlay.classList.add('show');
+}
+function closeRestoreTopicsModal(){
+  restoreTopicsOverlay.classList.remove('show');
+}
+document.getElementById('restore-all-topics-btn').addEventListener('click', () => {
+  restoreAllDeletedTopicsForCurrentLevel();
+});
+document.getElementById('purge-all-topics-btn').addEventListener('click', () => {
+  if(!confirm('هيتمسح كل المواضيع المحذوفة نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟')) return;
+  purgeAllDeletedTopicsForCurrentLevel();
+});
+document.getElementById('restore-deleted-topics-btn').addEventListener('click', openRestoreTopicsModal);
+document.getElementById('close-restore-topics-modal').addEventListener('click', closeRestoreTopicsModal);
+restoreTopicsOverlay.addEventListener('click', (e) => {
+  if(e.target === restoreTopicsOverlay) closeRestoreTopicsModal();
+});
+
+// Un-hides a single word (by its index in activeLevel.words) without
+// touching any other hidden word in the level.
+function restoreSingleBuiltinWord(levelId, i){
+  const map = loadHiddenWords();
+  if(map[levelId]){
+    map[levelId] = map[levelId].filter(idx => idx !== i);
+    saveHiddenWords(map);
+  }
+}
+
+// Returns the hidden word indices that belong to the topic currently open,
+// used to populate the "restore deleted words" modal.
+function getHiddenWordIndicesForCurrentTopic(){
+  if(!activeLevel || !activeTopic) return [];
+  const map = loadHiddenWords();
+  const hiddenForLevel = map[activeLevel.id] || [];
+  return hiddenForLevel.filter(i => activeLevel.words[i] && activeLevel.words[i].topic === activeTopic.id && !isBuiltinWordPurged(activeLevel.id, i));
+}
+
+const restoreWordsOverlay = document.getElementById('restore-words-overlay');
+const deletedWordsList = document.getElementById('deleted-words-list');
+
+function renderDeletedWordsList(){
+  deletedWordsList.innerHTML = '';
+
+  if(customWordsMode){
+    const hiddenIds = loadHiddenCustomWords().filter(id => !isCustomWordPurged(id));
+    document.getElementById('restore-all-words-btn').style.display = hiddenIds.length ? 'block' : 'none';
+    document.getElementById('purge-all-words-btn').style.display = hiddenIds.length ? 'block' : 'none';
+    if(!hiddenIds.length){
+      deletedWordsList.innerHTML = '<div class="deleted-topics-empty-msg">مفيش كلمات محذوفة دلوقتي.</div>';
+      return;
+    }
+    const list = loadCustomWords();
+    hiddenIds.forEach(id => {
+      const word = list.find(w => w.id === id);
+      if(!word) return;
+      const item = document.createElement('div');
+      item.className = 'deleted-topic-item';
+      item.innerHTML = `
+        <div class="deleted-topic-icon">${word.icon || '📝'}</div>
+        <div class="deleted-topic-title">${word.en} — ${word.ar}</div>
+        <div class="deleted-topic-actions">
+          <button type="button" class="deleted-topic-restore-btn" data-restore-word="${escapeAttr(word.id)}">↩️ استرجاع</button>
+          <button type="button" class="deleted-topic-purge-btn" data-purge-word="${escapeAttr(word.id)}">🗑️ حذف</button>
+        </div>
+      `;
+      item.querySelector('[data-restore-word]').addEventListener('click', () => {
+        restoreSingleCustomWord(word.id);
+        renderDeletedWordsList();
+        if(activeTopic) openTopic(activeTopic.id);
+      });
+      item.querySelector('[data-purge-word]').addEventListener('click', () => {
+        if(!confirm('هتتمسح الكلمة دي نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟')) return;
+        purgeSingleCustomWord(word.id);
+        renderDeletedWordsList();
+      });
+      deletedWordsList.appendChild(item);
+    });
+    return;
+  }
+
+  const hiddenIndices = getHiddenWordIndicesForCurrentTopic();
+  document.getElementById('restore-all-words-btn').style.display = hiddenIndices.length ? 'block' : 'none';
+  document.getElementById('purge-all-words-btn').style.display = hiddenIndices.length ? 'block' : 'none';
+  if(!hiddenIndices.length){
+    deletedWordsList.innerHTML = '<div class="deleted-topics-empty-msg">مفيش كلمات محذوفة دلوقتي.</div>';
+    return;
+  }
+  hiddenIndices.forEach(i => {
+    const word = activeLevel.words[i];
+    const item = document.createElement('div');
+    item.className = 'deleted-topic-item';
+    item.innerHTML = `
+      <div class="deleted-topic-icon">${word.icon || '📝'}</div>
+      <div class="deleted-topic-title">${word.en} — ${word.ar}</div>
+      <div class="deleted-topic-actions">
+        <button type="button" class="deleted-topic-restore-btn" data-restore-word="${i}">↩️ استرجاع</button>
+        <button type="button" class="deleted-topic-purge-btn" data-purge-word="${i}">🗑️ حذف</button>
+      </div>
+    `;
+    item.querySelector('[data-restore-word]').addEventListener('click', () => {
+      restoreSingleBuiltinWord(activeLevel.id, i);
+      renderDeletedWordsList();
+      openTopic(activeTopic.id);
+    });
+    item.querySelector('[data-purge-word]').addEventListener('click', () => {
+      if(!confirm('هتتمسح الكلمة دي نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟')) return;
+      purgeSingleBuiltinWord(activeLevel.id, i);
+      renderDeletedWordsList();
+    });
+    deletedWordsList.appendChild(item);
+  });
+}
+
+function openRestoreWordsModal(){
+  renderDeletedWordsList();
+  restoreWordsOverlay.classList.add('show');
+}
+function closeRestoreWordsModal(){
+  restoreWordsOverlay.classList.remove('show');
+}
+document.getElementById('restore-all-words-btn').addEventListener('click', () => {
+  if(customWordsMode){
+    restoreAllCustomWords();
+    renderDeletedWordsList();
+    if(activeTopic) openTopic(activeTopic.id);
+    return;
+  }
   restoreDeletedWordsForCurrentTopic();
+  renderDeletedWordsList();
+});
+document.getElementById('purge-all-words-btn').addEventListener('click', () => {
+  if(!confirm('هيتمسح كل الكلمات المحذوفة نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟')) return;
+  if(customWordsMode){
+    purgeAllHiddenCustomWords();
+    renderDeletedWordsList();
+    return;
+  }
+  purgeAllDeletedWordsForCurrentTopic();
+  renderDeletedWordsList();
+});
+document.getElementById('close-restore-words-modal').addEventListener('click', closeRestoreWordsModal);
+restoreWordsOverlay.addEventListener('click', (e) => {
+  if(e.target === restoreWordsOverlay) closeRestoreWordsModal();
 });
 
 // Free, no-key translation endpoints used to auto-fill the Arabic meaning
@@ -10538,22 +11660,31 @@ generateWordBtn.addEventListener('click', async () => {
     if(existingMatch){
       generateWordBtn.textContent = 'جاري الاستيراد...';
       const src = existingMatch.word;
-      const list = loadCustomWords();
-      const newId = makeCustomWordId();
-      list.unshift({
-        id: newId,
+      const newWord = {
         icon: src.icon,
-        en: src.en, ar: src.ar, topic: 'custom',
+        en: src.en, ar: src.ar,
+        topic: activeTopic.id,
         img: src.img || 'openverse-auto',
         sentenceEn: src.sentenceEn, sentenceAr: src.sentenceAr, sentenceSource: src.sentenceSource
-      });
-      saveCustomWords(list);
+      };
+
+      let destKey;
+      if(customWordsMode){
+        const list = loadCustomWords();
+        newWord.id = makeCustomWordId();
+        list.unshift(newWord);
+        saveCustomWords(list);
+        destKey = 'custom-words-' + newWord.id;
+      } else {
+        const newIndex = activeLevel.words.length;
+        addWordToBuiltinLevel(activeLevel.id, newWord);
+        destKey = activeLevel.id + '-' + newIndex;
+      }
 
       // Link this new word to its source permanently (not just a one-time
       // copy): whichever of the two gets a picture generated later —
       // today, next week, on either side — automatically shows up on the
       // other too. See propagateWordImageToLinks / linkWordImages above.
-      const destKey = 'custom-words-' + newId;
       linkWordImages(destKey, existingMatch.sourceKey);
 
       try{
@@ -10567,13 +11698,22 @@ generateWordBtn.addEventListener('click', async () => {
         // pre-copied picture; it'll just show the "generate" button.
       }
 
-      const progressKeys = folderStorageKeys('custom-words');
-      localStorage.removeItem(progressKeys.schedule);
-      localStorage.removeItem(progressKeys.rated);
-      localStorage.removeItem(progressKeys.difficulty);
-
       closeAddWordModal();
-      openCustomWords();
+      if(customWordsMode){
+        // Adding to the front of the custom list shifts every existing
+        // word's index by one, so (same as deleting a word) clear this
+        // folder's progress and let it rebuild naturally rather than
+        // risking it pointing at the wrong word now.
+        const progressKeys = folderStorageKeys('custom-words');
+        localStorage.removeItem(progressKeys.schedule);
+        localStorage.removeItem(progressKeys.rated);
+        localStorage.removeItem(progressKeys.difficulty);
+        openTopic(activeTopic.id);
+      } else {
+        // Appended at the end, so every existing word's index — and its
+        // saved progress — is untouched; no need to clear anything.
+        openTopic(activeTopic.id);
+      }
       return;
     }
 
@@ -10618,28 +11758,37 @@ generateWordBtn.addEventListener('click', async () => {
     // الصورة" button and only generates (then pins) a picture once the
     // person actually flips it open, instead of paying for a network
     // call and a live Pollinations URL before the word is even saved.
-    const list = loadCustomWords();
-    list.unshift({
-      id: makeCustomWordId(),
+    const newWord = {
       icon,
-      en, ar, topic: 'custom',
+      en, ar, topic: activeTopic.id,
       img: 'openverse-auto',
       sentenceEn, sentenceAr, sentenceSource
-    });
-    saveCustomWords(list);
-
-    // Every word's saved schedule/rated/difficulty is keyed by its index in
-    // the list. Adding the new word at the FRONT shifts every existing
-    // word's index by one, so (same as deleting a word) clear this
-    // folder's progress and let it rebuild naturally rather than risking
-    // it pointing at the wrong word now.
-    const progressKeys = folderStorageKeys('custom-words');
-    localStorage.removeItem(progressKeys.schedule);
-    localStorage.removeItem(progressKeys.rated);
-    localStorage.removeItem(progressKeys.difficulty);
+    };
 
     closeAddWordModal();
-    openCustomWords();
+    if(customWordsMode){
+      const list = loadCustomWords();
+      newWord.id = makeCustomWordId();
+      list.unshift(newWord);
+      saveCustomWords(list);
+
+      // Every word's saved schedule/rated/difficulty is keyed by its index in
+      // the list. Adding the new word at the FRONT shifts every existing
+      // word's index by one, so (same as deleting a word) clear this
+      // folder's progress and let it rebuild naturally rather than risking
+      // it pointing at the wrong word now.
+      const progressKeys = folderStorageKeys('custom-words');
+      localStorage.removeItem(progressKeys.schedule);
+      localStorage.removeItem(progressKeys.rated);
+      localStorage.removeItem(progressKeys.difficulty);
+
+      openTopic(activeTopic.id);
+    } else {
+      // Appended at the end of the level's word list, so every existing
+      // word's index — and its saved progress — stays exactly where it was.
+      addWordToBuiltinLevel(activeLevel.id, newWord);
+      openTopic(activeTopic.id);
+    }
   }catch(err){
     alert('حصلت مشكلة أثناء التوليد، جرب تاني.');
     generateWordBtn.disabled = false;
@@ -10668,6 +11817,8 @@ const editWordSentenceArInput = document.getElementById('edit-word-sentence-ar')
 const saveEditWordBtn = document.getElementById('save-edit-word-btn');
 const editWordSentenceChangeBtn = document.getElementById('edit-word-sentence-change-btn');
 const editWordSentenceOptionsList = document.getElementById('edit-word-sentence-options');
+const editWordIconPreview = document.getElementById('edit-word-icon-preview');
+const editWordIconBtn = document.getElementById('edit-word-icon-btn');
 
 // Set only when the person picks one of the 3 suggested sentences from the
 // "🔄 تغيير" button below (not when they type into the field by hand), so
@@ -10684,6 +11835,7 @@ function openEditWordModal(i){
   editWordSentenceEnInput.value = w.sentenceEn || '';
   editWordArInput.value = w.ar || '';
   editWordSentenceArInput.value = w.sentenceAr || '';
+  editWordIconPreview.textContent = w.icon || '🔤';
   editWordSentenceSourceOverride = null;
   editWordSentenceOptionsList.style.display = 'none';
   editWordSentenceOptionsList.innerHTML = '';
@@ -10701,6 +11853,14 @@ function closeEditWordModal(){
   editWordSentenceOptionsList.style.display = 'none';
   editWordSentenceOptionsList.innerHTML = '';
 }
+
+// Same shared sticker picker as everywhere else; applyIconChoice() writes
+// the new sticker back into editWordIconPreview once picked, since this
+// modal stays open underneath the picker.
+editWordIconBtn.addEventListener('click', () => {
+  if(editWordIndex === null) return;
+  openIconPicker(editWordIndex);
+});
 
 // Typing in the sentence field by hand always means "manual" from here on,
 // even if a suggestion was picked earlier in this same modal session.
@@ -11582,9 +12742,19 @@ const iconPickerCustomInput = document.getElementById('icon-picker-custom-input'
 const iconPickerCustomApply = document.getElementById('icon-picker-custom-apply');
 const iconPickerSearchInput = document.getElementById('icon-picker-search-input');
 const iconPickerSearchBtn = document.getElementById('icon-picker-search-btn');
+const ICON_PICKER_SEARCH_PLACEHOLDER_WORD = iconPickerSearchInput.placeholder;
+const ICON_PICKER_SEARCH_PLACEHOLDER_TOPIC = '🔍 اكتب اسم الملصق بالإنجليزي (مثلاً: sport)';
 let iconPickerWordIndex = null;
 let iconPickerDefaultCandidates = [];
 let iconPickerSearchRequestId = 0;
+// When true, a chosen sticker goes into the "add topic" icon field instead
+// of being saved onto a word — same picker/search, different destination.
+let iconPickerForTopic = false;
+// When set to a topic id, a chosen sticker is saved directly onto that
+// existing (already-created) custom topic's icon — same picker/search as
+// everything else, just a third destination (see the "✏️ غيّر الملصق"
+// button inside the edit-topic modal).
+let iconPickerEditTopicId = null;
 
 function renderIconPickerOptions(candidates, emptyState){
   iconPickerGrid.style.display = candidates.length ? '' : 'none';
@@ -11602,12 +12772,56 @@ function renderIconPickerOptions(candidates, emptyState){
 function openIconPicker(i){
   const w = activeLevel.words[i];
   if(!w) return;
+  iconPickerForTopic = false;
   iconPickerWordIndex = i;
   iconPickerCustomInput.value = '';
+  iconPickerSearchInput.placeholder = ICON_PICKER_SEARCH_PLACEHOLDER_WORD;
   iconPickerSearchInput.value = w.en || '';
   iconPickerDefaultCandidates = buildIconCandidates(w.en, w.sentenceEn);
   renderIconPickerOptions(iconPickerDefaultCandidates);
   iconPickerOverlay.classList.add('show');
+}
+
+// Same picker, same search logic (local dictionary first, then the wider
+// English CDN dataset) as editing a word's sticker — but the chosen icon
+// is written into the "add topic" icon field instead of onto a word. The
+// topic title is usually typed in Arabic, and the wider CDN search only
+// understands English, so — unlike the word picker, which seeds itself
+// with the word's own English text — this one starts empty with a
+// placeholder telling the user to type the sticker's name in English, and
+// the existing live-filter-as-you-type (same "input" listener used for
+// words) shows matching stickers the moment they start typing.
+function openIconPickerForTopic(){
+  iconPickerForTopic = true;
+  iconPickerEditTopicId = null;
+  iconPickerWordIndex = null;
+  iconPickerCustomInput.value = '';
+  iconPickerSearchInput.placeholder = ICON_PICKER_SEARCH_PLACEHOLDER_TOPIC;
+  iconPickerSearchInput.value = '';
+  iconPickerDefaultCandidates = ICON_PICKER_GENERAL_PALETTE.slice();
+  renderIconPickerOptions(iconPickerDefaultCandidates);
+  iconPickerOverlay.classList.add('show');
+  iconPickerSearchInput.focus();
+}
+
+// Same picker again, but for the "✏️ غيّر الملصق" button inside the
+// edit-topic modal (works for both built-in and custom topics) — picking a
+// sticker here writes straight onto that topic, applying immediately with
+// no extra "save" step.
+function openIconPickerForExistingTopic(topicId){
+  if(!activeLevel) return;
+  const topic = getTopicsForLevel(activeLevel).find(t => t.id === topicId);
+  if(!topic) return;
+  iconPickerForTopic = false;
+  iconPickerWordIndex = null;
+  iconPickerEditTopicId = topicId;
+  iconPickerCustomInput.value = '';
+  iconPickerSearchInput.placeholder = ICON_PICKER_SEARCH_PLACEHOLDER_TOPIC;
+  iconPickerSearchInput.value = '';
+  iconPickerDefaultCandidates = ICON_PICKER_GENERAL_PALETTE.slice();
+  renderIconPickerOptions(iconPickerDefaultCandidates);
+  iconPickerOverlay.classList.add('show');
+  iconPickerSearchInput.focus();
 }
 
 // Typing filters instantly against the local dictionary only (no
@@ -11663,6 +12877,8 @@ iconPickerSearchInput.addEventListener('keydown', (e) => {
 function closeIconPicker(){
   iconPickerOverlay.classList.remove('show');
   iconPickerWordIndex = null;
+  iconPickerForTopic = false;
+  iconPickerEditTopicId = null;
 }
 
 // Pasted/typed text sometimes contains more than one visible emoji glyph —
@@ -11694,13 +12910,43 @@ function firstEmojiGrapheme(text){
 }
 
 function applyIconChoice(icon){
+  if(!icon) return;
+
+  if(iconPickerEditTopicId !== null){
+    const editedTopicId = iconPickerEditTopicId;
+    if(isCustomTopicId(activeLevel.id, editedTopicId)){
+      updateCustomTopicInLevel(activeLevel.id, editedTopicId, { icon: firstEmojiGrapheme(icon) });
+    } else {
+      setTopicOverride(activeLevel.id, editedTopicId, { icon: firstEmojiGrapheme(icon) });
+    }
+    closeIconPicker();
+    renderTopics();
+    // The edit-topic modal (if that's where this picker was opened from)
+    // stays open underneath — keep its preview in sync too.
+    if(editTopicId === editedTopicId){
+      editTopicIconPreview.textContent = firstEmojiGrapheme(icon);
+    }
+    return;
+  }
+
+  if(iconPickerForTopic){
+    newTopicIconInput.value = firstEmojiGrapheme(icon);
+    closeIconPicker();
+    return;
+  }
+
   const i = iconPickerWordIndex;
-  if(i === null || !icon) return;
+  if(i === null) return;
 
   persistWordFieldEdit(i, 'icon', firstEmojiGrapheme(icon));
 
   closeIconPicker();
   renderCard(i);
+  // The edit-word modal (if that's where this picker was opened from) stays
+  // open underneath — keep its preview in sync too.
+  if(editWordIndex === i){
+    editWordIconPreview.textContent = firstEmojiGrapheme(icon);
+  }
 }
 
 iconPickerGrid.addEventListener('click', (e) => {
@@ -11748,6 +12994,12 @@ function refreshCounts(){
   document.getElementById('count-easy').textContent = easy;
   document.getElementById('count-medium').textContent = medium;
   document.getElementById('count-hard').textContent = hard;
+  document.getElementById('count-all').textContent = easy + medium + hard;
+
+  document.getElementById('stat-btn-easy').disabled = easy === 0;
+  document.getElementById('stat-btn-medium').disabled = medium === 0;
+  document.getElementById('stat-btn-hard').disabled = hard === 0;
+  document.getElementById('stat-btn-all').disabled = (easy + medium + hard) === 0;
 }
 
 function formatRemaining(ms){
@@ -13281,7 +14533,6 @@ function buildFrontBack(i, w){
     <div class="face front">
       <div class="icon-wrap">
         <div class="word-icon">${w.icon}</div>
-        <button type="button" class="edit-icon-btn" data-edit-icon="${i}" title="غيّر ملصق الكلمة">✏️</button>
       </div>
       <div class="word-en-row">
         <div class="word-en-row-side side-start">${buildSpeedControl(`front-${i}`)}${buildVoiceGenderControl()}</div>
@@ -13419,21 +14670,11 @@ function wireWordActionButtons(wrap, i){
       if(!confirm(`متأكد إنك عايز تحذف الكلمة "${word.en}"؟`)) return;
 
       if(customWordsMode){
-        const list = loadCustomWords();
-        list.splice(i, 1);
-        saveCustomWords(list);
-
-        // Every word's saved schedule/rated/difficulty is keyed by its index
-        // in the list. Removing a word shifts every later index, so instead
-        // of risking that data pointing at the wrong word now, just clear
-        // this folder's progress and let it rebuild naturally.
-        const keys = folderStorageKeys('custom-words');
-        localStorage.removeItem(keys.schedule);
-        localStorage.removeItem(keys.rated);
-        localStorage.removeItem(keys.difficulty);
-        localStorage.removeItem(keys.earlyUnlocked);
-
-        openCustomWords();
+        // Hide by id instead of splicing it out, so the word's saved
+        // progress (keyed by index) stays valid and the word can be
+        // restored later from "↩️ الكلمات المحذوفة".
+        hideCustomWord(word.id);
+        if(activeTopic) openTopic(activeTopic.id);
       } else {
         // Built-in word: just hide it for this browser. Its index and
         // every other word's saved progress stay untouched.
@@ -13456,14 +14697,6 @@ function wireWordActionButtons(wrap, i){
     editPhotoBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       openImagePicker(i);
-    });
-  }
-
-  const editIconBtn = wrap.querySelector('.edit-icon-btn');
-  if(editIconBtn){
-    editIconBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      openIconPicker(i);
     });
   }
 
