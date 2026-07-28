@@ -2310,7 +2310,29 @@
   @media (max-width: 480px){
     .grid{ grid-template-columns: 1fr; }
     .flip-scene{ height: 400px; }
+
+    header{ padding: 1.8rem 1rem 1.3rem; }
+    h1{ font-size: 22px; margin: 10px 0 6px; }
+    header p{ font-size: 13px; line-height: 1.6; }
+
+    .level-header{
+      padding: 0 0.85rem;
+      gap: 6px;
+      row-gap: 8px;
+    }
+    .level-title{ font-size: 15px; }
+    .back-btn,
+    .review-words-btn{
+      font-size: 11.5px;
+      padding: 7px 10px;
+      border-radius: 10px;
+    }
+    .header-btn-group{ gap: 6px; }
+    .back-btn-group{ gap: 5px; }
+    .jump-btn{ font-size: 10.5px; padding: 5px 8px; border-radius: 8px; }
+    .restore-words-btn{ font-size: 11.5px; padding: 7px 10px; }
   }
+
 </style>
 </head>
 <body>
@@ -9640,10 +9662,6 @@ function startPpRecording(){
   ppRecognition.onresult = (event) => {
     handled = true;
     const transcript = ((event.results && event.results[0] && event.results[0][0] && event.results[0][0].transcript) || '').trim();
-    if(!transcript){
-      setPpStatus('مسمعتش كلام واضح، جرب تاني.');
-      return;
-    }
     revealPronunciationResult(transcript);
   };
 
@@ -9653,18 +9671,18 @@ function startPpRecording(){
     if(pronunciationPracticeAnswered) return; // already moved on, ignore
     if(event && (event.error === 'not-allowed' || event.error === 'service-not-allowed')){
       setPpStatus('محتاجين إذن استخدام الميكروفون من المتصفح');
-    } else if(event && event.error === 'no-speech'){
-      setPpStatus('مسمعتش كلام واضح، جرب تاني.');
-    } else {
-      setPpStatus('حصلت مشكلة في التعرف على الصوت، جرب تاني.');
+      return;
     }
+    // no-speech, audio-capture, aborted, network, etc. — treat as a wrong
+    // attempt instead of leaving the user stuck on a status message.
+    revealPronunciationResult('');
   };
 
   ppRecognition.onend = () => {
     ppRecording = false;
     updatePpRecordButtonUI();
     if(!handled && !pronunciationPracticeAnswered){
-      setPpStatus('مسمعتش كلام واضح، جرب تاني.');
+      revealPronunciationResult('');
     }
   };
 
@@ -9717,7 +9735,7 @@ function revealPronunciationResult(transcript){
   revealWord.textContent = correct;
   revealWord.className = 'wp-reveal-word ' + (isCorrect ? 'wp-correct' : 'wp-incorrect');
   const saidEl = document.getElementById('pp-your-said');
-  if(saidEl) saidEl.textContent = `انت قلت: ${transcript}`;
+  if(saidEl) saidEl.textContent = transcript ? `انت قلت: ${transcript}` : 'مسمعناش أي كلام';
   document.getElementById('pp-reveal').style.display = 'flex';
 }
 
