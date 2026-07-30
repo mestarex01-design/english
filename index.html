@@ -41,6 +41,12 @@
     padding: 0 0 4rem;
   }
 
+  /* Visibility is JS-driven now (see syncHeaderVisibility): the header
+     stays visible only on the home/categories screen and is hidden on
+     every other view. The text-align/padding below is the header's
+     original visible-state styling (it got wiped out when display:none
+     was added in an earlier edit) — restored so it looks right whenever
+     JS shows it again. No display:none here; JS sets that dynamically. */
   header{
     text-align:center;
     padding: 3rem 1.5rem 2.2rem;
@@ -68,6 +74,7 @@
   }
 
   header p{
+    display:none;
     color: var(--muted);
     font-size: 16px;
     max-width: 560px;
@@ -151,13 +158,23 @@
     position: relative;
     max-width: 1200px;
     margin: 0 auto;
-    padding: 0 clamp(0.85rem, 4vw, 1.5rem);
+    padding: calc(68px + env(safe-area-inset-top, 0px)) clamp(0.85rem, 4vw, 1.5rem) 0;
+    min-height: 44px;
     display:flex;
     align-items:center;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: clamp(6px, 2vw, 10px);
     row-gap: 10px;
+  }
+  #topics-view .level-header{
+    max-width: 900px;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+  }
+  #level-view .level-header{
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
   }
   /* Most pages now only have two edge items — a back button (or
      .back-btn-group) and a trailing action (.review-words-btn or
@@ -173,7 +190,7 @@
     flex: none;
     position: absolute;
     left: 50%;
-    top: 50%;
+    top: calc(68px + env(safe-area-inset-top, 0px) + 22px);
     transform: translate(-50%, -50%);
     text-align:center;
     white-space: nowrap;
@@ -184,10 +201,17 @@
 
   .header-btn-group{
     display:flex;
-    align-items:center;
-    gap: clamp(6px, 2vw, 10px);
-    flex-wrap: wrap;
+    align-items:stretch;
+    gap: clamp(4px, 1.6vw, 10px);
+    flex-wrap: nowrap;
     justify-content: flex-end;
+    width: 100%;
+  }
+
+  #review-folders-title, #review-cards-title{ display:none; }
+  .header-btn-group > *{
+    flex: 1 1 0;
+    min-width: 0;
   }
 
   .back-btn{
@@ -229,38 +253,44 @@
   .jump-btn:hover{ background: var(--accent-soft); border-color: var(--accent); color: var(--ink); }
 
   .restore-words-btn{
-    background: var(--paper);
-    border: 1.5px solid var(--line);
-    color: var(--ink);
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+    color: #fff;
     font-family:'Cairo', sans-serif;
-    font-weight:600;
-    font-size: clamp(11.5px, 3vw, 13px);
-    padding: clamp(7px, 2vw, 9px) clamp(10px, 3vw, 16px);
+    font-weight:700;
+    font-size: clamp(10px, 2.6vw, 13.5px);
+    padding: clamp(7px, 1.8vw, 9px) clamp(8px, 2.4vw, 16px);
     border-radius: 12px;
     cursor:pointer;
     display:flex;
     align-items:center;
-    gap:6px;
+    justify-content:center;
+    gap:4px;
     white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
-  .restore-words-btn:hover{ background: var(--accent-soft); border-color: var(--accent); }
+  .restore-words-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
 
   .reset-default-btn{
-    background: var(--paper);
-    border: 1.5px solid var(--hard);
-    color: var(--hard);
+    background: var(--accent);
+    border: 1.5px solid var(--accent);
+    color: #fff;
     font-family:'Cairo', sans-serif;
-    font-weight:600;
-    font-size: clamp(11.5px, 3vw, 13px);
-    padding: clamp(7px, 2vw, 9px) clamp(10px, 3vw, 16px);
+    font-weight:700;
+    font-size: clamp(10px, 2.6vw, 13.5px);
+    padding: clamp(7px, 1.8vw, 9px) clamp(8px, 2.4vw, 16px);
     border-radius: 12px;
     cursor:pointer;
     display:flex;
     align-items:center;
-    gap:6px;
+    justify-content:center;
+    gap:4px;
     white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
-  .reset-default-btn:hover{ background: var(--hard); color:#fff; }
+  .reset-default-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
 
   .deleted-topics-list{
     display:flex;
@@ -356,11 +386,17 @@
     color:#fff;
     font-family:'Cairo', sans-serif;
     font-weight:700;
-    font-size: clamp(11.5px, 3vw, 13.5px);
-    padding: clamp(7px, 2vw, 9px) clamp(10px, 3vw, 16px);
+    font-size: clamp(10px, 2.6vw, 13.5px);
+    padding: clamp(7px, 1.8vw, 9px) clamp(8px, 2.4vw, 16px);
     border-radius: 12px;
     cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
     white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .review-words-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
 
@@ -630,10 +666,17 @@
     color: #fff;
     font-family:'Cairo', sans-serif;
     font-weight:700;
-    font-size: 13.5px;
-    padding: 9px 18px;
+    font-size: clamp(10px, 2.6vw, 13.5px);
+    padding: clamp(7px, 1.8vw, 9px) clamp(8px, 2.4vw, 16px);
     border-radius: 12px;
     cursor:pointer;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    white-space: nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
   }
   .add-word-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
 
@@ -654,6 +697,7 @@
 
   .word-actions-row{
     display:flex;
+    justify-content: space-between;
     gap: 8px;
     margin-top: 6px;
   }
@@ -1083,14 +1127,19 @@
   .speed-control select:focus{ outline:none; }
 
   .stats-bar{
-    max-width: 900px;
+    max-width: 1200px;
     margin: 1.5rem auto 0;
     display:flex;
     justify-content:center;
     align-items:center;
     gap: clamp(8px, 2.2vw, 14px);
-    flex-wrap: wrap;
+    flex-wrap: nowrap;
     padding: 0 1.5rem;
+  }
+  .stats-bar > .stat-pill{
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
   }
 
   .stat-pill{
@@ -1118,13 +1167,13 @@
   .dot.hard{ background: var(--hard); }
 
   .stat-pill-all{
-    background: var(--accent);
-    border-color: var(--accent);
-    color:#fff;
+    background: var(--paper);
+    border-color: var(--line);
+    color: var(--muted);
     font-weight:700;
   }
-  .stat-pill-all b{ color:#fff; }
-  .stat-pill-all:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
+  .stat-pill-all b{ color: var(--ink); }
+  .stat-pill-all:hover{ background: var(--accent-soft); border-color: var(--accent); transform: translateY(-1px); }
   .stat-pill-all[disabled]{ background: var(--paper); border-color: var(--line); color: var(--muted); }
   .stat-pill-all[disabled] b{ color: var(--muted); }
 
@@ -1133,7 +1182,7 @@
     margin: 2.5rem auto 0;
     padding: 0 1.5rem;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(230px, 280px));
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
     justify-content: center;
     gap: 24px;
   }
@@ -1189,7 +1238,7 @@
     display: none;
     position: fixed;
     top: calc(16px + env(safe-area-inset-top, 0px));
-    left: 16px;
+    left: max(16px, calc((100vw - 900px) / 2 + 16px));
     z-index: 999;
     width: 40px;
     height: 40px;
@@ -2511,18 +2560,15 @@
 
 <div id="folders-view">
   <div class="level-header">
-    <button class="back-btn" id="back-to-categories">→ رجوع للرئيسية</button>
     <div class="level-title" id="folders-level-title" style="display:none;"></div>
-    <button type="button" class="review-words-btn" id="review-words-btn-folders">📖 مراجعة الكلمات</button>
   </div>
   <div class="folders-grid" id="folders-grid"></div>
+  <button type="button" class="review-all-btn" id="review-words-btn-folders">📖 مراجعة الكلمات</button>
 </div>
 
 <div id="topics-view">
   <div class="level-header">
     <div class="back-btn-group">
-      <button class="back-btn" id="back-to-folders-from-topics">→ رجوع للمستويات</button>
-      <button type="button" class="jump-btn" id="jump-home-from-topics">الرئيسية</button>
     </div>
     <div class="level-title" id="topics-level-title" style="display:none;"></div>
     <div class="header-btn-group">
@@ -2537,9 +2583,6 @@
 <div id="level-view">
   <div class="level-header">
     <div class="back-btn-group">
-      <button class="back-btn" id="back-to-folders">→ رجوع للموضوعات</button>
-      <button type="button" class="jump-btn" id="jump-levels-from-level">المستويات</button>
-      <button type="button" class="jump-btn" id="jump-home-from-level">الرئيسية</button>
     </div>
     <div class="level-title" id="level-title" style="display:none;"></div>
     <div class="header-btn-group">
@@ -2569,8 +2612,6 @@
 <div id="review-folders-view">
   <div class="level-header">
     <div class="back-btn-group">
-      <button class="back-btn" id="back-from-review-folders">→ رجوع</button>
-      <button type="button" class="jump-btn" id="jump-home-from-review-folders" style="display:none;">الرئيسية</button>
     </div>
     <div class="level-title" id="review-folders-title">مراجعة الكلمات</div>
   </div>
@@ -2581,8 +2622,6 @@
 <div id="review-cards-view">
   <div class="level-header">
     <div class="back-btn-group">
-      <button class="back-btn" id="back-from-review-cards">→ رجوع</button>
-      <button type="button" class="jump-btn" id="jump-home-from-review-cards">الرئيسية</button>
     </div>
     <div class="level-title" id="review-cards-title"></div>
   </div>
@@ -2593,7 +2632,6 @@
 
 <div id="voice-chat-view">
   <div class="level-header">
-    <button class="back-btn" id="back-to-categories-from-chat">→ رجوع للرئيسية</button>
     <div class="level-title" style="display:none;">🎙️ التحدث الصوتي مع الذكاء الاصطناعي</div>
   </div>
 
@@ -2617,7 +2655,6 @@
 
 <div id="writing-practice-view">
   <div class="level-header">
-    <button class="back-btn" id="back-to-categories-from-writing">→ رجوع للرئيسية</button>
     <div class="level-title" style="display:none;">✏️ تدرب على الكتابة والاستماع</div>
   </div>
 
@@ -2628,7 +2665,6 @@
 
 <div id="pronunciation-practice-view">
   <div class="level-header">
-    <button class="back-btn" id="back-to-categories-from-pronunciation">→ رجوع للرئيسية</button>
     <div class="level-title" style="display:none;">🎤 تدرب على النطق والاستماع</div>
   </div>
 
@@ -2697,7 +2733,7 @@
 
 <div class="modal-overlay" id="restore-topics-overlay">
   <div class="modal-box">
-    <div class="modal-title">المواضيع المحذوفة</div>
+    <div class="modal-title" id="restore-topics-modal-title">المواضيع المحذوفة</div>
     <button type="button" class="restore-all-btn" id="restore-all-topics-btn">↩️ استرجاع الكل</button>
     <button type="button" class="purge-all-btn" id="purge-all-topics-btn">🗑️ حذف الكل نهائيًا</button>
     <div class="deleted-topics-list" id="deleted-topics-list"></div>
@@ -2792,7 +2828,6 @@
       </div>
       <div class="image-picker-search-row">
         <button type="button" class="add-word-btn" id="image-picker-ai-btn" style="flex:1;">🎨 توليد مباشر</button>
-        <button type="button" class="add-word-btn" id="image-picker-gemini-btn" style="flex:1;">✨ توليد بجيميناي</button>
       </div>
       <div class="image-picker-ai-preview" id="image-picker-ai-preview"></div>
       <div class="modal-actions">
@@ -2828,8 +2863,13 @@
 </div>
 
 
-<script src="https://js.puter.com/v2/"></script>
 <script>
+// Puter.js library removed — TTS now always uses the local browser voice
+// fallback (speakLocalFallback / speakWithLocalVoice), and every
+// Puter-guarded function below (ensurePuterSignedIn, image account-mirroring,
+// voice chat) safely detects `window.puter` is missing and no-ops or shows
+// a clear message instead of throwing.
+
 // `.is-mobile-device` is still used for a few unrelated mobile-only style
 // tweaks; it no longer hides the voice-gender control (see getPreferredVoice
 // below for how the gender choice is actually resolved into a real voice).
@@ -2841,8 +2881,7 @@ const categories = [
   { id: "custom", title: "كلماتك الخاصة", icon: "✍️", type: "custom" },
   { id: "review-all", title: "مراجعة الكلمات", icon: "📖", type: "review" },
   { id: "writing-practice", title: "تدرب على الكتابة والاستماع", icon: "✏️", type: "writing-practice" },
-  { id: "pronunciation-practice", title: "تدرب على النطق والاستماع", icon: "🎤", type: "pronunciation-practice" },
-  { id: "voice-chat", title: "التحدث الصوتي مع الذكاء الاصطناعي", icon: "🎙️", type: "voice-chat" }
+  { id: "pronunciation-practice", title: "تدرب على النطق والاستماع", icon: "🎤", type: "pronunciation-practice" }
 ];
 
 const levels = [
@@ -8825,6 +8864,18 @@ function getTopicsForLevel(level){
 
 const categoriesGrid = document.getElementById('categories-grid');
 const categoriesView = document.getElementById('categories-view');
+
+// The header (title + subtitle) should only ever be visible on the
+// home/categories screen, and hidden everywhere else. Rather than touching
+// every single place in the code that flips categoriesView.style.display
+// (there are many, spread across the file), we watch categories-view's own
+// style attribute and mirror its visibility onto the header automatically.
+const mainHeader = document.querySelector('header');
+function syncHeaderVisibility(){
+  mainHeader.style.display = (categoriesView.style.display !== 'none') ? '' : 'none';
+}
+new MutationObserver(syncHeaderVisibility).observe(categoriesView, { attributes: true, attributeFilter: ['style'] });
+syncHeaderVisibility();
 const foldersGrid = document.getElementById('folders-grid');
 const foldersView = document.getElementById('folders-view');
 const topicsView = document.getElementById('topics-view');
@@ -8843,22 +8894,45 @@ const pronunciationPracticeView = document.getElementById('pronunciation-practic
 // re-evaluates whenever either one changes, so it can't drift out of
 // sync no matter which function triggered the switch.
 const floatingBackArrow = document.getElementById('floating-back-arrow');
+const fbaReviewFoldersView = document.getElementById('review-folders-view');
+const fbaReviewCardsView = document.getElementById('review-cards-view');
+const fbaVoiceChatView = document.getElementById('voice-chat-view');
 function syncFloatingBackArrow(){
   if(!floatingBackArrow) return;
-  if(foldersView.style.display === 'block'){
+  const reviewCardsShown = !!(fbaReviewCardsView && fbaReviewCardsView.style.display === 'block');
+  const reviewFoldersShown = !!(fbaReviewFoldersView && fbaReviewFoldersView.style.display === 'block');
+  if(
+    foldersView.style.display === 'block' ||
+    topicsView.style.display === 'block' ||
+    levelView.style.display === 'block' ||
+    reviewFoldersShown ||
+    reviewCardsShown ||
+    writingPracticeView.style.display === 'block' ||
+    pronunciationPracticeView.style.display === 'block' ||
+    (fbaVoiceChatView && fbaVoiceChatView.style.display === 'block')
+  ){
     floatingBackArrow.style.display = 'flex';
-    floatingBackArrow.onclick = goBack;
-  } else if(topicsView.style.display === 'block'){
-    floatingBackArrow.style.display = 'flex';
-    floatingBackArrow.onclick = goBack;
+    // The review screens (folders/cards) are overlays that sit on top of
+    // whichever real screen is underneath and are NOT pushed into browser
+    // history, so goBack()/history.back() has nothing to undo while
+    // they're open. Route the floating arrow through the same real
+    // close functions each review screen already uses instead.
+    if(reviewCardsShown){
+      floatingBackArrow.onclick = backFromReviewCards;
+    } else if(reviewFoldersShown){
+      floatingBackArrow.onclick = closeReviewMode;
+    } else {
+      floatingBackArrow.onclick = goBack;
+    }
   } else {
     floatingBackArrow.style.display = 'none';
     floatingBackArrow.onclick = null;
   }
 }
 if(floatingBackArrow){
-  new MutationObserver(syncFloatingBackArrow).observe(foldersView, { attributes: true, attributeFilter: ['style'] });
-  new MutationObserver(syncFloatingBackArrow).observe(topicsView, { attributes: true, attributeFilter: ['style'] });
+  [foldersView, topicsView, levelView, fbaReviewFoldersView, fbaReviewCardsView, writingPracticeView, pronunciationPracticeView, fbaVoiceChatView].forEach(view => {
+    if(view) new MutationObserver(syncFloatingBackArrow).observe(view, { attributes: true, attributeFilter: ['style'] });
+  });
   syncFloatingBackArrow();
 }
 
@@ -9294,12 +9368,6 @@ function openCustomWords(){
   document.getElementById('main-title').textContent = 'كلماتك الخاصة';
   document.getElementById('main-subtitle').textContent = 'اختر موضوعًا عشان تبدأ تراجع كلماته، أو دوس "+ إضافة موضوع" لإنشاء موضوع جديد.';
 
-  // Custom words sits directly under the home screen (no levels layer
-  // above it), so its back button goes straight home and the "الرئيسية"
-  // jump shortcut (redundant with a single back-step here) is hidden.
-  document.getElementById('back-to-folders-from-topics').textContent = '→ رجوع للرئيسية';
-  document.getElementById('jump-home-from-topics').style.display = 'none';
-
   categoriesView.style.display = 'none';
   foldersView.style.display = 'none';
   levelView.style.display = 'none';
@@ -9331,8 +9399,6 @@ function closeCategory(){
   document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
   renderCategories();
 }
-document.getElementById('back-to-categories').addEventListener('click', goBack);
-
 function renderFolders(){
   foldersGrid.innerHTML = '';
   levels.forEach((level, idx) => {
@@ -9365,21 +9431,12 @@ function renderFolders(){
       `;
     } else {
       card.innerHTML = `
-        <button type="button" class="card-back-corner-btn" title="رجوع للرئيسية">←</button>
         <div class="folder-icon">${level.icon}</div>
         <div class="folder-title">${level.title}</div>
         <div class="folder-meta">${total} كلمة · تمت مراجعة ${Math.min(learned, total)}/${total}</div>
         <div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
       `;
       card.addEventListener('click', () => openLevel(level.id));
-
-      const cornerBtn = card.querySelector('.card-back-corner-btn');
-      if(cornerBtn){
-        cornerBtn.addEventListener('click', (e) => {
-          e.stopPropagation();
-          goBack();
-        });
-      }
     }
 
     foldersGrid.appendChild(card);
@@ -9403,9 +9460,6 @@ function openLevel(levelId){
   document.getElementById('topics-level-title').textContent = activeLevel.title;
   document.getElementById('main-title').textContent = activeLevel.title;
   document.getElementById('main-subtitle').textContent = 'اختر موضوعًا عشان تبدأ تراجع كلماته.';
-
-  document.getElementById('back-to-folders-from-topics').textContent = '→ رجوع للمستويات';
-  document.getElementById('jump-home-from-topics').style.display = '';
 
   foldersView.style.display = 'none';
   topicsView.style.display = 'block';
@@ -9440,7 +9494,6 @@ function renderTopics(){
     const card = document.createElement('div');
     card.className = 'folder-card';
     card.innerHTML = `
-      <button type="button" class="card-back-corner-btn" title="رجوع للمستويات">←</button>
       <div class="icon-wrap">
         <div class="folder-icon">${topic.icon || '📂'}</div>
       </div>
@@ -9454,14 +9507,6 @@ function renderTopics(){
       </div>` : ''}
     `;
     card.addEventListener('click', () => openTopic(topic.id));
-
-    const cornerBtn = card.querySelector('.card-back-corner-btn');
-    if(cornerBtn){
-      cornerBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        goBack();
-      });
-    }
 
     const editTopicBtn = card.querySelector('[data-edit-topic]');
     if(editTopicBtn){
@@ -9496,14 +9541,7 @@ function openTopic(topicId){
   topicsView.style.display = 'none';
   levelView.style.display = 'block';
 
-  document.getElementById('back-to-folders').textContent = '→ رجوع للموضوعات';
-  // Custom words has no levels screen above its topics (unlike a normal
-  // level, which sits under a levels/folders screen), so those two jump
-  // shortcuts only make sense outside customWordsMode.
-  document.getElementById('jump-levels-from-level').style.display = customWordsMode ? 'none' : '';
-  document.getElementById('jump-home-from-level').style.display = customWordsMode ? 'none' : '';
-
-  document.getElementById('restore-deleted-words-btn').style.display = 'flex';
+  document.getElementById('restore-deleted-words-btn').style.display = customWordsMode ? 'none' : 'flex';
   document.getElementById('reset-default-btn').style.display = 'flex';
   document.getElementById('add-word-btn').style.display = 'inline-block';
 
@@ -9606,48 +9644,6 @@ function getRefUnlockAt(ref){
   return entry ? entry.unlockAt : 0;
 }
 
-// The review folders/cards screens can be entered from four different
-// places (the home "مراجعة الكلمات" folder, or the review shortcut
-// button in the levels/topics/cards headers), and closeReviewMode()
-// already sends the real "→ رجوع" back button to wherever is correct
-// for each case. This just keeps its label honest about that
-// destination, and decides whether a "الرئيسية" shortcut is worth
-// showing next to it (not when back already goes home).
-function reviewBackLabelFor(scope){
-  switch(scope && scope.type){
-    case 'everything': return { label: '→ رجوع للرئيسية', showHome: false };
-    case 'all-levels': return { label: '→ رجوع للمستويات', showHome: true };
-    case 'level': return { label: '→ رجوع للموضوعات', showHome: true };
-    case 'topic':
-    case 'custom': return { label: '→ رجوع للكلمات', showHome: true };
-    default: return { label: '→ رجوع', showHome: true };
-  }
-}
-
-// Closes the review overlay and jumps straight to the home screen,
-// regardless of how deep the real (non-review) screen underneath it
-// is — popping however many history entries that takes in one go.
-function jumpHomeFromReview(){
-  reviewFoldersView.style.display = 'none';
-  reviewCardsView.style.display = 'none';
-  const state = history.state;
-  let depth = 0;
-  if(state && state.screen){
-    if(state.screen === 'level') depth = state.customWords ? 2 : 3;
-    else if(state.screen === 'custom-topics') depth = 1;
-    else if(state.screen === 'topics') depth = 2;
-    else if(state.screen === 'folders') depth = 1;
-    else if(state.screen === 'voice-chat') depth = 1;
-  }
-  if(depth > 0 && canGoBackInApp()){
-    history.go(-depth);
-  } else {
-    closeCategory();
-  }
-}
-document.getElementById('jump-home-from-review-folders').addEventListener('click', jumpHomeFromReview);
-document.getElementById('jump-home-from-review-cards').addEventListener('click', jumpHomeFromReview);
-
 // Labels the review-folders screen itself according to how wide its
 // scope is: all levels, all topics of one level, or just one topic
 // (plus the custom/everything scopes reachable from elsewhere).
@@ -9664,9 +9660,6 @@ function reviewFoldersTitleFor(scope){
 
 function openReviewFolders(scope){
   reviewScope = scope;
-  const { label, showHome } = reviewBackLabelFor(scope);
-  document.getElementById('back-from-review-folders').textContent = label;
-  document.getElementById('jump-home-from-review-folders').style.display = showHome ? '' : 'none';
   document.getElementById('review-folders-title').textContent = reviewFoldersTitleFor(scope);
   const refs = getScopeWordRefs(scope);
   const counts = { easy: 0, medium: 0, hard: 0 };
@@ -9749,13 +9742,6 @@ function openReviewCards(difficulty){
   reviewFoldersView.style.display = 'none';
   reviewCardsView.style.display = 'block';
 
-  // Hidden when this screen was reached directly from the level page's
-  // stats pills (reviewSkippedFolders) — in that case the real "→ رجوع"
-  // already goes straight back to the level page, so a separate "الرئيسية"
-  // shortcut next to it is redundant. Kept visible for the normal path
-  // (entered through the review-folders screen), same as before.
-  document.getElementById('jump-home-from-review-cards').style.display = reviewSkippedFolders ? 'none' : '';
-
   const names = { easy: 'السهلة', medium: 'المتوسطة', hard: 'الصعبة' };
   document.getElementById('review-cards-title').textContent = difficulty === 'all'
     ? reviewFoldersTitleFor(reviewScope)
@@ -9787,9 +9773,9 @@ window.addEventListener('resize', () => {
 // Same idea for the "مراجعة الكلمات السهلة/المتوسطة/الصعبة" title above the
 // cards: shrinks it just enough to stay on one line. Measuring against the
 // element's own clientWidth (rather than relying only on a vw-based CSS
-// clamp) accounts for how much room the back-button group next to it is
-// actually taking up, which changes depending on whether the "الرئيسية"
-// shortcut is shown — so the title always fits whatever space is left.
+// clamp) accounts for how much room the (now empty, spacer-only) back-button
+// group next to it is taking up, so the title always fits whatever space is
+// left.
 const REVIEW_TITLE_MAX_FONT = 20;
 const REVIEW_TITLE_MIN_FONT = 11;
 function fitReviewTitleToOneLine(){
@@ -9992,8 +9978,9 @@ document.getElementById('stat-btn-medium').addEventListener('click', () => openR
 document.getElementById('stat-btn-hard').addEventListener('click', () => openReviewAtLevel('hard'));
 document.getElementById('stat-btn-all').addEventListener('click', () => openReviewAtLevel('all'));
 
-document.getElementById('back-from-review-folders').addEventListener('click', closeReviewMode);
-document.getElementById('back-from-review-cards').addEventListener('click', () => {
+// Used directly by the floating back arrow while the review-cards screen
+// is open (that screen has no browser-history entry of its own to pop).
+function backFromReviewCards(){
   reviewCardsView.style.display = 'none';
   if(reviewSkippedFolders){
     reviewSkippedFolders = false;
@@ -10001,7 +9988,7 @@ document.getElementById('back-from-review-cards').addEventListener('click', () =
   } else {
     openReviewFolders(reviewScope);
   }
-});
+}
 
 // --- "تدرب على الكتابة والاستماع" (listen-and-write practice) ---
 // Draws from every word that has EVER been rated before (any difficulty,
@@ -10290,7 +10277,6 @@ function closeWritingPractice(){
   document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
   renderCategories();
 }
-document.getElementById('back-to-categories-from-writing').addEventListener('click', goBack);
 
 // ===== Pronunciation practice (same word-selection logic as writing =====
 // practice, but the person speaks the word into the mic instead of
@@ -10611,7 +10597,6 @@ function closePronunciationPractice(){
   document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
   renderCategories();
 }
-document.getElementById('back-to-categories-from-pronunciation').addEventListener('click', goBack);
 
 function updateLevelLockState(){
   if(!activeLevel || !activeTopic) return;
@@ -10666,24 +10651,6 @@ function closeLevel(){
   document.getElementById('main-subtitle').textContent = 'اختر مستوى للبدء في مراجعة الكلمات وحفظها.';
   renderFolders();
 }
-document.getElementById('back-to-folders-from-topics').addEventListener('click', goBack);
-document.getElementById('back-to-folders').addEventListener('click', goBack);
-
-// Jump shortcuts: unlike the main back button (one step at a time),
-// these hop straight to a screen further up the chain by popping
-// several history entries at once. applyPopState() already knows how
-// to resolve a jump of any distance (it was built to also handle the
-// normal one-step case), so this only needs to work out how many
-// steps to pop.
-document.getElementById('jump-home-from-topics').addEventListener('click', () => {
-  if(canGoBackInApp()) history.go(-2); // topics -> categories
-});
-document.getElementById('jump-levels-from-level').addEventListener('click', () => {
-  if(canGoBackInApp()) history.go(-2); // level -> folders
-});
-document.getElementById('jump-home-from-level').addEventListener('click', () => {
-  if(canGoBackInApp()) history.go(-3); // level -> categories
-});
 
 const addWordBtn = document.getElementById('add-word-btn');
 const addWordOverlay = document.getElementById('add-word-overlay');
@@ -10844,7 +10811,8 @@ document.getElementById('restore-deleted-words-btn').addEventListener('click', (
 });
 
 document.getElementById('reset-default-btn').addEventListener('click', () => {
-  if(!confirm(`متأكد إنك عايز ترجع الموضوع ده للوضع الافتراضي؟ هيمسح كل تقييماتك، ويشيل أي كلمة ضفتها، ويرجع أي كلمة كنت حذفتها. الإجراء ده مينفعش يتراجع فيه (إلا الكلمات المحذوفة/المضافة تقدر تسترجعها لاحقًا من "↩️ الكلمات المحذوفة").`)) return;
+  const restoreBtnName = customWordsMode ? 'المواضيع المحذوفة' : 'الكلمات المحذوفة';
+  if(!confirm(`متأكد إنك عايز ترجع الموضوع ده للوضع الافتراضي؟ هيمسح كل تقييماتك، ويشيل أي كلمة ضفتها، ويرجع أي كلمة كنت حذفتها. الإجراء ده مينفعش يتراجع فيه (إلا الكلمات المحذوفة/المضافة تقدر تسترجعها لاحقًا من "↩️ ${restoreBtnName}").`)) return;
   resetPageToDefault();
 });
 
@@ -10864,14 +10832,27 @@ const deletedTopicsList = document.getElementById('deleted-topics-list');
 function renderDeletedTopicsList(){
   deletedTopicsList.innerHTML = '';
   if(!activeLevel) return;
-  const deleted = getAllDeletedTopicsForLevel(activeLevel);
-  document.getElementById('restore-all-topics-btn').style.display = deleted.length ? 'block' : 'none';
-  document.getElementById('purge-all-topics-btn').style.display = deleted.length ? 'block' : 'none';
-  if(!deleted.length){
-    deletedTopicsList.innerHTML = '<div class="deleted-topics-empty-msg">مفيش مواضيع محذوفة دلوقتي.</div>';
+  const deletedTopics = getAllDeletedTopicsForLevel(activeLevel);
+  // For custom words, deleted words are merged into this same modal —
+  // there's one trash can for the whole "كلماتك الخاصة" folder instead of
+  // a separate one per topic.
+  const deletedWords = customWordsMode
+    ? loadHiddenCustomWords()
+        .filter(id => !isCustomWordPurged(id))
+        .map(id => loadCustomWords().find(w => w.id === id))
+        .filter(Boolean)
+        .map(w => ({ kind: 'word', id: w.id, icon: w.icon, title: `${w.en} — ${w.ar}` }))
+    : [];
+  const total = deletedTopics.length + deletedWords.length;
+  document.getElementById('restore-all-topics-btn').style.display = total ? 'block' : 'none';
+  document.getElementById('purge-all-topics-btn').style.display = total ? 'block' : 'none';
+  if(!total){
+    deletedTopicsList.innerHTML = customWordsMode
+      ? '<div class="deleted-topics-empty-msg">مفيش مواضيع ولا كلمات محذوفة دلوقتي.</div>'
+      : '<div class="deleted-topics-empty-msg">مفيش مواضيع محذوفة دلوقتي.</div>';
     return;
   }
-  deleted.forEach(topic => {
+  deletedTopics.forEach(topic => {
     const item = document.createElement('div');
     item.className = 'deleted-topic-item';
     item.innerHTML = `
@@ -10902,10 +10883,33 @@ function renderDeletedTopicsList(){
     });
     deletedTopicsList.appendChild(item);
   });
+  deletedWords.forEach(word => {
+    const item = document.createElement('div');
+    item.className = 'deleted-topic-item';
+    item.innerHTML = `
+      <div class="deleted-topic-icon">${word.icon || '📝'}</div>
+      <div class="deleted-topic-title">${word.title}</div>
+      <div class="deleted-topic-actions">
+        <button type="button" class="deleted-topic-restore-btn" data-restore-word-t="${word.id}">↩️ استرجاع</button>
+        <button type="button" class="deleted-topic-purge-btn" data-purge-word-t="${word.id}">🗑️ حذف</button>
+      </div>
+    `;
+    item.querySelector('[data-restore-word-t]').addEventListener('click', () => {
+      restoreSingleCustomWord(word.id);
+      renderDeletedTopicsList();
+      renderTopics();
+    });
+    item.querySelector('[data-purge-word-t]').addEventListener('click', () => {
+      if(!confirm('هتتمسح الكلمة دي نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟')) return;
+      purgeSingleCustomWord(word.id);
+      renderDeletedTopicsList();
+    });
+    deletedTopicsList.appendChild(item);
+  });
 }
 
 // Restores every deleted topic (built-in and custom) for the level
-// currently open, in one go.
+// currently open, in one go — and, for custom words, every deleted word too.
 function restoreAllDeletedTopicsForCurrentLevel(){
   if(!activeLevel) return;
   const deleted = getAllDeletedTopicsForLevel(activeLevel);
@@ -10916,12 +10920,13 @@ function restoreAllDeletedTopicsForCurrentLevel(){
       restoreBuiltinTopic(activeLevel.id, topic.id);
     }
   });
+  if(customWordsMode) restoreAllCustomWords();
   renderDeletedTopicsList();
   renderTopics();
 }
 
 // Permanently deletes every topic currently sitting in the trash for the
-// level open right now, in one go.
+// level open right now, in one go — and, for custom words, every word too.
 function purgeAllDeletedTopicsForCurrentLevel(){
   if(!activeLevel) return;
   const deleted = getAllDeletedTopicsForLevel(activeLevel);
@@ -10932,10 +10937,14 @@ function purgeAllDeletedTopicsForCurrentLevel(){
       purgeBuiltinTopic(activeLevel.id, topic.id);
     }
   });
+  if(customWordsMode) purgeAllHiddenCustomWords();
   renderDeletedTopicsList();
 }
 
 function openRestoreTopicsModal(){
+  document.getElementById('restore-topics-modal-title').textContent = customWordsMode
+    ? 'المواضيع والكلمات المحذوفة'
+    : 'المواضيع المحذوفة';
   renderDeletedTopicsList();
   restoreTopicsOverlay.classList.add('show');
 }
@@ -10946,7 +10955,10 @@ document.getElementById('restore-all-topics-btn').addEventListener('click', () =
   restoreAllDeletedTopicsForCurrentLevel();
 });
 document.getElementById('purge-all-topics-btn').addEventListener('click', () => {
-  if(!confirm('هيتمسح كل المواضيع المحذوفة نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟')) return;
+  const msg = customWordsMode
+    ? 'هيتمسح كل المواضيع والكلمات المحذوفة نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟'
+    : 'هيتمسح كل المواضيع المحذوفة نهائيًا ومش هتقدر تسترجعها تاني. متأكد؟';
+  if(!confirm(msg)) return;
   purgeAllDeletedTopicsForCurrentLevel();
 });
 document.getElementById('restore-deleted-topics-btn').addEventListener('click', openRestoreTopicsModal);
@@ -12167,7 +12179,6 @@ const imagePickerDeviceBackBtn = document.getElementById('image-picker-device-ba
 
 const imagePickerAiInput = document.getElementById('image-picker-ai-input');
 const imagePickerAiBtn = document.getElementById('image-picker-ai-btn');
-const imagePickerGeminiBtn = document.getElementById('image-picker-gemini-btn');
 const imagePickerAiPreview = document.getElementById('image-picker-ai-preview');
 const imagePickerAiBackBtn = document.getElementById('image-picker-ai-back');
 const imagePickerAiUseBtn = document.getElementById('image-picker-ai-use-btn');
@@ -12204,8 +12215,6 @@ function openImagePicker(i){
   imagePickerAiUrl = null;
   imagePickerAiBtn.disabled = false;
   imagePickerAiBtn.textContent = '🎨 توليد مباشر';
-  imagePickerGeminiBtn.disabled = false;
-  imagePickerGeminiBtn.textContent = '✨ توليد بجيميناي';
 
   showImagePickerStep('menu');
   imagePickerOverlay.classList.add('show');
@@ -12239,8 +12248,6 @@ function finishImagePicker(url){
     if(newFlipEl){
       newFlipEl.classList.add('is-flipped');
       const wrap = document.querySelector(`#cards-grid .card-wrap[data-index="${i}"]`);
-      const cornerBackBtn = wrap && wrap.querySelector('.card-back-corner-btn');
-      if(cornerBackBtn) cornerBackBtn.title = 'رجوع للكارت';
       const backImg = wrap && wrap.querySelector('.back-photo');
       if(backImg) loadWordImageOnFlip(backImg);
     }
@@ -12303,7 +12310,7 @@ function buildPollinationsUrl(prompt){
 // prompt. Resolves with the image URL on success; rejects on load error
 // or timeout (a fresh random seed means each call is a distinct attempt,
 // not a cached repeat of a previous failure).
-function tryLoadPollinationsImage(prompt){
+function tryLoadPollinationsImage(prompt, timeoutMs){
   return new Promise((resolve, reject) => {
     const url = buildPollinationsUrl(prompt);
     let settled = false;
@@ -12311,7 +12318,7 @@ function tryLoadPollinationsImage(prompt){
       if(settled) return;
       settled = true;
       reject(new Error('timeout'));
-    }, IMAGE_LOAD_TIMEOUT_MS);
+    }, timeoutMs || IMAGE_LOAD_TIMEOUT_MS);
     const img = new Image();
     img.onload = () => {
       if(settled) return;
@@ -12398,15 +12405,11 @@ imagePickerAiBtn.addEventListener('click', () => {
     resetAiBtn();
   };
 
-  tryLoadPollinationsImage(prompt)
+  tryLoadPollinationsImage(prompt, 10000)
     .then(onGenerated)
     .catch(() => {
-      // First attempt failed — retry once automatically before giving up.
-      imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">بيجرب تاني...</div>';
-      return tryLoadPollinationsImage(prompt).then(onGenerated);
-    })
-    .catch(() => {
-      // Second attempt failed too — fall back to real web image search.
+      // Didn't generate within 10 seconds (or failed outright) — fall
+      // back to real web image search right away instead of retrying.
       imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">بيدوّر على صور من الإنترنت بدل التوليد...</div>';
       return searchWebImages(prompt)
         .then(urls => {
@@ -12428,48 +12431,6 @@ imagePickerAiInput.addEventListener('keydown', (e) => {
     e.preventDefault();
     imagePickerAiBtn.click();
   }
-});
-
-// --- AI image generation via Puter (puter.ai.txt2img) --------------------
-// Puter handles sign-in, billing, and the model call itself, so this needs
-// no API key of our own — just the same shared Puter sign-in used by the
-// chat and the mic (ensurePuterSignedIn), so signing in once anywhere in
-// the app covers this too.
-imagePickerGeminiBtn.addEventListener('click', () => {
-  const prompt = imagePickerAiInput.value.trim();
-  if(!prompt){
-    imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">اكتب وصف الصورة الأول.</div>';
-    return;
-  }
-
-  imagePickerAiBtn.disabled = true;
-  imagePickerGeminiBtn.disabled = true;
-  imagePickerGeminiBtn.innerHTML = '<span class="icon-picker-spin">↻</span> بيولّد...';
-  imagePickerAiUseBtn.style.display = 'none';
-  imagePickerAiUrl = null;
-  imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">بيولّد الصورة بجيميناي، ممكن تاخد شوية ثواني...</div>';
-
-  const resetGeminiBtn = () => {
-    imagePickerAiBtn.disabled = false;
-    imagePickerGeminiBtn.disabled = false;
-    imagePickerGeminiBtn.textContent = '✨ توليد بجيميناي';
-  };
-
-  ensurePuterSignedIn()
-    .then(() => puter.ai.txt2img(prompt))
-    .then(imageEl => {
-      const dataUrl = imageEl && imageEl.src;
-      if(!dataUrl) throw new Error('الرد ماكانش فيه صورة');
-      imagePickerAiUrl = dataUrl;
-      imagePickerAiPreview.innerHTML = `<img src="${escapeAttr(dataUrl)}" alt="${escapeAttr(prompt)}">`;
-      imagePickerAiUseBtn.style.display = '';
-      resetGeminiBtn();
-    })
-    .catch(e => {
-      console.warn('[puter-img] generation failed:', e && e.message ? e.message : e);
-      imagePickerAiPreview.innerHTML = '<div class="image-picker-search-status">حصلت مشكلة في التوليد، جرب تاني.</div>';
-      resetGeminiBtn();
-    });
 });
 
 imagePickerAiUseBtn.addEventListener('click', () => {
@@ -13020,15 +12981,12 @@ function escapeAttr(s){
   return String(s).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 }
 
-// Wraps the exact occurrence of the target word inside the example sentence
-// with a highlighted <mark>, matched case-insensitively (so "Goodbye" at the
-// start of a sentence still matches the word "goodbye") but keeping the
-// sentence's own original casing in the displayed text.
+// Used to just return the example sentence as-is (escaped, no <mark>
+// highlight) — the word itself is highlighted separately up in the
+// card header, so highlighting it again inside the sentence too was
+// confusing/redundant.
 function highlightWordInSentence(sentence, word){
-  const escaped = escapeAttr(sentence);
-  const safeWord = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  const re = new RegExp(`\\b(${safeWord})\\b`, 'i');
-  return escaped.replace(re, '<mark class="sentence-word-highlight">$1</mark>');
+  return escapeAttr(sentence);
 }
 
 // Builds a regex source that matches wordAr loosely inside an Arabic
@@ -14791,7 +14749,6 @@ function renderCard(i){
 
   wrap.innerHTML = `
     <div class="flip-scene">
-      <button type="button" class="card-back-corner-btn" title="رجوع للموضوعات">←</button>
       <div class="flip-card" id="flip-${i}">
         ${buildFrontBack(i, w)}
       </div>
@@ -14805,27 +14762,6 @@ function renderCard(i){
     const genBtnEl = wrap.querySelector('.generate-photo-btn');
     const editPhotoBtnEl = wrap.querySelector('.edit-photo-btn');
     primeWordImageEl(backPhotoEl, genBtnEl, w, editPhotoBtnEl);
-  }
-
-  const cornerBackBtn = wrap.querySelector('.card-back-corner-btn');
-  if(cornerBackBtn){
-    cornerBackBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const cardEl = document.getElementById(`flip-${i}`);
-      if(cardEl && cardEl.classList.contains('is-flipped')){
-        // Currently showing the back (image/video translation side): this
-        // arrow's job here is just to flip back to the front face, not to
-        // leave the level entirely. Reuse the real close-btn's own click
-        // so the exact same cleanup runs (stopping the video/speech,
-        // resetting the translation reveal) instead of duplicating it.
-        const closeBtn = wrap.querySelector('.close-btn');
-        if(closeBtn) closeBtn.click();
-      } else {
-        // On the front face there's nothing to flip back from, so the
-        // arrow's job is to leave the level and go back to the topics list.
-        goBack();
-      }
-    });
   }
 
   balanceWordRows(wrap);
@@ -14843,9 +14779,6 @@ function renderCard(i){
     btn.addEventListener('click', () => {
       const cardEl = document.getElementById(`flip-${i}`);
       cardEl.classList.toggle('is-flipped');
-      if(cornerBackBtn){
-        cornerBackBtn.title = cardEl.classList.contains('is-flipped') ? 'رجوع للكارت' : 'رجوع للموضوعات';
-      }
       if(cardEl.classList.contains('is-flipped')){
         const backImg = wrap.querySelector('.back-photo');
         if(backImg) loadWordImageOnFlip(backImg);
@@ -15132,7 +15065,6 @@ function closeVoiceChat(){
   document.getElementById('main-subtitle').textContent = 'اختر مجلدًا للبدء.';
   renderCategories();
 }
-document.getElementById('back-to-categories-from-chat').addEventListener('click', goBack);
 
 function renderChatMessages(){
   if(voiceChatHistory.length === 0){
