@@ -272,26 +272,6 @@
   }
   .restore-words-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
 
-  .reset-default-btn{
-    background: var(--accent);
-    border: 1.5px solid var(--accent);
-    color: #fff;
-    font-family:'Cairo', sans-serif;
-    font-weight:700;
-    font-size: clamp(10px, 2.6vw, 13.5px);
-    padding: clamp(7px, 1.8vw, 9px) clamp(8px, 2.4vw, 16px);
-    border-radius: 12px;
-    cursor:pointer;
-    display:flex;
-    align-items:center;
-    justify-content:center;
-    gap:4px;
-    white-space: nowrap;
-    overflow:hidden;
-    text-overflow:ellipsis;
-  }
-  .reset-default-btn:hover{ background: var(--accent-deep); border-color: var(--accent-deep); }
-
   .deleted-topics-list{
     display:flex;
     flex-direction:column;
@@ -428,6 +408,7 @@
   #reading-practice-view{ display:none; }
   #reading-topics-view{ display:none; }
   #reading-article-view{ display:none; }
+  #training-view{ display:none; }
 
   .wp-shell{
     max-width: 460px;
@@ -571,6 +552,188 @@
   .reading-sentence-ar{
     margin-bottom: 10px;
   }
+  .training-shell{
+    max-width: 460px;
+    margin: 1.5rem auto 0;
+    padding: 0 1.5rem 60px;
+  }
+  .training-card{
+    background: var(--paper);
+    border: 1.5px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 24px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:16px;
+    text-align:center;
+  }
+  .training-progress{
+    font-size: 14px;
+    font-weight:700;
+    color: var(--muted);
+  }
+  .training-photo{
+    width: 100%;
+    height: 190px;
+    object-fit: cover;
+    border-radius: 14px;
+    background: var(--bg);
+    margin: 0;
+  }
+  .training-sentence-row{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    flex-wrap:wrap;
+  }
+  .training-sentence{
+    direction: ltr;
+    font-family: 'Arial', sans-serif;
+    font-size: 19px;
+    font-weight:600;
+    line-height:1.6;
+    color: var(--ink);
+  }
+  .training-choices{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+  }
+  .training-choice-btn{
+    direction: ltr;
+    width:100%;
+    padding: 14px 16px;
+    font-size: 17px;
+    font-weight:700;
+    font-family: 'Arial', sans-serif;
+    border: 1.5px solid var(--line);
+    border-radius: 14px;
+    background: var(--paper);
+    color: var(--ink);
+    cursor:pointer;
+    transition: background .15s, border-color .15s, transform .15s;
+  }
+  .training-choice-btn:hover:not(:disabled){
+    background: var(--accent-soft);
+    border-color: var(--accent);
+    transform: translateY(-1px);
+  }
+  .training-choice-btn:disabled{ cursor:default; }
+  .training-choice-btn.correct{
+    background: var(--easy-soft);
+    border-color: var(--easy);
+    color: var(--easy);
+  }
+  .training-choice-btn.wrong{
+    background: var(--hard-soft);
+    border-color: var(--hard);
+    color: var(--hard);
+  }
+  .training-next-btn{
+    margin-top:4px;
+    padding: 12px 30px;
+    border:none;
+    border-radius: 14px;
+    background: var(--accent);
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    font-family: 'Cairo', sans-serif;
+    cursor:pointer;
+  }
+  .training-next-btn:hover{ background: var(--accent-deep); }
+  .training-empty{
+    text-align:center;
+    color: var(--muted);
+    padding: 40px 20px;
+    font-size:16px;
+  }
+  .training-complete{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:14px;
+    padding: 20px 4px;
+    width:100%;
+  }
+  .training-complete-icon{ font-size: 46px; }
+  .training-complete-title{
+    font-size: 18px;
+    font-weight:700;
+    color: var(--ink);
+  }
+  .training-complete-stats{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+    width:100%;
+  }
+  .training-stat-pill{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding: 10px 16px;
+    border-radius: 14px;
+    font-size: 14.5px;
+    font-weight:600;
+    border: 1.5px solid var(--line);
+    background: var(--paper);
+    color: var(--muted);
+  }
+  .training-stat-pill b{ font-weight:700; }
+  .training-stat-pill.correct{ background: var(--easy-soft); border-color: var(--easy); color: var(--easy); }
+  .training-stat-pill.correct b{ color: var(--easy); }
+  .training-stat-pill.wrong{ background: var(--hard-soft); border-color: var(--hard); color: var(--hard); }
+  .training-stat-pill.wrong b{ color: var(--hard); }
+  .training-finish-btn{
+    margin-top:4px;
+    padding: 12px 40px;
+    border:none;
+    border-radius: 14px;
+    background: var(--accent);
+    color:#fff;
+    font-weight:700;
+    font-size:16px;
+    font-family: 'Cairo', sans-serif;
+    cursor:pointer;
+  }
+  .training-finish-btn:hover{ background: var(--accent-deep); }
+  .topic-words-btn{
+    display:block;
+    width:100%;
+    margin-top:8px;
+    background: var(--accent-soft);
+    color: var(--accent-deep);
+    border: 1.5px solid var(--accent);
+    border-radius: 14px;
+    padding: 9px 10px;
+    font-family: 'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 14px;
+    cursor:pointer;
+  }
+  .topic-words-btn:hover{ background: var(--accent); color:#fff; }
+  .topic-training-btn{
+    display:block;
+    width:100%;
+    margin-top:8px;
+    background: var(--accent);
+    color:#fff;
+    border:none;
+    border-radius: 14px;
+    padding: 9px 10px;
+    font-family: 'Cairo', sans-serif;
+    font-weight:700;
+    font-size: 14px;
+    cursor:pointer;
+  }
+  .topic-training-btn:hover{ background: var(--accent-deep); }
+
   .wp-audio-row{
     display:flex;
     align-items:center;
@@ -1276,29 +1439,13 @@
     align-items:center;
     gap: clamp(5px, 1.6vw, 8px);
     color: var(--muted);
-    cursor:pointer;
     white-space: nowrap;
-    transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
   }
-  .stat-pill:hover{ background: var(--accent-soft); border-color: var(--accent); transform: translateY(-1px); }
-  .stat-pill[disabled]{ opacity:0.45; cursor:not-allowed; }
-  .stat-pill[disabled]:hover{ background: var(--paper); border-color: var(--line); transform:none; }
   .stat-pill b{ color: var(--ink); font-weight:700; }
   .dot{ width:9px; height:9px; border-radius:50%; display:inline-block; flex-shrink:0; }
   .dot.easy{ background: var(--easy); }
   .dot.medium{ background: var(--medium); }
   .dot.hard{ background: var(--hard); }
-
-  .stat-pill-all{
-    background: var(--paper);
-    border-color: var(--line);
-    color: var(--muted);
-    font-weight:700;
-  }
-  .stat-pill-all b{ color: var(--ink); }
-  .stat-pill-all:hover{ background: var(--accent-soft); border-color: var(--accent); transform: translateY(-1px); }
-  .stat-pill-all[disabled]{ background: var(--paper); border-color: var(--line); color: var(--muted); }
-  .stat-pill-all[disabled] b{ color: var(--muted); }
 
   .grid{
     max-width: 1200px;
@@ -2692,7 +2839,7 @@
 
 <div id="categories-view">
   <div class="folders-grid" id="categories-grid"></div>
-  <h3 style="text-align:center; margin-top:2.5rem; font-family:'Cairo', sans-serif; font-weight:700; font-size: clamp(14px, 2vw, 17px); color: var(--ink);">تعلم بضغطة زرار</h3>
+  <h3 style="text-align:center; margin-top:2.5rem; font-family:'Cairo', sans-serif; font-weight:700; font-size: clamp(14px, 2vw, 17px); color: var(--ink);">بضغطة زرار</h3>
 </div>
 
 <div id="folders-view">
@@ -2700,7 +2847,6 @@
     <div class="level-title" id="folders-level-title" style="display:none;"></div>
   </div>
   <div class="folders-grid" id="folders-grid"></div>
-  <button type="button" class="review-all-btn" id="review-words-btn-folders">📖 مراجعة الكلمات</button>
 </div>
 
 <div id="topics-view">
@@ -2713,7 +2859,6 @@
       <button type="button" class="add-word-btn" id="add-word-topics-btn" style="display:none;">+ إضافة كلمة</button>
       <button type="button" class="restore-words-btn" id="restore-deleted-topics-btn">↩️ المواضيع المحذوفة</button>
       <button type="button" class="restore-words-btn" id="restore-deleted-custom-words-btn" style="display:none;">↩️ الكلمات المحذوفة</button>
-      <button type="button" class="review-words-btn" id="review-words-btn-topics">📖 مراجعة الكلمات</button>
     </div>
   </div>
   <div class="folders-grid" id="topics-grid"></div>
@@ -2727,16 +2872,13 @@
     <div class="header-btn-group">
       <button type="button" class="add-word-btn" id="add-word-btn" style="display:none;">+ إضافة كلمة</button>
       <button type="button" class="restore-words-btn" id="restore-deleted-words-btn" style="display:none;">↩️ الكلمات المحذوفة</button>
-      <button type="button" class="reset-default-btn" id="reset-default-btn" style="display:none;">↺ الوضع الافتراضي</button>
-      <button type="button" class="review-words-btn" id="review-words-btn-level">📖 مراجعة الكلمات</button>
     </div>
   </div>
 
   <div class="stats-bar">
-    <button type="button" class="stat-pill" id="stat-btn-easy" data-level="easy"><span class="dot easy"></span> سهل: <b id="count-easy">0</b></button>
-    <button type="button" class="stat-pill" id="stat-btn-medium" data-level="medium"><span class="dot medium"></span> متوسط: <b id="count-medium">0</b></button>
-    <button type="button" class="stat-pill" id="stat-btn-hard" data-level="hard"><span class="dot hard"></span> صعب: <b id="count-hard">0</b></button>
-    <button type="button" class="stat-pill stat-pill-all" id="stat-btn-all" data-level="all">📚 الكل: <b id="count-all">0</b></button>
+    <div class="stat-pill" id="stat-btn-easy"><span class="dot easy"></span> سهل: <b id="count-easy">0</b></div>
+    <div class="stat-pill" id="stat-btn-medium"><span class="dot medium"></span> متوسط: <b id="count-medium">0</b></div>
+    <div class="stat-pill" id="stat-btn-hard"><span class="dot hard"></span> صعب: <b id="count-hard">0</b></div>
   </div>
 
   <div class="grid" id="cards-grid"></div>
@@ -2809,6 +2951,15 @@
 
   <div class="wp-shell">
     <div class="wp-card" id="pronunciation-practice-card"></div>
+  </div>
+</div>
+
+<div id="training-view">
+  <div class="level-header">
+    <div class="level-title" style="display:none;">🎯 التدريب</div>
+  </div>
+  <div class="training-shell">
+    <div class="training-card" id="training-card"></div>
   </div>
 </div>
 
@@ -8831,99 +8982,6 @@ function purgeAllHiddenCustomWords(){
   savePurgedCustomWords(purged);
 }
 
-// --- "الوضع الافتراضي" (reset the current page back to first-open state) ---
-// Whatever page is open (a built-in topic, or the custom words folder),
-// this makes it look exactly like the very first time it was opened:
-// every rating/schedule entry for its words is cleared (so they're
-// "new" again), every word the user deleted from it comes back, and
-// every word the user added to it disappears again. Nothing is actually
-// erased from storage — words the user added just get hidden (same
-// mechanism as normal delete), so this stays fully undoable from
-// "↩️ الكلمات المحذوفة" afterwards if it was pressed by mistake.
-function resetPageToDefault(){
-  if(!activeLevel || !activeTopic) return;
-
-  if(customWordsMode){
-    // Every word in this folder was added by the user — there's no
-    // "original" content to keep — so its first-open state is simply
-    // empty. Hide every word IN THIS TOPIC ONLY (recoverable — other
-    // custom topics are untouched) and wipe just this topic's saved
-    // progress.
-    const topicId = activeTopic.id;
-    const wordsInTopic = loadCustomWords().filter(w => w.topic === topicId);
-    const hidden = new Set(loadHiddenCustomWords());
-    wordsInTopic.forEach(w => hidden.add(w.id));
-    saveHiddenCustomWords([...hidden]);
-
-    const keys = folderStorageKeys('custom-words');
-    const sched = loadJSON(keys.schedule, {});
-    const rated = loadJSON(keys.rated, {});
-    const diff = loadJSON(keys.difficulty, {});
-    const early = loadJSON(keys.earlyUnlocked, {});
-    loadCustomWords().forEach((w, i) => {
-      if(w.topic !== topicId) return;
-      delete sched[i];
-      delete rated[i];
-      delete diff[i];
-      delete early[i];
-    });
-    saveJSON(keys.schedule, sched);
-    saveJSON(keys.rated, rated);
-    saveJSON(keys.difficulty, diff);
-    saveJSON(keys.earlyUnlocked, early);
-    schedule = sched;
-    ratedWords = rated;
-    wordDifficulty = diff;
-    earlyUnlocked = early;
-
-    openTopic(topicId);
-    return;
-  }
-
-  const levelId = activeLevel.id;
-  const topicId = activeTopic.id;
-
-  // Original built-in words in this topic go back to visible; anything
-  // the user added to this topic afterwards gets hidden instead, as if
-  // it was never added.
-  const hiddenMap = loadHiddenWords();
-  const topicHiddenSet = new Set(hiddenMap[levelId] || []);
-  const topicIndices = [];
-  activeLevel.words.forEach((w, i) => {
-    if(w.topic !== topicId) return;
-    topicIndices.push(i);
-    if(w.__added) topicHiddenSet.add(i);
-    else topicHiddenSet.delete(i);
-  });
-  hiddenMap[levelId] = [...topicHiddenSet];
-  saveHiddenWords(hiddenMap);
-
-  // Clear this topic's saved ratings/schedule so every word in it
-  // (including ones just restored above) looks like it was never
-  // reviewed.
-  const keys = folderStorageKeys(levelId);
-  const sched = loadJSON(keys.schedule, {});
-  const rated = loadJSON(keys.rated, {});
-  const diff = loadJSON(keys.difficulty, {});
-  const early = loadJSON(keys.earlyUnlocked, {});
-  topicIndices.forEach(i => {
-    delete sched[i];
-    delete rated[i];
-    delete diff[i];
-    delete early[i];
-  });
-  saveJSON(keys.schedule, sched);
-  saveJSON(keys.rated, rated);
-  saveJSON(keys.difficulty, diff);
-  saveJSON(keys.earlyUnlocked, early);
-  schedule = sched;
-  ratedWords = rated;
-  wordDifficulty = diff;
-  earlyUnlocked = early;
-
-  openTopic(topicId);
-}
-
 // --- User-added topics ("+ إضافة موضوع") ---
 // Built-in levels/topics are a static, hardcoded array (not user-owned
 // storage), so new topics a person adds can't be pushed into that array
@@ -9093,6 +9151,7 @@ const pronunciationPracticeView = document.getElementById('pronunciation-practic
 const readingPracticeView = document.getElementById('reading-practice-view');
 const readingTopicsView = document.getElementById('reading-topics-view');
 const readingArticleView = document.getElementById('reading-article-view');
+const trainingView = document.getElementById('training-view');
 
 // Keeps the fixed floating arrow in sync with whichever list view (levels
 // or topics) is currently showing, instead of hard-coding it into every
@@ -9119,6 +9178,7 @@ function syncFloatingBackArrow(){
     readingPracticeView.style.display === 'block' ||
     readingTopicsView.style.display === 'block' ||
     readingArticleView.style.display === 'block' ||
+    trainingView.style.display === 'block' ||
     (fbaVoiceChatView && fbaVoiceChatView.style.display === 'block')
   ){
     floatingBackArrow.style.display = 'flex';
@@ -9133,7 +9193,7 @@ function syncFloatingBackArrow(){
   }
 }
 if(floatingBackArrow){
-  [foldersView, topicsView, levelView, fbaReviewFoldersView, fbaReviewCardsView, writingPracticeView, pronunciationPracticeView, readingPracticeView, readingTopicsView, readingArticleView, fbaVoiceChatView].forEach(view => {
+  [foldersView, topicsView, levelView, fbaReviewFoldersView, fbaReviewCardsView, writingPracticeView, pronunciationPracticeView, readingPracticeView, readingTopicsView, readingArticleView, trainingView, fbaVoiceChatView].forEach(view => {
     if(view) new MutationObserver(syncFloatingBackArrow).observe(view, { attributes: true, attributeFilter: ['style'] });
   });
   syncFloatingBackArrow();
@@ -9179,6 +9239,9 @@ function currentNavState(){
   }
   if(typeof readingPracticeView !== 'undefined' && readingPracticeView.style.display === 'block'){
     return { screen: 'reading-practice' };
+  }
+  if(typeof trainingView !== 'undefined' && trainingView.style.display === 'block'){
+    return { screen: 'training', categoryId: activeCategoryId, levelId: activeLevel && activeLevel.id, topicId: activeTrainingTopic && activeTrainingTopic.id, customWords: customWordsMode };
   }
   if(levelView.style.display === 'block'){
     if(customWordsMode) return { screen: 'level', customWords: true, topicId: activeTopic && activeTopic.id };
@@ -9308,6 +9371,8 @@ function applyPopState(state){
       else if(current.screen === 'reading-topics'){ closeReadingTopics(); closeReadingPractice(); }
       else if(current.screen === 'reading-practice') closeReadingPractice();
       else if(current.screen === 'folders') closeCategory();
+      else if(current.screen === 'training' && customWordsMode){ closeTraining(); closeCustomTopics(); }
+      else if(current.screen === 'training'){ closeTraining(); closeLevel(); closeCategory(); }
       else if(current.screen === 'level' && customWordsMode){ closeTopic(); closeCustomTopics(); }
       else if(current.screen === 'custom-topics') closeCustomTopics();
       else if(current.screen === 'topics'){ closeLevel(); closeCategory(); }
@@ -9316,17 +9381,20 @@ function applyPopState(state){
     }
     if(target.screen === 'folders'){
       if(current.screen === 'topics') closeLevel();
+      else if(current.screen === 'training'){ closeTraining(); closeLevel(); }
       else if(current.screen === 'level' && !customWordsMode){ closeTopic(); closeLevel(); }
       else if(current.screen === 'categories') openCategory(target.categoryId || 'english');
       return;
     }
     if(target.screen === 'custom-topics'){
       if(current.screen === 'level' && customWordsMode) closeTopic();
+      else if(current.screen === 'training') closeTraining();
       else openCustomWords();
       return;
     }
     if(target.screen === 'topics'){
       if(current.screen === 'level' && !customWordsMode) closeTopic();
+      else if(current.screen === 'training') closeTraining();
       else { openCategory(target.categoryId || 'english'); openLevel(target.levelId); }
       return;
     }
@@ -9345,6 +9413,16 @@ function applyPopState(state){
     }
     if(target.screen === 'voice-chat'){
       openVoiceChat();
+      return;
+    }
+    if(target.screen === 'training'){
+      if(current.screen === 'topics' || current.screen === 'custom-topics'){
+        openTraining(target.topicId);
+      } else {
+        if(target.customWords) openCustomWords();
+        else { openCategory(target.categoryId || 'english'); openLevel(target.levelId); }
+        openTraining(target.topicId);
+      }
       return;
     }
     if(target.screen === 'writing-practice'){
@@ -9441,6 +9519,14 @@ function initNavigation(){
         history.pushState({ screen: 'topics', categoryId, levelId: restored.levelId }, '');
       } else if(restored.screen === 'custom-topics'){
         history.pushState({ screen: 'custom-topics' }, '');
+      } else if(restored.screen === 'training'){
+        if(restored.customWords){
+          history.pushState({ screen: 'custom-topics' }, '');
+        } else {
+          history.pushState({ screen: 'folders', categoryId }, '');
+          history.pushState({ screen: 'topics', categoryId, levelId: restored.levelId }, '');
+        }
+        history.pushState({ screen: 'training', categoryId, levelId: restored.levelId, topicId: restored.topicId, customWords: restored.customWords }, '');
       } else if(restored.screen === 'level'){
         if(restored.customWords){
           history.pushState({ screen: 'custom-topics' }, '');
@@ -9666,7 +9752,15 @@ function openCategory(categoryId){
 
   if(cat.type === 'review'){
     reviewQueues = {};
-    openReviewFolders({ type: 'everything' });
+    const scope = { type: 'everything' };
+    // Same skip-the-folders-screen trick used by the level stat pills:
+    // openReviewFolders only runs to set up reviewScope/counts (its own
+    // display+history push suppressed), then review-cards replaces it
+    // immediately — so the person never actually sees that buttons screen.
+    suppressNavPush = true;
+    try{ openReviewFolders(scope); } finally { suppressNavPush = false; }
+    reviewSkippedFolders = true;
+    openReviewCards('easy');
     return;
   }
 
@@ -9869,6 +9963,8 @@ function renderTopics(){
       <div class="folder-title">${topic.title}</div>
       <div class="folder-meta">${total} كلمة · تمت مراجعة ${Math.min(learned, total)}/${total}</div>
       <div class="folder-progress"><div class="folder-progress-fill" style="width:${Math.min(pct,100)}%"></div></div>
+      ${total >= 1 ? `<button type="button" class="topic-words-btn" data-words-topic="${topic.id}">📚 الكلمات</button>` : ''}
+      ${total >= 2 ? `<button type="button" class="topic-training-btn" data-train-topic="${topic.id}">🎯 التدريب</button>` : ''}
       ${!topic.__fallback ? `
       <div class="word-actions-row">
         <button type="button" class="edit-word-btn" data-edit-topic="${topic.id}">✏️ تعديل</button>
@@ -9876,6 +9972,22 @@ function renderTopics(){
       </div>` : ''}
     `;
     card.addEventListener('click', () => openTopic(topic.id));
+
+    const wordsTopicBtn = card.querySelector('[data-words-topic]');
+    if(wordsTopicBtn){
+      wordsTopicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openTopic(wordsTopicBtn.dataset.wordsTopic);
+      });
+    }
+
+    const trainTopicBtn = card.querySelector('[data-train-topic]');
+    if(trainTopicBtn){
+      trainTopicBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openTraining(trainTopicBtn.dataset.trainTopic);
+      });
+    }
 
     const editTopicBtn = card.querySelector('[data-edit-topic]');
     if(editTopicBtn){
@@ -9965,7 +10077,6 @@ function openTopic(topicId){
   levelView.style.display = 'block';
 
   document.getElementById('restore-deleted-words-btn').style.display = customWordsMode ? 'none' : 'flex';
-  document.getElementById('reset-default-btn').style.display = 'flex';
   document.getElementById('add-word-btn').style.display = 'inline-block';
 
   // #cards-grid may currently be sitting inside #topics-view (see
@@ -10014,6 +10125,254 @@ function currentTopicIndices(){
     out.push(i);
   });
   return orderTopicIndicesForDisplay(activeLevel.id, out);
+}
+
+// --- "التدريب" (topic training / quiz) ---
+// A per-topic multiple-choice quiz reachable from the "🎯 التدريب" button
+// on each topic card (see renderTopics above). For each word in the topic
+// it shows a sentence with the target word blanked out, the word's own
+// picture, and 3 (or fewer, if the topic doesn't have enough words) choice
+// buttons. Picking the right one turns green and reveals "التالي"; picking
+// wrong reveals both the wrong pick (red) and the right answer (green).
+// Sentences are shown in a shuffled, no-repeat order until the topic is
+// fully exhausted, at which point a fresh shuffle starts. Progress (the
+// shuffled order + current position) is persisted per level+topic in
+// localStorage, so leaving and coming back resumes on the exact same
+// sentence instead of starting over.
+let activeTrainingTopic = null;
+let trainingIndices = [];
+let trainingPos = 0;
+// Tallied for the current training session only (reset each time
+// openTraining runs) — shown on the "تم الانتهاء من الأسئلة" summary card
+// once a full round through the topic's words is done.
+let trainingCorrectCount = 0;
+let trainingWrongCount = 0;
+
+const TRAINING_PROGRESS_KEY = 'flashcards-training-progress-v1';
+
+function loadTrainingProgress(){
+  return loadJSON(TRAINING_PROGRESS_KEY, {});
+}
+function saveTrainingProgress(all){
+  saveJSON(TRAINING_PROGRESS_KEY, all);
+}
+function trainingProgressKeyFor(levelId, topicId){
+  return levelId + '::' + topicId;
+}
+function getTrainingState(levelId, topicId){
+  const all = loadTrainingProgress();
+  return all[trainingProgressKeyFor(levelId, topicId)] || null;
+}
+function setTrainingState(levelId, topicId, state){
+  const all = loadTrainingProgress();
+  all[trainingProgressKeyFor(levelId, topicId)] = state;
+  saveTrainingProgress(all);
+}
+
+// Same filtering rules as currentTopicIndices()/renderTopics() (respects
+// hidden/deleted words in both custom and built-in modes), but for an
+// arbitrary topicId instead of only the currently-open activeTopic —
+// training can be opened straight from the topics grid without ever
+// calling openTopic() first.
+function getTrainingWordIndices(topicId){
+  if(!activeLevel) return [];
+  const out = [];
+  activeLevel.words.forEach((w, i) => {
+    if(w.topic !== topicId) return;
+    if(customWordsMode){
+      if(isCustomWordHidden(w.id)) return;
+    } else if(isWordHidden(activeLevel.id, i)) return;
+    out.push(i);
+  });
+  return out;
+}
+
+// Replaces the target English word inside its example sentence with a
+// blank marker. Tries a whole-word, case-insensitive match first (handles
+// the common case cleanly); falls back to a plain case-insensitive
+// substring match for multi-word entries or minor mismatches, so the
+// sentence still gets blanked instead of accidentally giving the answer
+// away. If the word truly can't be found in the sentence (shouldn't happen
+// with this app's data, but just in case), the sentence is returned as-is.
+function blankWordInSentence(sentence, word){
+  sentence = sentence || '';
+  if(!word) return escapeAttr(sentence);
+  const escapedWord = String(word).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  let result = null;
+  try{
+    const re = new RegExp('\\b' + escapedWord + '\\b', 'i');
+    if(re.test(sentence)) result = sentence.replace(re, '••••••');
+  }catch(e){ /* fall through to substring match below */ }
+  if(result === null){
+    const idx = sentence.toLowerCase().indexOf(String(word).toLowerCase());
+    if(idx !== -1){
+      result = sentence.slice(0, idx) + '••••••' + sentence.slice(idx + word.length);
+    }
+  }
+  return escapeAttr(result === null ? sentence : result);
+}
+
+function openTraining(topicId){
+  if(!activeLevel) return;
+  stopAllAutoGen();
+  stopAnySpeaking();
+  const topic = getTopicsForLevel(activeLevel).find(t => t.id === topicId) || { id: topicId, title: 'أخرى' };
+  activeTrainingTopic = topic;
+  trainingCorrectCount = 0;
+  trainingWrongCount = 0;
+
+  document.getElementById('main-title').textContent = activeLevel.title + ' — ' + topic.title + ' (تدريب)';
+  document.getElementById('main-subtitle').textContent = 'اختَر الكلمة اللي تكمل بيها الجملة صح.';
+
+  categoriesView.style.display = 'none';
+  foldersView.style.display = 'none';
+  topicsView.style.display = 'none';
+  levelView.style.display = 'none';
+  reviewFoldersView.style.display = 'none';
+  reviewCardsView.style.display = 'none';
+  trainingView.style.display = 'block';
+
+  const available = getTrainingWordIndices(topicId);
+  if(available.length < 2){
+    document.getElementById('training-card').innerHTML = `<div class="training-empty">محتاج على الأقل كلمتين في الموضوع ده عشان تقدر تتدرب 🙏</div>`;
+    pushNav();
+    return;
+  }
+
+  const saved = getTrainingState(activeLevel.id, topicId);
+  if(saved && Array.isArray(saved.order) && saved.order.length && saved.order.every(i => available.includes(i))){
+    trainingIndices = saved.order.slice();
+    // Any word added to the topic since the last visit still gets folded
+    // in, instead of waiting for the next full reshuffle to appear.
+    available.forEach(i => { if(!trainingIndices.includes(i)) trainingIndices.push(i); });
+    trainingPos = Math.min(saved.pos || 0, trainingIndices.length - 1);
+  } else {
+    trainingIndices = shuffleArray(available);
+    trainingPos = 0;
+  }
+
+  renderTrainingCard();
+  pushNav();
+}
+
+function saveTrainingProgressNow(){
+  if(!activeLevel || !activeTrainingTopic) return;
+  setTrainingState(activeLevel.id, activeTrainingTopic.id, { order: trainingIndices, pos: trainingPos });
+}
+
+function renderTrainingCard(){
+  if(!activeLevel || !activeTrainingTopic) return;
+  const card = document.getElementById('training-card');
+  const available = getTrainingWordIndices(activeTrainingTopic.id);
+  if(available.length < 2){
+    card.innerHTML = `<div class="training-empty">محتاج على الأقل كلمتين في الموضوع ده عشان تقدر تتدرب 🙏</div>`;
+    return;
+  }
+
+  // Keep the saved order in sync with words that got hidden/deleted since
+  // it was built, and fold in any newly-available word.
+  trainingIndices = trainingIndices.filter(i => available.includes(i));
+  available.forEach(i => { if(!trainingIndices.includes(i)) trainingIndices.push(i); });
+  if(trainingIndices.length === 0) trainingIndices = shuffleArray(available);
+  if(trainingPos >= trainingIndices.length) trainingPos = 0;
+
+  const wordIndex = trainingIndices[trainingPos];
+  const w = activeLevel.words[wordIndex];
+  const total = trainingIndices.length;
+
+  const distractorPool = available.filter(i => i !== wordIndex);
+  const distractors = shuffleArray(distractorPool).slice(0, Math.min(2, distractorPool.length));
+  const choiceIndices = shuffleArray([wordIndex, ...distractors]);
+
+  const imgKey = activeLevel.id + '-' + (customWordsMode && w.id ? w.id : wordIndex);
+  const blanked = blankWordInSentence(w.sentenceEn || w.en, w.en);
+
+  card.innerHTML = `
+    <div class="training-progress">${escapeAttr(activeTrainingTopic.title)} · جملة ${trainingPos + 1} / ${total}</div>
+    <div class="photo-wrap" style="width:100%;">
+      <img class="back-photo training-photo" data-word-img-url="${escapeAttr(w.img || '')}" data-word-img-key="${escapeAttr(imgKey)}" data-word-img-query="${escapeAttr(w.sentenceEn || w.en || '')}" data-word-img-fallback-query="${escapeAttr(w.en || '')}" src="${WORD_IMG_PLACEHOLDER}" alt="${escapeAttr(w.en)}" loading="lazy">
+    </div>
+    <div class="training-sentence-row">
+      <div class="training-sentence">${blanked}</div>
+    </div>
+    <div class="training-choices" id="training-choices"></div>
+    <button type="button" class="training-next-btn" id="training-next-btn" style="display:none;">التالي ⬅️</button>
+  `;
+
+  const imgEl = card.querySelector('.training-photo');
+  primeWordImageEl(imgEl, null, w, null);
+
+  const choicesWrap = card.querySelector('#training-choices');
+  choiceIndices.forEach(ci => {
+    const cw = activeLevel.words[ci];
+    const btn = document.createElement('button');
+    btn.type = 'button';
+    btn.className = 'training-choice-btn';
+    btn.textContent = cw.en;
+    btn.dataset.index = ci;
+    btn.addEventListener('click', () => handleTrainingAnswer(ci, wordIndex));
+    choicesWrap.appendChild(btn);
+  });
+
+  const nextBtn = card.querySelector('#training-next-btn');
+  nextBtn.addEventListener('click', trainingNext);
+
+  saveTrainingProgressNow();
+}
+
+function handleTrainingAnswer(chosenIndex, correctIndex){
+  const choicesWrap = document.getElementById('training-choices');
+  if(!choicesWrap) return;
+  choicesWrap.querySelectorAll('.training-choice-btn').forEach(b => { b.disabled = true; });
+  const chosenBtn = choicesWrap.querySelector(`[data-index="${chosenIndex}"]`);
+  if(chosenIndex === correctIndex){
+    if(chosenBtn) chosenBtn.classList.add('correct');
+    trainingCorrectCount++;
+  } else {
+    if(chosenBtn) chosenBtn.classList.add('wrong');
+    const correctBtn = choicesWrap.querySelector(`[data-index="${correctIndex}"]`);
+    if(correctBtn) correctBtn.classList.add('correct');
+    trainingWrongCount++;
+  }
+  const nextBtn = document.getElementById('training-next-btn');
+  if(nextBtn) nextBtn.style.display = 'inline-block';
+}
+
+function trainingNext(){
+  trainingPos++;
+  if(trainingPos >= trainingIndices.length){
+    // Prepare (and persist) a fresh shuffled round for next time, but
+    // don't jump straight into it — show the completion summary first
+    // and let the person decide when to continue via "إنهاء".
+    trainingIndices = shuffleArray(getTrainingWordIndices(activeTrainingTopic.id));
+    trainingPos = 0;
+    saveTrainingProgressNow();
+    renderTrainingComplete();
+    return;
+  }
+  renderTrainingCard();
+}
+
+function renderTrainingComplete(){
+  const card = document.getElementById('training-card');
+  card.innerHTML = `
+    <div class="training-complete">
+      <div class="training-complete-icon">🎉</div>
+      <div class="training-complete-title">تم الانتهاء من الأسئلة</div>
+      <div class="training-complete-stats">
+        <div class="training-stat-pill correct"><span class="dot easy"></span> الإجابات الصحيحة: <b>${trainingCorrectCount}</b></div>
+        <div class="training-stat-pill wrong"><span class="dot hard"></span> الإجابات الخاطئة: <b>${trainingWrongCount}</b></div>
+      </div>
+      <button type="button" class="training-finish-btn" id="training-finish-btn">إنهاء</button>
+    </div>
+  `;
+  document.getElementById('training-finish-btn').addEventListener('click', goBack);
+}
+
+function closeTraining(){
+  trainingView.style.display = 'none';
+  topicsView.style.display = 'block';
+  activeTrainingTopic = null;
 }
 
 // --- "مراجعة الكلمات" (review words by difficulty) ---
@@ -10155,28 +10514,48 @@ let reviewCurrentDifficulty = null;
 // straight to the level page instead of showing folders in between.
 let reviewSkippedFolders = false;
 
+function buildReviewQueue(difficulty){
+  const refs = getScopeWordRefs(reviewScope).filter(ref => {
+    const d = getRefDifficulty(ref);
+    const matchesDifficulty = difficulty === 'all'
+      ? (d === 'easy' || d === 'medium' || d === 'hard')
+      : d === difficulty;
+    return matchesDifficulty && isRefAvailableNow(ref);
+  });
+  if(difficulty === 'all'){
+    const rank = { easy: 0, medium: 1, hard: 2 };
+    refs.sort((a, b) => {
+      const r = rank[getRefDifficulty(a)] - rank[getRefDifficulty(b)];
+      return r !== 0 ? r : getRefUnlockAt(a) - getRefUnlockAt(b);
+    });
+  } else {
+    refs.sort((a, b) => getRefUnlockAt(a) - getRefUnlockAt(b));
+  }
+  reviewQueues[difficulty] = { refs, pos: 0 };
+  return reviewQueues[difficulty];
+}
+
+function ensureReviewQueue(difficulty){
+  const existing = reviewQueues[difficulty];
+  if(!existing || existing.pos >= existing.refs.length) return buildReviewQueue(difficulty);
+  return existing;
+}
+
+const REVIEW_NAMES = { easy: 'السهلة', medium: 'المتوسطة', hard: 'الصعبة' };
+function updateReviewCardsTitle(){
+  document.getElementById('review-cards-title').textContent = reviewCurrentDifficulty === 'all'
+    ? reviewFoldersTitleFor(reviewScope)
+    : `مراجعة الكلمات ${REVIEW_NAMES[reviewCurrentDifficulty]}`;
+}
+
 function openReviewCards(difficulty){
   reviewCurrentDifficulty = difficulty;
-  const existing = reviewQueues[difficulty];
-  if(!existing || existing.pos >= existing.refs.length){
-    const refs = getScopeWordRefs(reviewScope).filter(ref => {
-      const d = getRefDifficulty(ref);
-      const matchesDifficulty = difficulty === 'all'
-        ? (d === 'easy' || d === 'medium' || d === 'hard')
-        : d === difficulty;
-      return matchesDifficulty && isRefAvailableNow(ref);
-    });
-    refs.sort((a, b) => getRefUnlockAt(a) - getRefUnlockAt(b));
-    reviewQueues[difficulty] = { refs, pos: 0 };
-  }
+  ensureReviewQueue(difficulty);
 
   reviewFoldersView.style.display = 'none';
   reviewCardsView.style.display = 'block';
 
-  const names = { easy: 'السهلة', medium: 'المتوسطة', hard: 'الصعبة' };
-  document.getElementById('review-cards-title').textContent = difficulty === 'all'
-    ? reviewFoldersTitleFor(reviewScope)
-    : `مراجعة الكلمات ${names[difficulty]}`;
+  updateReviewCardsTitle();
   fitReviewTitleToOneLine();
 
   renderReviewCards();
@@ -10234,9 +10613,22 @@ window.addEventListener('resize', () => {
   if(reviewCardsView.style.display === 'block') fitReviewTitleToOneLine();
 });
 
+// Order review is allowed to fall forward through when the current
+// difficulty runs out of due cards — never stops the person at an empty
+// easy/medium/hard bucket, it just keeps going until hard is empty too.
+const REVIEW_CASCADE_ORDER = ['easy', 'medium', 'hard'];
 function renderReviewCards(){
-  const q = reviewQueues[reviewCurrentDifficulty];
+  let q = reviewQueues[reviewCurrentDifficulty];
   if(!q || q.pos >= q.refs.length){
+    const idx = REVIEW_CASCADE_ORDER.indexOf(reviewCurrentDifficulty);
+    if(idx !== -1 && idx < REVIEW_CASCADE_ORDER.length - 1){
+      reviewCurrentDifficulty = REVIEW_CASCADE_ORDER[idx + 1];
+      ensureReviewQueue(reviewCurrentDifficulty);
+      updateReviewCardsTitle();
+      fitReviewTitleToOneLine();
+      renderReviewCards();
+      return;
+    }
     reviewCardsGrid.innerHTML = `<div class="empty-custom">تمام، خلصت كل كلمات هذا التصنيف دلوقتي 🎉</div>`;
     return;
   }
@@ -10359,57 +10751,6 @@ function closeReviewMode(){
     categoriesView.style.display = 'block';
   }
 }
-
-document.getElementById('review-words-btn-folders').addEventListener('click', () => {
-  reviewQueues = {};
-  openReviewFolders({ type: 'all-levels' });
-});
-document.getElementById('review-words-btn-topics').addEventListener('click', () => {
-  if(!activeLevel) return;
-  reviewQueues = {};
-  if(customWordsMode){
-    openReviewFolders({ type: 'custom' });
-  } else {
-    openReviewFolders({ type: 'level', levelId: activeLevel.id });
-  }
-});
-document.getElementById('review-words-btn-level').addEventListener('click', () => {
-  if(!activeLevel) return;
-  reviewQueues = {};
-  if(customWordsMode){
-    openReviewFolders({ type: 'custom', topicId: activeTopic ? activeTopic.id : null });
-  } else if(activeTopic){
-    openReviewFolders({ type: 'topic', levelId: activeLevel.id, topicId: activeTopic.id });
-  }
-});
-// Lets the stats pills on the level (word list) screen jump straight
-// into reviewing one difficulty (or all of them) without stopping at
-// the folders screen first. Same scope logic as review-words-btn-level.
-function openReviewAtLevel(difficulty){
-  if(!activeLevel) return;
-  reviewQueues = {};
-  let scope = null;
-  if(customWordsMode){
-    scope = { type: 'custom', topicId: activeTopic ? activeTopic.id : null };
-  } else if(activeTopic){
-    scope = { type: 'topic', levelId: activeLevel.id, topicId: activeTopic.id };
-  }
-  if(!scope) return;
-  // The folders screen here is only a stepping stone the person never
-  // actually sees (review-cards replaces it immediately below), so its
-  // own history push is suppressed — otherwise the back button would
-  // stop on the (invisible) folders screen first instead of skipping
-  // straight back to the level page, which is exactly what
-  // reviewSkippedFolders is meant to guarantee.
-  suppressNavPush = true;
-  try{ openReviewFolders(scope); } finally { suppressNavPush = false; }
-  reviewSkippedFolders = true;
-  openReviewCards(difficulty);
-}
-document.getElementById('stat-btn-easy').addEventListener('click', () => openReviewAtLevel('easy'));
-document.getElementById('stat-btn-medium').addEventListener('click', () => openReviewAtLevel('medium'));
-document.getElementById('stat-btn-hard').addEventListener('click', () => openReviewAtLevel('hard'));
-document.getElementById('stat-btn-all').addEventListener('click', () => openReviewAtLevel('all'));
 
 // Used directly by the floating back arrow while the review-cards screen
 // is open (that screen has no browser-history entry of its own to pop).
@@ -11943,12 +12284,6 @@ editTopicTitleInput.addEventListener('keydown', (e) => {
 
 document.getElementById('restore-deleted-words-btn').addEventListener('click', () => {
   openRestoreWordsModal();
-});
-
-document.getElementById('reset-default-btn').addEventListener('click', () => {
-  const restoreBtnName = customWordsMode ? 'المواضيع المحذوفة' : 'الكلمات المحذوفة';
-  if(!confirm(`متأكد إنك عايز ترجع الموضوع ده للوضع الافتراضي؟ هيمسح كل تقييماتك، ويشيل أي كلمة ضفتها، ويرجع أي كلمة كنت حذفتها. الإجراء ده مينفعش يتراجع فيه (إلا الكلمات المحذوفة/المضافة تقدر تسترجعها لاحقًا من "↩️ ${restoreBtnName}").`)) return;
-  resetPageToDefault();
 });
 
 // Shows the header button is now always visible; this only builds the
@@ -14068,12 +14403,6 @@ function refreshCounts(){
   document.getElementById('count-easy').textContent = easy;
   document.getElementById('count-medium').textContent = medium;
   document.getElementById('count-hard').textContent = hard;
-  document.getElementById('count-all').textContent = easy + medium + hard;
-
-  document.getElementById('stat-btn-easy').disabled = easy === 0;
-  document.getElementById('stat-btn-medium').disabled = medium === 0;
-  document.getElementById('stat-btn-hard').disabled = hard === 0;
-  document.getElementById('stat-btn-all').disabled = (easy + medium + hard) === 0;
 }
 
 function formatRemaining(ms){
