@@ -856,11 +856,14 @@
     padding: 32px 26px;
     max-width: 460px;
     width:100%;
+    min-width: 0;
+    box-sizing: border-box;
     display:flex;
     flex-direction:column;
     align-items:center;
     gap:18px;
     text-align:center;
+    overflow: hidden;
   }
   .review-floating-card .review-word-en-row{
     flex-direction: column;
@@ -875,6 +878,8 @@
   }
   .review-floating-card .example{
     width:100%;
+    min-width: 0;
+    box-sizing: border-box;
     display:flex;
     flex-direction:column;
     align-items:center;
@@ -887,6 +892,10 @@
     align-items:center;
     gap:6px;
     text-align:center;
+    width:100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
   }
   .review-floating-card .example .ar{
     text-align:center;
@@ -897,8 +906,12 @@
   .review-floating-card .example .en > span.sentence-text{
     display: block;
     width: 100%;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
     white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
   .review-floating-card .example .ar{
     font-size: 22px;
